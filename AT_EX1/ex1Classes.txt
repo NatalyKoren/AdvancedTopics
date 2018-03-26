@@ -1,0 +1,36 @@
+class for input board files:
+	[] check file format - return 0 - the file is ok,1 - first player bad format,
+		2 - second player bad format. print an error message to screen
+	[] 
+	
+class for game board:
+	char [][] board;
+	int numPlayers1; // num of pieces on board
+	int numPlayers2;
+	bool isFirstFlagEaten;
+	bool isSecondFlagEaten;
+	
+	[] getPositionOfplayer ( player, positions ) // player: 1 or 2. position: 
+	[] setPositionOfplayer ( player, position ) // updates flag fields and num player
+	[] checkVictory ( player )	
+	[] isFight( position ) : 0 - tie , 1 - player 1 wins, 2 - player 2 wins
+
+	
+class for move:
+	from x,y
+	to x,y
+	isJokerChange
+	newJokerChar
+	int player
+	cons ( line, player )
+	[] parseLine( line )
+	[] checkFormat( line )
+	[] isValidMove ( player, move, gameBoard& )
+	[] movePiece ( line ,gameBoard& ) { calls parse line, check format, is valid, is fight, set position } 
+	[] 
+	
+class for game:
+	[] run the game - 
+	
+main:
+	[] run class game
