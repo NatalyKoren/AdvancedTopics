@@ -10,10 +10,12 @@
 
 #include "game_board.h"
 #include "Position.h"
+#include <iostream>
 
 
 class Move{
 	bool isJokerChanged;
+	Position jokerPos;
 	char newJokerChar;
 	int player;
 	Position src;
@@ -21,9 +23,13 @@ class Move{
 public:
 	Move(int player);
 	int parseLine(std::string line);
-	bool isValidMove(GameBoard&);
-	void updateMoveAfterFight();
-	void setMove(GameBoard&);
+	//int checkMove(GameBoard*); - compilation error
+	Position& getDst()const;
+	Position& getSrc()const;
+	bool isJokerUpdated(){ return isJokerChanged; }
+	//void updateMove(GameBoard&, );
+	Position& getJokerPos()const{ return jokerPos; }
+	char getJokerNewChar()const{ return newJokerChar; }
 
 };
 #endif /* MOVE_H_ */

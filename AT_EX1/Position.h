@@ -11,7 +11,7 @@
 class Position{
 	int x;
 	int y;
-
+public:
 	Position(int x,int y):x(x),y(y){}
 	// --- Getters ---
 	int getXposition()const{return x;}
