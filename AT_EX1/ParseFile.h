@@ -8,6 +8,9 @@
 #ifndef PARSEFILE_H_
 #define PARSEFILE_H_
 
+#define ROWS 10
+#define COLUMNS 10
 
+int i = 5;
 
 #endif /* PARSEFILE_H_ */
