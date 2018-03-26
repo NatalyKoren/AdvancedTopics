@@ -64,10 +64,11 @@ void GameBoard::updateBoardAfterMove(int player, Move& move){
 	//Update joker
 	if(move.isJokerUpdated()){
 		// TODO - this should be here or at the beginning of the function?
+		// there is a question regarding this in the forum
 		setPieceAtPosition(player, tolower(move.getJokerNewChar()), move.getJokerPos());
 	}
-
 }
+
 int GameBoard::fight(Position& pos){
 	char firstPlayerPiece = getPieceAtPosition(FIRST_PLAYER,pos);
 	char secondPlayerPiece = getPieceAtPosition(SECOND_PLAYER,pos);
