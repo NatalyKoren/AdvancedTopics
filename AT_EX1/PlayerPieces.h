@@ -35,7 +35,7 @@ public:
 	// --- Move pieces number
 	int getMovePiecesNum() { return (scissors+ rock + paper + joker); }
 	// set piece to player
-	bool incrementPieceNum(char piece, int num);
+	void incrementPieceNum(char piece, int num);
 
 };
 

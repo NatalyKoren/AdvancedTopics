@@ -116,6 +116,8 @@ int GameBoard::checkVictory(){
 }
 void GameBoard::addPieceToGame(int player, char piece, Position& pos){
 	setPieceAtPosition(player,piece,pos);
+	if(islower(piece))
+		piece = JOKER;
 	increasePieceNum(player, piece, 1);
 }
 

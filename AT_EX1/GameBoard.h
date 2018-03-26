@@ -20,6 +20,7 @@ class GameBoard{
 public:
 	/***
 	 * Constructor
+	 * Init first player pieces and second player pieces to zero.
 	 */
 	GameBoard();
 	/***
@@ -42,16 +43,17 @@ public:
 	 */
 	bool isFight(int playerToCheck, Position& pos);
 	/***
-	 * TODO
-	 * return 0 - tie, 1- first player wins, 2 - second wins, -1 - no body wins.
+	 * Check if first player or second player won the game.
+	 * return:
+	 *  TIE - in case of a tie,
+	 *  FIRST_PLAYER - first player wins
+	 *  SECOND_PLAYER - second  player wins
 	 */
 	int checkVictory();
 	/***
-	 * The function receives a valid move and update the boards accordingly.
-	 * If there is a fight - the function will update to boards according to
-	 * the fight result.
-	 * The function will update player's board according to move.
-	 * In a case of a fight the opponent move will be updated as well if necessary.
+	 * The function receives a valid move and updates the boards accordingly.
+	 * In a case of a fight - the function will update the boards and players pieces
+	 * according to the fight result.
 	 * If the move is updating a joker piece, then the function will also update the new
 	 * joker representation on player's board.
 	 */
@@ -72,22 +74,23 @@ public:
 	}
 	/***
 	 * increase pieces char number of player by num.
+	 * num can be a negative number.
 	 */
 	void increasePieceNum(int player, char piece, int num);
 	/***
 	 * update game board after player is loosing a fight.
 	 * Updated data:
-	 * game board at position pos will be set to zero.
-	 * TODO
+	 * player's game board at position pos will be set to zero.
+	 * Player's piece that was eaten would be decreased from player pieces.
 	 */
 	void updateAfterLoseFight(int player, Position& pos);
 	/***
-	 *TODO
+	 * Add piece to game board of a player.
+	 * Updated data:
+	 * update position on player's board with 'piece'
+	 * increase player 'piece' by 1.
 	 */
 	void addPieceToGame(int player, char piece, Position& pos);
-
-
-
 };
 
 

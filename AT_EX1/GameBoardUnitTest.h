@@ -7,10 +7,12 @@
 
 #ifndef GAMEBOARDUNITTEST_H_
 #define GAMEBOARDUNITTEST_H_
+#include "GameBoard.h"
 
 int testFight();
+bool fightTest(int x, int y, char first, char second, int shouldWin, GameBoard& board);
+
 int testIsFight();
-int testFight();
 int testVictory();
 int testUpdateAfterMove();
 int testUpdateAfterLose();

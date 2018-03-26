@@ -6,8 +6,8 @@
  */
 #include "PlayerPieces.h"
 
-bool PlayerPieces::incrementPieceNum(char piece, int num){
-	bool isRemoved = true;
+void PlayerPieces::incrementPieceNum(char piece, int num){
+	// todo joker
 	switch(piece){
 	case SCISSORS:
 		scissors+= num;
@@ -28,7 +28,6 @@ bool PlayerPieces::incrementPieceNum(char piece, int num){
 		flag+= num;
 		break;
 	default:
-		isRemoved = false;
+		break;
 	}
-	return isRemoved;
 }
