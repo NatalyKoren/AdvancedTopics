@@ -20,5 +20,11 @@
 #define FIRST_PLAYER  (1)
 #define SECOND_PLAYER (2)
 # define TIE          (0)
-
+// Pieces chars
+#define ROCK     'R'
+#define SCISSORS 'S'
+#define PAPER    'P'
+#define BOMB     'B'
+#define JOKER    'J'
+#define FLAG     'F'
 #endif /* DEFINITIONS_H_ */

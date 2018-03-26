@@ -4,16 +4,13 @@
  *  Created on: 26 במרץ 2018
  *      Author: DELL
  */
-#include "game_board.h"
 #include <ctype.h>
+#include "GameBoard.h"
 
-GameBoard::GameBoard(int firstNum, int secondNum):
-	pieceNumFirstPlayer(firstNum),pieceNumSecondPlayer(secondNum),
-	isFirstFlagEaten(false), isSecondFlagEaten(false) {}
+GameBoard::GameBoard():firstPlayerPieces(),secondPlayerPieces() { }
 
 char GameBoard::getPieceAtPosition(int player, Position& pos){
 	// pos is a legal position
-
 	if(player == FIRST_PLAYER){
 		return firstPlayerBoard[pos.getXposition()][pos.getYposition()];
 	}
@@ -39,23 +36,22 @@ bool GameBoard::isFight(int playerToCheck, Position& pos){
 void GameBoard::updateBoardAfterMove(int player, Move& move){
 	// assuming it is a valid move
 	int winner;
-	char charToUpdate, charToRemove;
 	int opponent = getOpponent(player);
 	Position srcPos = move.getSrc(); // TODO check if it should be Position&
 	Position dstPos = move.getDst();
+	// get char to be updated.
+	char charToUpdate = getPieceAtPosition(player, srcPos);
 	if(isFight(opponent, move.getDst())){
 		//Fight
 		winner = fight(move.getDst());
 		if(winner == player){
-			// get char to be updated.
-			charToUpdate = getPieceAtPosition(player, srcPos);
 			// update player char
 			setPieceAtPosition(player,charToUpdate, dstPos);
 			// update opponent char
-			updateAfterLooseFight(opponent,dstPos);
+			updateAfterLoseFight(opponent,dstPos);
 		}
 		// the current player lose...
-		else updateAfterLooseFight(player,dstPos);
+		else updateAfterLoseFight(player,dstPos);
 	}
 	// No fight- need only to update player's dest position
 	else setPieceAtPosition(player,charToUpdate, dstPos);
@@ -76,21 +72,21 @@ int GameBoard::fight(Position& pos){
 	firstPlayerPiece = toupper(firstPlayerPiece);
 	secondPlayerPiece = toupper(secondPlayerPiece);
 	// Tie
-	if(firstPlayerPiece == secondPlayerPiece) return 0;
+	if(firstPlayerPiece == secondPlayerPiece) return TIE;
 
 	switch(firstPlayerPiece){
-	case 'B':
+	case BOMB:
 		return FIRST_PLAYER;
-	case 'F':
+	case FLAG:
 		return SECOND_PLAYER;
-	case 'R':
-		if(secondPlayerPiece == 'S' || secondPlayerPiece == 'F') return FIRST_PLAYER;
+	case ROCK:
+		if(secondPlayerPiece == SCISSORS || secondPlayerPiece == FLAG) return FIRST_PLAYER;
 		else return SECOND_PLAYER;
-	case 'P':
-		if(secondPlayerPiece == 'R' || secondPlayerPiece == 'F') return FIRST_PLAYER;
+	case PAPER:
+		if(secondPlayerPiece == ROCK || secondPlayerPiece == FLAG) return FIRST_PLAYER;
 		else return SECOND_PLAYER;
-	case 'S':
-		if(secondPlayerPiece == 'P' || secondPlayerPiece == 'F') return FIRST_PLAYER;
+	case SCISSORS:
+		if(secondPlayerPiece == PAPER || secondPlayerPiece == FLAG) return FIRST_PLAYER;
 		else return SECOND_PLAYER;
 	default:
 		return -1;
@@ -98,23 +94,28 @@ int GameBoard::fight(Position& pos){
 	}
 
 }
-void GameBoard::decreasePieceNum(int player, int num){
-	if(player == FIRST_PLAYER) pieceNumFirstPlayer-=num;
-	else pieceNumSecondPlayer-=num;
+void GameBoard::increasePieceNum(int player, char piece, int num){
+	if(player == FIRST_PLAYER) firstPlayerPieces.incrementPieceNum(piece, num);
+	else secondPlayerPieces.incrementPieceNum(piece, num);
 }
 
-void GameBoard::updateAfterLooseFight(int player, Position& pos){
+void GameBoard::updateAfterLoseFight(int player, Position& pos){
 	char charToRemove = getPieceAtPosition(player, pos);
 	setPieceAtPosition(player,0, pos);
-	decreasePieceNum(player,1);
-	if(charToRemove == 'F') setPlayerFlageEaten(player);
+	increasePieceNum(player,charToRemove,-1);
 }
-void GameBoard::setPlayerFlageEaten(int player){
-	if(player==FIRST_PLAYER) isFirstFlagEaten = true;
-	else isSecondFlagEaten = true;
-}
+
 int GameBoard::checkVictory(){
-	//TODO
-	return 0;
+	int firstPlayerMoovinNum = firstPlayerPieces.getMovePiecesNum();
+	int secondPlayerMoovinNum = secondPlayerPieces.getMovePiecesNum();
+	if(firstPlayerMoovinNum==0 || firstPlayerPieces.getFlagNum() == 0)
+		return SECOND_PLAYER;
+	if(secondPlayerMoovinNum == 0 || secondPlayerPieces.getFlagNum() == 0)
+		return FIRST_PLAYER;
+	return TIE;
+}
+void GameBoard::addPieceToGame(int player, char piece, Position& pos){
+	setPieceAtPosition(player,piece,pos);
+	increasePieceNum(player, piece, 1);
 }
 

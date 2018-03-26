@@ -5,27 +5,23 @@
  *      Author: DELL
  */
 
-#ifndef GAME_BOARD_H_
-#define GAME_BOARD_H_
+#ifndef GAMEBOARD_H_
+#define GAMEBOARD_H_
 #include "Move.h"
 #include "Position.h"
 #include "Definitions.h"
+#include "PlayerPieces.h"
 
 class GameBoard{
 	char firstPlayerBoard[N][M] = { {0} };
 	char secondPlayerBoard[N][M] = { {0} };
-	int pieceNumFirstPlayer;
-	int pieceNumSecondPlayer;
-	bool isFirstFlagEaten;
-	bool isSecondFlagEaten;
+	PlayerPieces firstPlayerPieces;
+	PlayerPieces secondPlayerPieces;
 public:
 	/***
-	 * Constructor:
-	 * param:
-	 * int firstNum: number of first player pieces
-	 * int secondNum: number of first player pieces
+	 * Constructor
 	 */
-	GameBoard(int firstNum, int secondNum);
+	GameBoard();
 	/***
 	 * The function assumes that at pos there is a fight.
 	 * params:
@@ -75,20 +71,24 @@ public:
 		return (player == FIRST_PLAYER)? FIRST_PLAYER:SECOND_PLAYER;
 	}
 	/***
-	 * decrease pieces number of player by num.
+	 * increase pieces char number of player by num.
 	 */
-	void decreasePieceNum(int player, int num);
+	void increasePieceNum(int player, char piece, int num);
 	/***
 	 * update game board after player is loosing a fight.
 	 * Updated data:
 	 * game board at position pos will be set to zero.
 	 * TODO
 	 */
-	void updateAfterLooseFight(int player, Position& pos);
-	void setPlayerFlageEaten(int player);
+	void updateAfterLoseFight(int player, Position& pos);
+	/***
+	 *TODO
+	 */
+	void addPieceToGame(int player, char piece, Position& pos);
+
 
 
 };
 
 
-#endif /* GAME_BOARD_H_ */
+#endif /* GAMEBOARD_H_ */
