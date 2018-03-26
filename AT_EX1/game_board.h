@@ -8,26 +8,27 @@
 #ifndef GAME_BOARD_H_
 #define GAME_BOARD_H_
 #include "Move.h"
-#define ROWS_NUM      (10)
-#define COLS_NUM      (10)
-#define PIECE_COUNT   (13)
-#define FIRST_PLAYER  (1)
-#define SECOND_PLAYER (2)
-# define TIE          (0)
+#include "Position.h"
+#include "Definitions.h"
 
 class GameBoard{
-	char firstPlayerBoard[ROWS_NUM][COLS_NUM] = {0};
-	char secondPlayerBoard[ROWS_NUM][COLS_NUM] = {0};
+	char firstPlayerBoard[N][M] = {0};
+	char secondPlayerBoard[N][M] = {0};
 	int pieceNumFirstPlayer;
 	int pieceNumSecondPlayer;
 	bool isFirstFlagEaten;
 	bool isSecondFlagEaten;
-
+public:
+	// --- Constructor ---
 	GameBoard();
-	bool isValidMove(int player, Move& move);
+	// --- Game rules related ---
+	int fight(Position& pos);
+	bool isFight(Position& pos);
 	int checkVictory(int player);
-	void setMove(Move& move);
-
+	// --- Getters and Setters ---
+	void setMove(int player, Position& src,Position& dst);
+	char getPieceAtPosition(int player, Position& pos);
+	void setPieceAtPosition(int player, char piece, Position& pos);
 
 };
 
