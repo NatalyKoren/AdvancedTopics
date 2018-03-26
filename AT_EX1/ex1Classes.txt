@@ -10,7 +10,7 @@ class for game board:
 	bool isFirstFlagEaten;
 	bool isSecondFlagEaten;
 	
-	[] getPositionOfplayer ( player, positions ) // player: 1 or 2. position: 
+	[] getPieceAtPosition ( player, position ) // player: 1 or 2. position: 
 	[] setPositionOfplayer ( player, position ) // updates flag fields and num player
 	[] checkVictory ( player )	
 	[] isFight( position ) : 0 - tie , 1 - player 1 wins, 2 - player 2 wins
