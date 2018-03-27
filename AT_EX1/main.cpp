@@ -6,6 +6,7 @@
  */
 
 #include "GameBoardUnitTest.h"
+#include "MoveUnitTest.h"
 #include <iostream>
 int main(){
 	// ~~~ Fight ~~~
@@ -32,5 +33,12 @@ int main(){
 		std::cout << "Passed test victory" << std::endl;
 	else
 		std::cout << "test victory failed test number: " << result << std::endl;
+
+	// ~~~~ Move
+	result = testParseLine();
+	if(result == 0)
+		std::cout << "Passed test parse move " << std::endl;
+	else
+		std::cout << "test parse move failed test number: " << result << std::endl;
 	return 0;
 }

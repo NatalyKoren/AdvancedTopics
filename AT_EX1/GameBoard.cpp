@@ -58,7 +58,7 @@ void GameBoard::updateBoardAfterMove(int player, Move* move){
 	// set source position to zero
 	setPieceAtPosition(player,0, move->getSrc());
 	//Update joker
-	if(move->isJokerUpdated()){
+	if(move->getIsJokerUpdated()){
 		// TODO - this should be here or at the beginning of the function?
 		// there is a question regarding this in the forum
 		setPieceAtPosition(player, tolower(move->getJokerNewChar()), move->getJokerPos());
