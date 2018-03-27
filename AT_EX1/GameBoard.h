@@ -11,7 +11,7 @@
 #include "Position.h"
 #include "Definitions.h"
 #include "PlayerPieces.h"
-
+class Move;
 class GameBoard{
 	char firstPlayerBoard[N][M] = { {0} };
 	char secondPlayerBoard[N][M] = { {0} };
@@ -57,7 +57,7 @@ public:
 	 * If the move is updating a joker piece, then the function will also update the new
 	 * joker representation on player's board.
 	 */
-	void updateBoardAfterMove(int player, Move& move);
+	void updateBoardAfterMove(int player, Move* move);
 	/***
 	 * return player piece at position.
 	 */
@@ -70,7 +70,7 @@ public:
 	 * return the opponent of a player.
 	 */
 	int getOpponent(int player){
-		return (player == FIRST_PLAYER)? FIRST_PLAYER:SECOND_PLAYER;
+		return (player == FIRST_PLAYER)? SECOND_PLAYER:FIRST_PLAYER;
 	}
 	/***
 	 * increase pieces char number of player by num.
@@ -90,7 +90,7 @@ public:
 	 * update position on player's board with 'piece'
 	 * increase player 'piece' by 1.
 	 */
-	void addPieceToGame(int player, char piece, Position& pos);
+	void addPieceToGame(int player, char piece, Position pos);
 };
 
 
