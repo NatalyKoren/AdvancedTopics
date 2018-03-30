@@ -1,3 +1,3 @@
 1. Board file: every position is at a new line?
 2. moves: What is a valid move? any 1 step at any direction? 
-3.  
+3.  Winner: 'or to eat all of its moving PIECEs' - it means that if the opponent is left only with a bomb and a flag then he looses?
