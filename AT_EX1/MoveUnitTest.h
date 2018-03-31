@@ -1,7 +1,6 @@
 /*
  * MoveUnitTest.h
  *
- *  Created on: 27 במרץ 2018
  *      Author: DELL
  */
 
