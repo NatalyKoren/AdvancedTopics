@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "Definitions.h"
+#include "definition.h"
 #include "parse_board.h"
 //using namespace std;
 

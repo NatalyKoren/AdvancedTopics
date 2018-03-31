@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include "Definitions.h"
 
 class ParseBoard {
   int pieceCount = {R, P, S, B, J, F};
