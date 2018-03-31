@@ -55,5 +55,6 @@ int main(){
 		std::cout << "Passed test valid move " << std::endl;
 	else
 		std::cout << "test valid move failed test number: " << result << std::endl;
+	std::cout << "Clion" << std::endl;
 	return 0;
 }
