@@ -36,6 +36,7 @@ bool GameBoard::isFight(int playerToCheck, Position& pos){
 void GameBoard::updateBoardAfterMove(int player, Move* move){
 	// assuming it is a valid move
 	int winner;
+	char previousPiece;
 	int opponent = getOpponent(player);
 	Position srcPos = move->getSrc(); // TODO check if it should be Position&
 	Position dstPos = move->getDst();
@@ -46,12 +47,17 @@ void GameBoard::updateBoardAfterMove(int player, Move* move){
 	if(isFight(opponent, move->getDst())){
 		//Fight
 		winner = fight(move->getDst());
-		if(winner == player){
-			// update opponent char
+		// update opponent board
+		if(winner == player)
+			updateAfterLoseFight(opponent,dstPos);
+		// the current player lose...
+		else if(winner == opponent)
+			updateAfterLoseFight(player,dstPos);
+		else{
+			// it is a tie - need to remove both players
+			updateAfterLoseFight(player,dstPos);
 			updateAfterLoseFight(opponent,dstPos);
 		}
-		// the current player lose...
-		else updateAfterLoseFight(player,dstPos);
 	}
 	// No fight- need only to update player's dest position
 	else setPieceAtPosition(player,charToUpdate, dstPos);
@@ -59,9 +65,12 @@ void GameBoard::updateBoardAfterMove(int player, Move* move){
 	setPieceAtPosition(player,0, move->getSrc());
 	//Update joker
 	if(move->getIsJokerUpdated()){
-		// TODO - this should be here or at the beginning of the function?
-		// there is a question regarding this in the forum
-		setPieceAtPosition(player, tolower(move->getJokerNewChar()), move->getJokerPos());
+		previousPiece = getPieceAtPosition(player, move->getJokerPos());
+		setPieceAtPosition(player, move->getJokerNewChar(), move->getJokerPos());
+		if(player == FIRST_PLAYER)
+			firstPlayerPieces.updateJokerMoovingCount(previousPiece, move->getJokerNewChar());
+		else
+			secondPlayerPieces.updateJokerMoovingCount(previousPiece, move->getJokerNewChar());
 	}
 }
 
@@ -116,8 +125,14 @@ int GameBoard::checkVictory(){
 }
 void GameBoard::addPieceToGame(int player, char piece, Position pos){
 	setPieceAtPosition(player,piece,pos);
-	if(islower(piece))
-		piece = JOKER;
 	increasePieceNum(player, piece, 1);
 }
+bool GameBoard::isEmpty(int player, Position& pos){
+	return (getPieceAtPosition(player,pos) == (char) 0);
+}
 
+int GameBoard::getJokerMovingPiece(int player){
+	if(player== FIRST_PLAYER)
+		return firstPlayerPieces.getNumOfMovingJoker();
+	else return secondPlayerPieces.getNumOfMovingJoker();
+}

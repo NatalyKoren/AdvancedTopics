@@ -8,6 +8,7 @@
 #ifndef PLAYERPIECES_H_
 #define PLAYERPIECES_H_
 #include "Definitions.h"
+#include <ctype.h>
 class PlayerPieces{
 	int scissors;
 	int rock;
@@ -15,9 +16,10 @@ class PlayerPieces{
 	int bomb;
 	int flag;
 	int joker;
+	int numOfMoovingJokers;
 
 public:
-	PlayerPieces(): scissors(0), rock(0), paper(0), bomb(0), flag(0), joker(0) { }
+	PlayerPieces();
 	// --- Setters
 	void setScissorsNum(int num){ scissors = num; }
 	void setRockNum(int num){ rock = num; }
@@ -25,6 +27,7 @@ public:
 	void setBombNum(int num){bomb = num; }
 	void setFlagNum(int num){flag = num; }
 	void setJokerNum(int num){joker = num; }
+	void setNumOfMovingJoker(int num){numOfMoovingJokers = num; }
 	// --- Getters
 	int getScissorsNum(){ return scissors; }
 	int getRockNum(){ return rock; }
@@ -32,10 +35,13 @@ public:
 	int getBombNum(){ return bomb; }
 	int getFlagNum(){ return flag; }
 	int getJokerNum(){ return joker; }
+	int getNumOfMovingJoker(){return numOfMoovingJokers; }
 	// --- Move pieces number
-	int getMovePiecesNum() { return (scissors+ rock + paper + joker); }
+	int getMovePiecesNum() { return (scissors+ rock + paper + numOfMoovingJokers); }
 	// set piece to player
 	void incrementPieceNum(char piece, int num);
+	void incrementJokerMoovingPieces(int num) { numOfMoovingJokers+=num; }
+	void updateJokerMoovingCount(char previousPiece, char newPiece);
 
 };
 

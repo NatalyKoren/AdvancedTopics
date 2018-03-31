@@ -13,5 +13,8 @@
 #include "Definitions.h"
 
 int testParseLine();
+int testpositionBoundary();
+int testJokerValidChange();
+int testValidMove();
 
 #endif /* MOVEUNITTEST_H_ */

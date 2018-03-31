@@ -27,4 +27,14 @@
 #define BOMB     'B'
 #define JOKER    'J'
 #define FLAG     'F'
+
+enum GameMessage {ILLEGAL_LINE_FORMAT,
+				  VALID_LINE_FORMAT,
+				  INDEX_OUT_OF_BOUND,
+				  VALID_INDEX,
+				  ILLEGAL_MOVE,
+				  VALID_MOVE};
+
+
+
 #endif /* DEFINITIONS_H_ */
