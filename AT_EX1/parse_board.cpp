@@ -13,10 +13,10 @@ int ParseBoard::parseBoardFile (std::string filename) {
 		std::cout << "Unable to open file " << filename << std::endl;
 		return 1;
 	}
-	curPlayer = filename[6] - '0'; // gets the int value of the char
+	curPlayer = filename[18] - '0'; // gets the int value of the char
 	GameBoard board;
 
-	while (getline (myfile,line)) {     //getline returns a reference to myfile
+	while (getline (myfile,line) && res <= 0) {     //getline returns a reference to myfile
 		curLine++;
 		const char* charLine = line.c_str(); //convert string to const char*
 		res = checkLine(board, charLine);
@@ -29,7 +29,6 @@ int ParseBoard::parseBoardFile (std::string filename) {
 	if (checkPieces() != 0) {
 		return curPlayer;
 	}
-	updateBoard(board, curPlayer, curPiece, curPos);
 	std::cout << "res is: " << res << std::endl;
 	return res;
 }
@@ -40,7 +39,7 @@ int ParseBoard::checkPieces() {
 	for (int i = 0; i < pieceCountSize; i++) {
 		if (pieceCount[i] < 0) {
 			std::cout << "Board file format error: too many pieces of same type." << std::endl;
-			std::cout << "Index: " << i << " Count: " << pieceCount[i] << std::endl;
+			//std::cout << "Index: " << i << " Count: " << pieceCount[i] << std::endl;
 			return curPlayer;
 		}
 		if (pieceCount[pieceCountSize-1] > 0) {
@@ -78,7 +77,7 @@ int ParseBoard::checkLine (GameBoard& board, const char* line) {
 	char residue;
 	// check format:
 	int scanned = sscanf(line, "%c %i %i %s", &piece, &x, &y, &residue);
-	std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
+	//std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
 	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
 		std::cout << "Error in board file: wrong format in line " << curLine << std::endl;
 		return curLine;
@@ -105,17 +104,12 @@ int ParseBoard::checkPos(GameBoard& board, const char& piece, int x, int y) {
 	}
 	Position pos = {x, y};
 	char occupied = board.getPieceAtPosition(curPlayer, pos);
-	std::cout << "In checkPos: received " << occupied << std::endl;
 	if (occupied > 0) {
 		std::cout << "Error in board file: double positioning at line " << curLine << std::endl;
 		return curPlayer;
 	}
 	curPos = pos;
+	board.addPieceToGame(curPlayer, piece, pos);
 	return 0;
-}
-
-
-void ParseBoard::updateBoard(GameBoard& board, int player, char piece, Position& pos) {
-	board.addPieceToGame(player, piece, pos);
 }
 

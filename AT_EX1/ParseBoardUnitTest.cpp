@@ -22,5 +22,10 @@ int main(int argc, char** argv) {
  *  Successfully tested on:
  *  1. no rocks (valid board)
  *  2. no flag (invalid board)
+ *  3. Randomly placed white spaces (valid & invalid boards)
+ *  4. 2 pieces on same square (invalid board)
+ *  5. Joker without specifying replacement piece (invalid board)
+ *  6. Position index not in range (invalid board)
+ *
  */
 

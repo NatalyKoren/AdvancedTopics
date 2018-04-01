@@ -42,16 +42,10 @@ public:
   /*
    * @param: the game board, parsed piece and (x,y) from file
    *  verifies that the position specified is within index and free
+   *  if so - updates the board
    *  @return value: 0 if ok, player# otherwise
    */
   int checkPos(GameBoard& board, const char& piece, int x, int y);
-
-  /*
-   * @param: game board, cur player, piece, position
-   * assumes that the update request is valid
-   * updates the board
-   */
-  void updateBoard(GameBoard& board, int player, char piece, Position& pos);
 };
 
 #endif /* PARSEBOARD_H_ */
