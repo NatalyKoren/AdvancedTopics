@@ -1,7 +1,6 @@
 /*
  * Move.h
  *
- *  Created on: 26 במרץ 2018
  *      Author: DELL
  */
 
@@ -11,6 +10,7 @@
 #include "Position.h"
 #include <iostream>
 #include <stdio.h>
+#include <algorithm>
 #include "GameBoard.h"
 
 class GameBoard;
@@ -26,7 +26,11 @@ public:
 	Move(int player);
 	bool parseLine(std::string line);
 	int checkMove(GameBoard*);
-	void updateMove(GameBoard*);
+	// 0-based test
+	int positionBoundaryTest(Position& pos);
+	int boundaryTest(int index, bool isRowTest);
+	int testForJokerValidChange(GameBoard* board);
+	bool isJokerValidChar(char newJokerChar);
 	// Getters
 	Position& getJokerPos(){ return jokerPos; }
 	char getJokerNewChar()const{ return newJokerChar; }

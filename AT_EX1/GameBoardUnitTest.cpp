@@ -1,7 +1,6 @@
 /*
  * game_board_unit_test.cpp
  *
- *  Created on: 26 במרץ 2018
  *      Author: DELL
  */
 
@@ -62,6 +61,7 @@ int testIsFight(){
 	// TEST 4
 	if(isFightTest(3,3,char(0),char(0), board))
 		return 4;
+	return 0;
 }
 bool isFightTest(int x, int y, char first, char second, GameBoard& board){
 	Position pos(x,y);
@@ -75,8 +75,9 @@ int testUpdateAfterMove(){
 	Position src(0,0);
 	Position dst(1,1);
 	Position jokerPos(3,3);
+	int numOfMovingJoker;
 	board.addPieceToGame(SECOND_PLAYER, PAPER, dst);
-	createBoardAfterMove(src, dst, jokerPos,SCISSORS, true,'r', 's', board, move);
+	numOfMovingJoker = createBoardAfterMove(src, dst, jokerPos,SCISSORS, true,'r', 's', board, move);
 
 	if(board.getPieceAtPosition(FIRST_PLAYER, src) != (char) 0)
 		return 1;
@@ -86,56 +87,68 @@ int testUpdateAfterMove(){
 		return 3;
 	if(board.getPieceAtPosition(FIRST_PLAYER, jokerPos) != 'r')
 		return 4;
+	if(numOfMovingJoker != board.getJokerMovingPiece(FIRST_PLAYER))
+		return 5;
 
 	Position src2(3,3);
 	Position dst2(5,7);
 	Position jokerPos2(9,9);
-	createBoardAfterMove(src2, dst2, jokerPos2,(char)0,true,'b', 'r', board, move);
+	numOfMovingJoker = createBoardAfterMove(src2, dst2, jokerPos2,(char)0,true,'b', 'r', board, move);
 	if(board.getPieceAtPosition(FIRST_PLAYER, dst2) != 'r')
-		return 5;
-	if(board.getPieceAtPosition(FIRST_PLAYER, src2) != (char) 0)
 		return 6;
-	if(board.getPieceAtPosition(FIRST_PLAYER, jokerPos2) != 'b')
+	if(board.getPieceAtPosition(FIRST_PLAYER, src2) != (char) 0)
 		return 7;
+	if(board.getPieceAtPosition(FIRST_PLAYER, jokerPos2) != 'b')
+		return 8;
+	if(numOfMovingJoker != board.getJokerMovingPiece(FIRST_PLAYER)+1)
+		return 9;
 
 	Position src3(5,7); // there is a joker rock in here
 	Position dst3(7,7);
 	board.addPieceToGame(SECOND_PLAYER, PAPER, dst3);
-	createBoardAfterMove(src3, dst3, jokerPos,(char)0,false,(char)0,(char)0, board, move);
+	numOfMovingJoker = createBoardAfterMove(src3, dst3, jokerPos,(char)0,false,(char)0,(char)0, board, move);
 	if(board.getPieceAtPosition(FIRST_PLAYER, dst3) != (char)0)
-		return 8;
-	if(board.getPieceAtPosition(FIRST_PLAYER, src3) != (char) 0)
-		return 9;
-	if(board.getPieceAtPosition(SECOND_PLAYER, dst3) != PAPER)
 		return 10;
-	if(!compareBoardExceptPos(src3,board))
+	if(board.getPieceAtPosition(FIRST_PLAYER, src3) != (char) 0)
 		return 11;
+	if(board.getPieceAtPosition(SECOND_PLAYER, dst3) != PAPER)
+		return 12;
+	if(!compareBoardExceptPos(src3,board))
+		return 13;
+	if(numOfMovingJoker != board.getJokerMovingPiece(FIRST_PLAYER)+1)
+		return 14;
 
 	Move move2(SECOND_PLAYER);
 	Position src4(7,7);
 	Position dst4(4,9);
 	Position jok(3,4);
 	board.addPieceToGame(FIRST_PLAYER, ROCK, dst3);
-	createBoardAfterMove(src4, dst4, jok,(char)0,true,'p','s', board, move2);
+	numOfMovingJoker = createBoardAfterMove(src4, dst4, jok,(char)0,true,'p','s', board, move2);
 	if(board.getPieceAtPosition(SECOND_PLAYER, dst4) != PAPER)
-		return 12;
-	if(board.getPieceAtPosition(SECOND_PLAYER, src4) != (char) 0)
-		return 13;
-	if(board.getPieceAtPosition(FIRST_PLAYER, dst4) != (char) 0)
-		return 14;
-	if(board.getPieceAtPosition(SECOND_PLAYER, jok) != 'p')
 		return 15;
+	if(board.getPieceAtPosition(SECOND_PLAYER, src4) != (char) 0)
+		return 16;
+	if(board.getPieceAtPosition(FIRST_PLAYER, dst4) != (char) 0)
+		return 17;
+	if(board.getPieceAtPosition(SECOND_PLAYER, jok) != 'p')
+		return 18;
+	if(numOfMovingJoker != board.getJokerMovingPiece(SECOND_PLAYER))
+		return 19;
 
 
 	return 0;
 }
-void createBoardAfterMove(Position& src, Position& dst, Position& jokerPos, char addToSrc,
+int createBoardAfterMove(Position& src, Position& dst, Position& jokerPos, char addToSrc,
 		bool isJokerUpdated, char newJoker, char oldJoker, GameBoard& board, Move& move){
+	int numOfMovingJoker;
 	if(addToSrc != (char)0)
 		board.addPieceToGame(move.getPlayer(), addToSrc, src);
-	board.addPieceToGame(move.getPlayer(), oldJoker, jokerPos);
+	if(isJokerUpdated)
+		board.addPieceToGame(move.getPlayer(), oldJoker, jokerPos);
 	createMove(move, src, dst, isJokerUpdated, jokerPos, newJoker);
+	numOfMovingJoker = board.getJokerMovingPiece(move.getPlayer());
 	board.updateBoardAfterMove(move.getPlayer(), &move);
+	return numOfMovingJoker;
 }
 void createMove(Move& move, Position src, Position dst, bool isJokerUpdated, Position jokerPos, char jokerChar){
 	move.setSrcPosition(src);

@@ -1,7 +1,6 @@
 /*
  * MoveUnitTest.h
  *
- *  Created on: 27 במרץ 2018
  *      Author: DELL
  */
 
@@ -13,5 +12,8 @@
 #include "Definitions.h"
 
 int testParseLine();
+int testpositionBoundary();
+int testJokerValidChange();
+int testValidMove();
 
 #endif /* MOVEUNITTEST_H_ */

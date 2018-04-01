@@ -1,7 +1,6 @@
 /*
  * main.cpp
  *
- *  Created on: 27 במרץ 2018
  *      Author: DELL
  */
 
@@ -40,5 +39,22 @@ int main(){
 		std::cout << "Passed test parse move " << std::endl;
 	else
 		std::cout << "test parse move failed test number: " << result << std::endl;
+
+	result = testpositionBoundary();
+	if(result == 0)
+		std::cout << "Passed test position boundary " << std::endl;
+	else
+		std::cout << "test position boundary failed test number: " << result << std::endl;
+	result = testJokerValidChange();
+	if(result == 0)
+		std::cout << "Passed test joker valid change " << std::endl;
+	else
+		std::cout << "test joker valid change failed test number: " << result << std::endl;
+	result = testValidMove();
+	if(result == 0)
+		std::cout << "Passed test valid move " << std::endl;
+	else
+		std::cout << "test valid move failed test number: " << result << std::endl;
+	std::cout << "Clion" << std::endl;
 	return 0;
 }

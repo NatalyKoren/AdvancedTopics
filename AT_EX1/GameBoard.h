@@ -1,7 +1,6 @@
 /*
  * game_board.h
  *
- *  Created on: 26 במרץ 2018
  *      Author: DELL
  */
 
@@ -86,11 +85,21 @@ public:
 	void updateAfterLoseFight(int player, Position& pos);
 	/***
 	 * Add piece to game board of a player.
+	 * Char piece - assuming that regular piece is upper case piece
+	 * and a joker piece is lower case piece.
 	 * Updated data:
 	 * update position on player's board with 'piece'
 	 * increase player 'piece' by 1.
 	 */
 	void addPieceToGame(int player, char piece, Position pos);
+	/***
+	 * return true if pos doesn't contain a player piece.
+	 */
+	bool isEmpty(int player, Position& pos);
+	/**
+	 * for tests
+	 */
+	int getJokerMovingPiece(int player);
 };
 
 
