@@ -2,131 +2,115 @@
 #include <fstream>
 #include <string.h>
 #include "parse_board.h"
-//using namespace std;
 
-// int checkLin (std::string line) {
-//   std::size_t found = line.find("<");
-//   if (found!=std::string::npos) {
-//     std::cout << "first '<' found at: " << found << std::endl;
-//     return 0;
-//   } else {
-//       return 1;
-//   }
-// }
-
-int ParseBoard::checkPieces() {
-  for (unsigned int i = 0; i < sizeof(pieceCount); i++) {
-    if (pieceCount[i] < 0) {
-      std::cout << "Board file format error: too many pieces of same type." << std::endl;
-      return curPlayer;
-    }
-    if (pieceCount[sizeof(pieceCount)/sizeof(pieceCount[0])-1] > 0) {
-      std::cout << "Board file format error: flag not placed on board." << std::endl;
-      return curPlayer;
-    }
-  }
-  return 0;
-}
-
-void ParseBoard::updatePieceCount (std::string line) {
-  switch(line[1]) {
-    case 'R': pieceCount[0]--;
-    break;
-    case 'P': pieceCount[1]--;
-    break;
-    case 'S': pieceCount[2]--;
-    break;
-    case 'B': pieceCount[3]--;
-    break;
-    case '<': pieceCount[4]--; //this is the joker
-    break;
-    case 'F': pieceCount[5]--;
-    break;
-  }
-}
-
-int ParseBoard::checkLine (std::string line) {
-  // If joker line:
-	char char1 = '<';
-	char char2 = '>';
-	char charJ = 'J';
-  if (line[0] == 'J') {
-    if (line.length() != 10 ||
-    		strcmp(&line[1], &char1) != 0  ||
-    		strcmp(&line[2], &charJ) ||
-    		strcmp(&line[4], &char1) ||
-    		strcmp(&line[7], &char1) ||
-    		strcmp(&line[3], &char2) ||
-    		strcmp(&line[6], &char2) ||
-    		strcmp(&line[9], &char2)) {
-      std::cout << "Format error in board file." << std::endl;
-      return curLine;
-    } else {
-      return 0;
-    }
-  }
-  // If not joker line:
-  if (line.length() != 9 ||
-  		strcmp(&line[0], &char1) != 0  ||
-  		strcmp(&line[1], &charJ) ||
-  		strcmp(&line[3], &char1) ||
-  		strcmp(&line[6], &char1) ||
-  		strcmp(&line[2], &char2) ||
-  		strcmp(&line[5], &char2) ||
-  		strcmp(&line[8], &char2)) {
-    std::cout << "Format error in board file." << std::endl;
-      return curLine;
-  } else {
-    return 0;
-  }
-}
 
 // gets line, checks format, calls all aiding functions
 int ParseBoard::parseBoardFile (std::string filename) {
-  std::string line;
-  int res = -1;
-  std::ifstream myfile (filename);
-  if (myfile.is_open()) {
-    curPlayer = filename[6] - '0'; // gets the int value of the char
-    while (getline (myfile,line)) {     //getline returns a reference to myfile
-      curLine++;
-      res = checkLine (line);
-      if (res == 0) {
-        updatePieceCount (line);
-      } else {
-        return res;
-      }
-    }
-    myfile.close();
-    res = checkPieces();
-  }
-  else {
-      std::cout << "Unable to open file" << std::endl; 
-      return 1;
-  }
-  std::cout << "res is: " << res << std::endl;
-  return res;
+	std::string line;
+	int res = -1;
+	std::ifstream myfile (filename);
+	if (!myfile.is_open()) {
+		std::cout << "Unable to open file " << filename << std::endl;
+		return 1;
+	}
+	curPlayer = filename[6] - '0'; // gets the int value of the char
+	GameBoard board;
+
+	while (getline (myfile,line)) {     //getline returns a reference to myfile
+		curLine++;
+		const char* charLine = line.c_str(); //convert string to const char*
+		res = checkLine(board, charLine);
+	}
+	myfile.close();
+	if (res != 0) {
+		std::cout << "Error in file format of player" << curPlayer << std::endl;
+		return curPlayer;
+	}
+	if (checkPieces() != 0) {
+		return curPlayer;
+	}
+	updateBoard(board, curPlayer, curPiece, curPos);
+	std::cout << "res is: " << res << std::endl;
+	return res;
 }
 
 
-int ParseBoard::checkPos(GameBoard& board, std::string line) {
+int ParseBoard::checkPieces() {
+	int pieceCountSize = sizeof(pieceCount) / sizeof(pieceCount[0]);
+	for (int i = 0; i < pieceCountSize; i++) {
+		if (pieceCount[i] < 0) {
+			std::cout << "Board file format error: too many pieces of same type." << std::endl;
+			std::cout << "Index: " << i << " Count: " << pieceCount[i] << std::endl;
+			return curPlayer;
+		}
+		if (pieceCount[pieceCountSize-1] > 0) {
+			std::cout << "Board file format error: flag not placed on board." << std::endl;
+			return curPlayer;
+		}
+	}
+	return 0;
+}
+
+int ParseBoard::validatePieceChar (const char& piece) {
+	switch(piece) {
+	case 'R': pieceCount[0]--;
+	return 0;
+	case 'P': pieceCount[1]--;
+	return 0;
+	case 'S': pieceCount[2]--;
+	return 0;
+	case 'B': pieceCount[3]--;
+	return 0;
+	case 'J': pieceCount[4]--;
+	return 0;
+	case 'F': pieceCount[5]--;
+	return 0;
+	default:
+		std::cout << "Error in board file: undefined piece in line " << curLine << std::endl;
+		return 1;
+	}
+}
+
+int ParseBoard::checkLine (GameBoard& board, const char* line) {
+	char piece;
 	int x;
 	int y;
-	if (line[0] == 'J') {
-		x = line[5];
-		y = line[8];
-	} else {
-		x = line[4];
-		y = line[7];
+	char residue;
+	// check format:
+	int scanned = sscanf(line, "%c %i %i %s", &piece, &x, &y, &residue);
+	std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
+	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
+		std::cout << "Error in board file: wrong format in line " << curLine << std::endl;
+		return curLine;
 	}
+
+	// check char and update piece count:
+	if (validatePieceChar(piece) != 0) {
+		return curLine;
+	}
+
+	// check position:
+	if (checkPos(board, piece, x, y) != 0) {
+		return curLine;
+	}
+
+	return 0;
+}
+
+
+int ParseBoard::checkPos(GameBoard& board, const char& piece, int x, int y) {
 	if (x > N || y > N || x < 0 || y < 0) {
+		std::cout << "Error in board file: piece location out of bounds in line " << curLine << std::endl;
 		return curPlayer;
 	}
-	Position curPos = {x, y};
-	char occupied = board.getPieceAtPosition(curPlayer, curPos);
+	Position pos = {x, y};
+	char occupied = board.getPieceAtPosition(curPlayer, pos);
+	std::cout << "In checkPos: received " << occupied << std::endl;
 	if (occupied > 0) {
+		std::cout << "Error in board file: double positioning at line " << curLine << std::endl;
 		return curPlayer;
 	}
+	curPos = pos;
 	return 0;
 }
 
@@ -135,18 +119,3 @@ void ParseBoard::updateBoard(GameBoard& board, int player, char piece, Position&
 	board.addPieceToGame(player, piece, pos);
 }
 
-
-// int main () {
-//   std::ofstream myfile ("example.txt");
-
-//   // Is this check necessary?
-//   if (!(myfile.is_open())) {
-//       std::cout << "Error opening file, exiting." << std::endl;
-//       return 1;
-//   }
-//   myfile << "Writing this to a file." << std::endl;
-//   myfile.close();
-//   int res = read_from_file();
-//   std::cout << "Finished running code. Res is: " << res << std::endl;
-//   return 0;
-// }
