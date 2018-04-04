@@ -3,10 +3,11 @@
  *
  *      Author: DELL
  */
-#include <ctype.h>
+#include <cctype>
 #include "GameBoard.h"
 
-GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces() {}
+GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces(),
+						winner(NONE), reason (0){}
 
 char GameBoard::getPieceAtPosition(int player, Position& pos){
 	// pos is a legal position
@@ -85,8 +86,8 @@ void GameBoard::updateBoardAfterMove(Move& move){
 }
 
 int GameBoard::fight(Position& pos){
-	char firstPlayerPiece = getPieceAtPosition(FIRST_PLAYER,pos);
-	char secondPlayerPiece = getPieceAtPosition(SECOND_PLAYER,pos);
+	int firstPlayerPiece = getPieceAtPosition(FIRST_PLAYER,pos);
+	int secondPlayerPiece = getPieceAtPosition(SECOND_PLAYER,pos);
 	//For joker cases
 	firstPlayerPiece = toupper(firstPlayerPiece);
 	secondPlayerPiece = toupper(secondPlayerPiece);
@@ -95,7 +96,7 @@ int GameBoard::fight(Position& pos){
 
 	switch(firstPlayerPiece){
 	case BOMB:
-		return FIRST_PLAYER;
+		return TIE; // Need to remove bomb from board
 	case FLAG:
 		return SECOND_PLAYER;
 	case ROCK:
@@ -127,11 +128,44 @@ void GameBoard::updateAfterLoseFight(int player, Position& pos){
 int GameBoard::checkVictory(){
 	int firstPlayerMoovinNum = firstPlayerPieces.getMovePiecesNum();
 	int secondPlayerMoovinNum = secondPlayerPieces.getMovePiecesNum();
-	if(firstPlayerMoovinNum==0 || firstPlayerPieces.getFlagNum() == 0)
-		return SECOND_PLAYER;
-	if(secondPlayerMoovinNum == 0 || secondPlayerPieces.getFlagNum() == 0)
-		return FIRST_PLAYER;
-	return TIE;
+    if(firstPlayerPieces.getFlagNum() == 0){
+        if(secondPlayerPieces.getFlagNum() == 0){
+            winner = TIE;
+            reason = TIE_BOTH_FLAGS_CAPTURED;
+        }
+        else{
+            // second player wins
+            winner = SECOND_PLAYER;
+            reason = FLAG_CAPTURED;
+        }
+    }
+    else if(secondPlayerPieces.getFlagNum() == 0){
+        // first player wins - fLag num of first player is not 0.
+        winner = FIRST_PLAYER;
+        reason = FLAG_CAPTURED;
+    }
+    // flags number of both players is not 0.
+    else if(firstPlayerMoovinNum==0 ){
+        if(secondPlayerMoovinNum == 0){
+            winner = TIE;
+            reason = ALL_MOVING_PIECES_EATEN;
+        }
+        else{
+            // second player wins
+            winner = SECOND_PLAYER;
+            reason = ALL_MOVING_PIECES_EATEN;
+        }
+    }
+    else if(secondPlayerMoovinNum == 0){
+        // first player wins
+        winner = FIRST_PLAYER;
+        reason = ALL_MOVING_PIECES_EATEN;
+    }
+    else{
+        winner = NONE;
+        reason = TIE_GAME_OVER;
+    }
+	return winner;
 }
 void GameBoard::addPieceToGame(int player, char piece, Position pos){
 	setPieceAtPosition(player,piece,pos);
@@ -151,21 +185,50 @@ int GameBoard::checkMove(Move& move){
 	char charToMove;
 	// (1) boundary tests
 	// test src boundary
-	if(move.positionBoundaryTest(move.getSrc()) == INDEX_OUT_OF_BOUND)
+	if(move.positionBoundaryTest(move.getSrc()) == INDEX_OUT_OF_BOUND){
+		std::cout << "Illegal source position. Player: " << move.getPlayer() << " insert out of bound source position: ";
+		move.getSrc().printPosition();
+		std::cout << std::endl;
 		return INDEX_OUT_OF_BOUND;
+	}
 	// test dst boundary
-	if(move.positionBoundaryTest(move.getDst()) == INDEX_OUT_OF_BOUND)
+	if(move.positionBoundaryTest(move.getDst()) == INDEX_OUT_OF_BOUND){
+		std::cout << "Illegal destination position. Player: " << move.getPlayer() << " insert out of bound source position: ";
+		move.getDst().printPosition();
+		std::cout << std::endl;
 		return INDEX_OUT_OF_BOUND;
+	}
 	// boundary is valid
 	// (2) moving to position contain same player piece
-	if(!(isEmpty(move.getPlayer(),move.getDst())))
+	if(!(isEmpty(move.getPlayer(),move.getDst()))){
+		std::cout << "Illegal move. Player: " << move.getPlayer() << " try to move to destination position occupied by him. Destination position: ";
+		move.getDst().printPosition();
+		std::cout << std::endl;
 		return ILLEGAL_MOVE;
+	}
+	if(testForValidMovementOfBoard(move) == ILLEGAL_MOVE){
+		std::cout << "Illegal movement on board. Player: " << move.getPlayer() << " try to move from: ";
+		move.getSrc().printPosition();
+		std::cout << "to: ";
+		move.getDst().printPosition();
+		std::cout << std::endl;
+		return ILLEGAL_MOVE;
+	}
 	// (3) try to move non moving piece
 	charToMove = getPieceAtPosition(move.getPlayer(),move.getSrc());
-	if(charToMove == (char)0)
+	if(charToMove == (char)0){
+		std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
+		move.getSrc().printPosition();
+		std::cout << "does not contain a player piece." << std::endl;
 		return ILLEGAL_MOVE;
-	if(charToMove == BOMB || charToMove == FLAG)
+	}
+
+	if(charToMove == BOMB || charToMove == FLAG){
+		std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
+		move.getSrc().printPosition();
+		std::cout << "contain non moving piece: " << charToMove << std::endl;
 		return ILLEGAL_MOVE;
+	}
 	// (4) Joker tests
 	if(testForJokerValidChange(move) == ILLEGAL_MOVE)
 		return ILLEGAL_MOVE;
@@ -174,36 +237,77 @@ int GameBoard::checkMove(Move& move){
 }
 
 int GameBoard::testForJokerValidChange(Move& move){
+    char newJokerChar;
 	if(move.getIsJokerUpdated()){
 		// joker position is empty
-		if(isEmpty(move.getPlayer(), move.getJokerPos()))
-			return ILLEGAL_MOVE;
+		if(isEmpty(move.getPlayer(), move.getJokerPos())){
+            std::cout << "Joker position for Player: " << move.getPlayer() << " is empty. Position ";
+            move.getJokerPos().printPosition();
+            std::cout << std::endl;
+            return ILLEGAL_MOVE;
+        }
+
 		// joker position doesn't contain a joker piece
-		if(!islower(getPieceAtPosition(move.getPlayer(),move.getJokerPos())))
-			return ILLEGAL_MOVE;
+		if(!islower(getPieceAtPosition(move.getPlayer(),move.getJokerPos()))){
+            std::cout << "Joker position for Player: " << move.getPlayer() << " doesn't contain a joker's piece. Position ";
+            move.getJokerPos().printPosition();
+            std::cout << std::endl;
+            return ILLEGAL_MOVE;
+        }
+
 		// test if joker new char is a valid char: S,R,P,B
-		if(!move.isJokerValidChar(move.getJokerNewChar()))
-			return ILLEGAL_MOVE;
+        newJokerChar = move.getJokerNewChar();
+		if(!move.isJokerValidChar(newJokerChar)){
+            std::cout << "Joker new representation for player" << move.getPlayer() << " is invalid: " << toupper(newJokerChar) << std::endl;
+            return ILLEGAL_MOVE;
+        }
+
 	}
 	return VALID_MOVE;
 }
 
 int GameBoard::execMove(std::string line, Move& move) {
+	int currentPlayer = move.getPlayer();
+	int opponentPlayer = getOpponent(currentPlayer);
 	// Parse line format
 	if(move.parseLine(line) != VALID_LINE_FORMAT){
-		//TODO  PRINT TO FILE
+        std::cout << "Current line is not at the right format: < " << line << " >" << std::endl;
+        winner = opponentPlayer;
+        reason = BAD_MOVE;
 		return ERROR;
 	}
 	// check if move is a valid move
-	if(checkMove(move) != VALID_MOVE)
+	if(checkMove(move) != VALID_MOVE){
+		winner = opponentPlayer;
+		reason = BAD_MOVE;
 		return ERROR;
-
+	}
 	updateBoardAfterMove(move);
 	return SUCCESS;
 
 }
 
+int GameBoard::testForValidMovementOfBoard(Move& move){
+	int delta;
+	int srcX = move.getSrc().getXposition();
+	int srcY = move.getSrc().getYposition();
+	int dstX = move.getDst().getXposition();
+	int dstY = move.getDst().getYposition();
+	// todo check if src == dst is a valid move
+	if(srcX == dstX)
+		delta = dstY = srcY;
+	else if(srcY == dstY)
+		delta = dstX - srcX;
+	else return ILLEGAL_MOVE;
+	// moving on same row or on same column
+	if(delta == -1 || delta == 1)
+		return VALID_MOVE;
+	else return ILLEGAL_MOVE;
+}
+
+
 void GameBoard::printBoard(std::ofstream& output) {
+    // todo
 	output << "Printed board" << std::endl;
 }
 

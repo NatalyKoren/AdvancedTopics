@@ -67,8 +67,7 @@ void Game::playGame() {
 					break;
 				}
 				firstPlayerLine++;
-				board.setWinner(board.checkVictory());
-				if (board.getWinner() != NONE) {
+				if (board.checkVictory() != NONE) {
 					break;
 				}
 			}
@@ -85,8 +84,7 @@ void Game::playGame() {
 					break;
 				}
 				secondPlayerLine++;
-				board.setWinner(board.checkVictory());
-				if (board.getWinner() != NONE) {
+				if (board.checkVictory() != NONE) {
 					break;
 				}
 			}
@@ -131,6 +129,7 @@ int Game::writeToOutput() {
 		std::cout << "Error: could not write to output file." << std::endl;
 		return ERROR;
 	}
+	if(winner == NONE) winner = TIE;
 	output << "Winner: " << winner << std::endl;
 	switch(board.getReason()) {
 	case FLAG_CAPTURED:

@@ -7,6 +7,8 @@
 #ifndef POSITION_H_
 #define POSITION_H_
 
+#include <iostream>
+
 class Position{
 	int x;
 	int y;
@@ -18,6 +20,8 @@ public:
 	// --- Setters ---
 	void setXposition(int pos){x=pos;}
 	void setYposition(int pos){y=pos;}
+	// Print Position
+	void printPosition(){ std::cout << "(" << x << "," << y << ")";}
 };
 
 #endif /* POSITION_H_ */

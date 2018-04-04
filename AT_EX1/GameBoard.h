@@ -11,7 +11,7 @@
 #include "Position.h"
 #include "Definitions.h"
 #include "PlayerPieces.h"
-class Move;
+
 class GameBoard{
 	char firstPlayerBoard[N][M];
 	char secondPlayerBoard[N][M];
@@ -128,6 +128,11 @@ public:
 	void setReason(int newReason) {reason = newReason;}
 
 	int getReason() {return reason;}
+	/**
+	 * Assuming move contain valid positions on board ( not out of bound ).
+	 * @return
+	 */
+	int testForValidMovementOfBoard(Move&);
 
 	/*
 	 * prints the state of the board to output

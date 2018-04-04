@@ -11,9 +11,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <algorithm>
-#include "GameBoard.h"
-
-class GameBoard;
+#include "Definitions.h"
 
 class Move{
 	bool isJokerChanged;
@@ -32,19 +30,20 @@ public:
 	// Getters
 	Position& getJokerPos(){ return jokerPos; }
 	char getJokerNewChar()const{ return newJokerChar; }
-	int getPlayer(){ return player; }
+	int getPlayer()const{ return player; }
 	Position& getDst(){ return dst; }
 	Position& getSrc(){ return src; }
-	bool getIsJokerUpdated(){ return isJokerChanged; }
+	bool getIsJokerUpdated()const{ return isJokerChanged; }
 	// Setters - for tests
 	void setSrcPosition(Position& pos){src = pos;}
 	void setDstPosition(Position& pos){dst = pos; }
 	void setJokerPosition(Position& pos){jokerPos = pos;}
 	void setJokerChar(char ch){newJokerChar = ch;}
 	void setJokerUpdated(bool isUpdated){isJokerChanged = isUpdated;}
+	void setPlayer(int curPlayer){player = curPlayer;}
 	// For tests and debugging
 	void printMove();
-	void setPlayer(int curPlayer){player = curPlayer;}
+
 
 };
 #endif /* MOVE_H_ */

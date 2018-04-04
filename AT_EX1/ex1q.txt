@@ -7,13 +7,16 @@
 TODO:
 [V] GamePlayed
 [V] Makefile
-[] valid move update - Nataly
-[] printing to std - Both
-[] errno - Liron
+[V] valid move update - Nataly
 [V] outputfile
 [V] Main
-[] update checkVictory - Nataly
+[] printing to std - Both
+[] errno - Liron
+[V] update checkVictory - Nataly
 [] print board - Liron
 [] game board update new fields: winner, reason - Nataly
 [] Tests - Both
+[] need to handle empty lines on input files - Liron
+[] documentation
+[] need to check getLine function errors (forum).
 

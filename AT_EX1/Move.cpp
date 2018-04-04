@@ -16,7 +16,7 @@ bool Move::parseLine(std::string line){
 	bool isJokerNewRep;
 
 	// try to get Joker Line
-	if(sscanf(line.c_str(), "%d %d %d %d J %d %d %c",
+	if(sscanf(line.c_str(), "%d %d %d %d J: %d %d %c",
 			&fromX, &fromY,&toX, &toY, &jokerX, &jokerY, &newJokerRep) != 7){
 		// try to get a regular line
 		if(sscanf(line.c_str(), "%d %d %d %d",
@@ -37,7 +37,7 @@ bool Move::parseLine(std::string line){
 	// line format is correct with joker update
 	else{
 		// test for line length
-		if(sscanf(line.c_str(), "%d %d %d %d J %d %d %c %c",
+		if(sscanf(line.c_str(), "%d %d %d %d J: %d %d %c %c",
 					&dummyInt, &dummyInt,&dummyInt, &dummyInt,
 					&dummyInt, &dummyInt, &dummyChar, &lineEnd) == 8)
 			return ILLEGAL_LINE_FORMAT;
