@@ -49,15 +49,13 @@ int Game::playGame() {
 		return ERROR;
 	}
 
-	Move move;
+	Move move(FIRST_PLAYER);
 	bool MOVES1_EMPTY = false;
 	bool MOVES2_EMPTY = false;
 	while (!MOVES1_EMPTY || !MOVES2_EMPTY) {
 		if (!MOVES1_EMPTY) {
-			getline(movesFile1,line1);
-			if(!line1)
-				MOVES1_EMPTY = true;
-			else {
+			if(movesFile1.eof()){
+				getline(movesFile1,line1);
 				move.setPlayer(FIRST_PLAYER);
 				board.execMove(line1, move);
 				board.setWinner(board.checkVictory());
@@ -65,14 +63,14 @@ int Game::playGame() {
 					break;
 				}
 			}
-
+			else {
+				MOVES1_EMPTY = true;
+			}
 		}
 
 		if (!MOVES2_EMPTY) {
-			getline (movesFile2,line2);
-			if(!line2)
-				MOVES2_EMPTY = true;
-			else {
+			if(movesFile2.eof()){
+				getline(movesFile2,line2);
 				move.setPlayer(SECOND_PLAYER);
 				board.execMove(line2, move);
 				board.setWinner(board.checkVictory());
@@ -80,12 +78,16 @@ int Game::playGame() {
 					break;
 				}
 			}
+			else {
+				MOVES2_EMPTY = true;
+			}
 
 		}
 
 	}
 	movesFile1.close();
 	movesFile2.close();
+    return SUCCESS;
 }
 
 

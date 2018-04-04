@@ -3,7 +3,15 @@
 #include <string.h>
 #include "parse_board.h"
 
+ParseBoard::ParseBoard(): curPlayer(0), curLine(0),curPos(0,0), curPiece('J'){
+	pieceCount[0] = R;
+	pieceCount[1] = P;
+	pieceCount[2] = S;
+	pieceCount[3] = B;
+	pieceCount[4] = J;
+	pieceCount[5] = F;
 
+}
 // gets line, checks format, calls all aiding functions
 int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	std::string line;

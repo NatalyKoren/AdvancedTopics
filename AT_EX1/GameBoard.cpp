@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include "GameBoard.h"
 
-GameBoard::GameBoard():firstPlayerPieces(),secondPlayerPieces() { }
+GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces() {}
 
 char GameBoard::getPieceAtPosition(int player, Position& pos){
 	// pos is a legal position
@@ -58,10 +58,8 @@ bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
 
 void GameBoard::updateBoardAfterMove(Move& move){
 	// assuming it is a valid move
-	int winner;
 	int player = move.getPlayer();
 	char previousPiece;
-	int opponent = getOpponent(player);
 	Position srcPos = move.getSrc(); // TODO check if it should be Position&
 	Position dstPos = move.getDst();
 	// get char to be updated.

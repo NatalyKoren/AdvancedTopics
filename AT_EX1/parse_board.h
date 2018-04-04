@@ -9,15 +9,15 @@
 
 
 class ParseBoard {
-	int pieceCount[6] = {R, P, S, B, J, F};
-	int curPlayer = 0;
-	int curLine = 0;
-	Position curPos = {0, 0};
-	char curPiece = 'J';
+	int pieceCount[6];
+	int curPlayer;
+	int curLine;
+	Position curPos;
+	char curPiece;
 
 
 public:
-
+    ParseBoard();
 	// @param: board file, board object
 	// gets line, checks format, calls all aiding functions
 	// @return value: 0 if correct, player# if error

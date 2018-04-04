@@ -12,8 +12,8 @@
 #include "PlayerPieces.h"
 class Move;
 class GameBoard{
-	char firstPlayerBoard[N][M] = { {0} };
-	char secondPlayerBoard[N][M] = { {0} };
+	char firstPlayerBoard[N][M];
+	char secondPlayerBoard[N][M];
 	PlayerPieces firstPlayerPieces;
 	PlayerPieces secondPlayerPieces;
 	int winner;
