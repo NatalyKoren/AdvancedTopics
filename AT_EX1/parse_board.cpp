@@ -29,7 +29,6 @@ int ParseBoard::parseBoardFile (std::string filename) {
 	if (checkPieces() != 0) {
 		return curPlayer;
 	}
-	std::cout << "res is: " << res << std::endl;
 	return res;
 }
 
@@ -112,4 +111,3 @@ int ParseBoard::checkPos(GameBoard& board, const char& piece, int x, int y) {
 	board.addPieceToGame(curPlayer, piece, pos);
 	return 0;
 }
-

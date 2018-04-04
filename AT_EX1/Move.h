@@ -25,11 +25,9 @@ class Move{
 public:
 	Move(int player);
 	bool parseLine(std::string line);
-	int checkMove(GameBoard*);
 	// 0-based test
 	int positionBoundaryTest(Position& pos);
 	int boundaryTest(int index, bool isRowTest);
-	int testForJokerValidChange(GameBoard* board);
 	bool isJokerValidChar(char newJokerChar);
 	// Getters
 	Position& getJokerPos(){ return jokerPos; }

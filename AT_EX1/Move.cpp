@@ -70,31 +70,7 @@ void Move::printMove(){
 	}
 
 }
-int Move::checkMove(GameBoard* board){
-	char charToMove;
-	// (1) boundary tests
-	// test src boundary
-	if(positionBoundaryTest(src) == INDEX_OUT_OF_BOUND)
-		return INDEX_OUT_OF_BOUND;
-	// test dst boundary
-	if(positionBoundaryTest(dst) == INDEX_OUT_OF_BOUND)
-		return INDEX_OUT_OF_BOUND;
-	// boundary is valid
-	// (2) moving to position contain same player piece
-	if(!(board->isEmpty(player,dst)))
-		return ILLEGAL_MOVE;
-	// (3) try to move non moving piece
-	charToMove = board->getPieceAtPosition(player,src);
-	if(charToMove == (char)0)
-		return ILLEGAL_MOVE;
-	if(charToMove == BOMB || charToMove == FLAG)
-		return ILLEGAL_MOVE;
-	// (4) Joker tests
-	if(testForJokerValidChange(board) == ILLEGAL_MOVE)
-		return ILLEGAL_MOVE;
-	// Seems OK ...
-	return VALID_MOVE;
-}
+
 int Move::boundaryTest(int index, bool isRowTest){
 	char rowOrColBound = (isRowTest)? N:M;
 	if(index < 0 || index >= rowOrColBound)
@@ -113,20 +89,7 @@ int Move::positionBoundaryTest(Position& pos){
 	return VALID_INDEX;
 }
 
-int Move::testForJokerValidChange(GameBoard* board){
-	if(isJokerChanged){
-		// joker position is empty
-		if(board->isEmpty(player, jokerPos))
-			return ILLEGAL_MOVE;
-		// joker position doesn't contain a joker piece
-		if(!islower(board->getPieceAtPosition(player,jokerPos)))
-				return ILLEGAL_MOVE;
-		// test if joker new char is a valid char: S,R,P,B
-		if(!isJokerValidChar(newJokerChar))
-			return ILLEGAL_MOVE;
-	}
-	return VALID_MOVE;
-}
+
 bool Move::isJokerValidChar(char newJokerChar){
 	newJokerChar = toupper(newJokerChar);
 	if(newJokerChar == SCISSORS || newJokerChar == ROCK ||

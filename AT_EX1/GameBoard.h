@@ -100,6 +100,17 @@ public:
 	 * for tests
 	 */
 	int getJokerMovingPiece(int player);
+
+	int testForJokerValidChange(Move& move);
+
+	int checkMove(Move& move);
+
+	/*
+	 * return True if there was a fight
+	 * updates the board if necessary
+	 */
+	bool checkAndRunFight(int player, Position& dstPos);
+
 };
 
 

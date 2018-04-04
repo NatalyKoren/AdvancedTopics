@@ -32,6 +32,30 @@ bool GameBoard::isFight(int playerToCheck, Position& pos){
 		return (firstPlayerBoard[x][y] != (char) 0);
 	else return (secondPlayerBoard[x][y] != (char) 0);
 }
+
+
+bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
+	int opponent = getOpponent(player);
+	int winner;
+	if(isFight(opponent, dstPos)){
+		//Fight
+		winner = fight(dstPos);
+		// update opponent board
+		if(winner == player)
+			updateAfterLoseFight(opponent,dstPos);
+		// the current player lose...
+		else if(winner == opponent)
+			updateAfterLoseFight(player,dstPos);
+		else {
+			// it is a tie - need to remove both players
+			updateAfterLoseFight(player,dstPos);
+			updateAfterLoseFight(opponent,dstPos);
+		}
+		return true;
+	}
+	return false;
+}
+
 void GameBoard::updateBoardAfterMove(int player, Move* move){
 	// assuming it is a valid move
 	int winner;
@@ -43,25 +67,13 @@ void GameBoard::updateBoardAfterMove(int player, Move* move){
 	char charToUpdate = getPieceAtPosition(player, srcPos);
 	// update player char
 	setPieceAtPosition(player,charToUpdate, dstPos);
-	if(isFight(opponent, move->getDst())){
-		//Fight
-		winner = fight(move->getDst());
-		// update opponent board
-		if(winner == player)
-			updateAfterLoseFight(opponent,dstPos);
-		// the current player lose...
-		else if(winner == opponent)
-			updateAfterLoseFight(player,dstPos);
-		else{
-			// it is a tie - need to remove both players
-			updateAfterLoseFight(player,dstPos);
-			updateAfterLoseFight(opponent,dstPos);
-		}
-	}
+
 	// No fight- need only to update player's dest position
-	else setPieceAtPosition(player,charToUpdate, dstPos);
+	if (!checkAndRunFight(player, dstPos)) {
+		setPieceAtPosition(player,charToUpdate, dstPos);
+	}
 	// set source position to zero
-	setPieceAtPosition(player,0, move->getSrc());
+	setPieceAtPosition(player,0, srcPos);
 	//Update joker
 	if(move->getIsJokerUpdated()){
 		previousPiece = getPieceAtPosition(player, move->getJokerPos());
@@ -134,4 +146,45 @@ int GameBoard::getJokerMovingPiece(int player){
 	if(player== FIRST_PLAYER)
 		return firstPlayerPieces.getNumOfMovingJoker();
 	else return secondPlayerPieces.getNumOfMovingJoker();
+}
+
+int GameBoard::checkMove(Move& move){
+	char charToMove;
+	// (1) boundary tests
+	// test src boundary
+	if(move.positionBoundaryTest(move.getSrc()) == INDEX_OUT_OF_BOUND)
+		return INDEX_OUT_OF_BOUND;
+	// test dst boundary
+	if(move.positionBoundaryTest(move.getDst()) == INDEX_OUT_OF_BOUND)
+		return INDEX_OUT_OF_BOUND;
+	// boundary is valid
+	// (2) moving to position contain same player piece
+	if(!(isEmpty(move.getPlayer(),move.getDst())))
+		return ILLEGAL_MOVE;
+	// (3) try to move non moving piece
+	charToMove = getPieceAtPosition(move.getPlayer(),move.getSrc());
+	if(charToMove == (char)0)
+		return ILLEGAL_MOVE;
+	if(charToMove == BOMB || charToMove == FLAG)
+		return ILLEGAL_MOVE;
+	// (4) Joker tests
+	if(testForJokerValidChange(move) == ILLEGAL_MOVE)
+		return ILLEGAL_MOVE;
+	// Seems OK ...
+	return VALID_MOVE;
+}
+
+int GameBoard::testForJokerValidChange(Move& move){
+	if(move.getIsJokerUpdated()){
+		// joker position is empty
+		if(isEmpty(move.getPlayer(), move.getJokerPos()))
+			return ILLEGAL_MOVE;
+		// joker position doesn't contain a joker piece
+		if(!islower(getPieceAtPosition(move.getPlayer(),move.getJokerPos())))
+			return ILLEGAL_MOVE;
+		// test if joker new char is a valid char: S,R,P,B
+		if(!move.isJokerValidChar(move.getJokerNewChar()))
+			return ILLEGAL_MOVE;
+	}
+	return VALID_MOVE;
 }
