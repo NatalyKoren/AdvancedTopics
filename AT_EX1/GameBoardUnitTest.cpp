@@ -147,7 +147,7 @@ int createBoardAfterMove(Position& src, Position& dst, Position& jokerPos, char 
 		board.addPieceToGame(move.getPlayer(), oldJoker, jokerPos);
 	createMove(move, src, dst, isJokerUpdated, jokerPos, newJoker);
 	numOfMovingJoker = board.getJokerMovingPiece(move.getPlayer());
-	board.updateBoardAfterMove(move.getPlayer(), &move);
+	board.updateBoardAfterMove(move);
 	return numOfMovingJoker;
 }
 void createMove(Move& move, Position src, Position dst, bool isJokerUpdated, Position jokerPos, char jokerChar){

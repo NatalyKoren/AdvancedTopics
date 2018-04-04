@@ -48,6 +48,7 @@ int testpositionBoundary(){
 	return 0;
 
 }
+/*
 int testJokerValidChange(){
 	Move move(FIRST_PLAYER);
 	GameBoard board;
@@ -77,6 +78,8 @@ int testJokerValidChange(){
 
 	return 0;
 }
+ */
+/*
 int testValidMove(){
 	// try to move empty position
 	Move move(FIRST_PLAYER);
@@ -109,5 +112,8 @@ int testValidMove(){
 	board.addPieceToGame(FIRST_PLAYER, FLAG, Position(1,1));
 	if(move.checkMove(&board) == VALID_MOVE)
 		return 10;
+
+
 	return 0;
 }
+*/
