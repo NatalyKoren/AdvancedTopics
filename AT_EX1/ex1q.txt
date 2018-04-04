@@ -1,17 +1,19 @@
 1. Board file: every position is at a new line?
-2. moves: What is a valid move? any 1 step at any direction? 
-3.  Winner: 'or to eat all of its moving PIECEs' - it means that if the opponent is left only with a bomb and a flag then he looses?
-4. move file: the position is 0-base or 1-base?
-5. need to check for victory after every move?
+2.  Winner: 'or to eat all of its moving PIECEs' - it means that if the opponent is left only with a bomb and a flag then he looses?
+3. move file: the position is 0-base or 1-base?
+4. need to check for victory after every move?
 
 
 TODO:
-GamePlayed
-Makefile
-valid move
-printing to std
-errno
-outputfile
-Main
-update checkVictory
+[V] GamePlayed
+[V] Makefile
+[] valid move update - Nataly
+[] printing to std - Both
+[] errno - Liron
+[V] outputfile
+[V] Main
+[] update checkVictory - Nataly
+[] print board - Liron
+[] game board update new fields: winner, reason - Nataly
+[] Tests - Both
 
