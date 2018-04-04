@@ -202,3 +202,8 @@ int GameBoard::execMove(std::string line, Move& move) {
 	return SUCCESS;
 
 }
+
+void GameBoard::printBoard(std::ofstream& output) {
+	output << "Printed board" << std::endl;
+}
+

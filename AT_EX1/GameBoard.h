@@ -6,6 +6,7 @@
 
 #ifndef GAMEBOARD_H_
 #define GAMEBOARD_H_
+#include <fstream>
 #include "Move.h"
 #include "Position.h"
 #include "Definitions.h"
@@ -123,6 +124,16 @@ public:
 	void setWinner(int newWinner) {winner = newWinner;}
 
 	int getWinner() {return winner;}
+
+	void setReason(int newReason) {reason = newReason;}
+
+	int getReason() {return reason;}
+
+	/*
+	 * prints the state of the board to output
+	 * TODO
+	 */
+	void printBoard(std::ofstream& output);
 
 };
 

@@ -7,7 +7,7 @@
 #include <fstream>
 #include "GamePlayed.h"
 
-Game::Game(): curPlayer (FIRST_PLAYER), board(){}
+Game::Game(): curPlayer (FIRST_PLAYER), board(), firstPlayerLine(0), secondPlayerLine(0){}
 
 int Game::initBoard() {
 	ParseBoard parser = ParseBoard();
@@ -19,11 +19,15 @@ int Game::initBoard() {
 	if (boards == ERROR) {
 		std::cout << "Error in parsing player two's board." << std::endl;
 	}
+	std::cout << "finished initBoard" << std::endl;
+
 	return SUCCESS;
 }
 
 
 int Game::firstTurn() {
+	std::cout << "started firstTurn" << std::endl;
+
 	Position pos (0,0);
 	for (int i = 0; i < N; i++) {
 		for(int j = 0; j < M; j++) {
@@ -32,32 +36,37 @@ int Game::firstTurn() {
 			board.checkAndRunFight(FIRST_PLAYER, pos);
 		}
 	}
+	std::cout << "finished firstTurn" << std::endl;
 	return board.checkVictory();
 }
 
-int Game::playGame() {
+void Game::playGame() {
 	std::string line1;
 	std::string line2;
 	std::ifstream movesFile1 (MOVES1);
+	Move move(FIRST_PLAYER);
+	bool MOVES1_EMPTY = false;
+	bool MOVES2_EMPTY = false;
+
 	if (!movesFile1.is_open()) {
 		std::cout << "Unable to open file " << MOVES1 << std::endl;
-		return ERROR;
+		MOVES1_EMPTY = true;
 	}
 	std::ifstream movesFile2 (MOVES1);
 	if (!movesFile2.is_open()) {
 		std::cout << "Unable to open file " << MOVES2 << std::endl;
-		return ERROR;
+		MOVES2_EMPTY = true;
 	}
 
-	Move move(FIRST_PLAYER);
-	bool MOVES1_EMPTY = false;
-	bool MOVES2_EMPTY = false;
 	while (!MOVES1_EMPTY || !MOVES2_EMPTY) {
 		if (!MOVES1_EMPTY) {
 			if(movesFile1.eof()){
 				getline(movesFile1,line1);
 				move.setPlayer(FIRST_PLAYER);
-				board.execMove(line1, move);
+				if(board.execMove(line1, move) == ERROR) {
+					break;
+				}
+				firstPlayerLine++;
 				board.setWinner(board.checkVictory());
 				if (board.getWinner() != NONE) {
 					break;
@@ -72,7 +81,10 @@ int Game::playGame() {
 			if(movesFile2.eof()){
 				getline(movesFile2,line2);
 				move.setPlayer(SECOND_PLAYER);
-				board.execMove(line2, move);
+				if(board.execMove(line2, move) == ERROR) {
+					break;
+				}
+				secondPlayerLine++;
 				board.setWinner(board.checkVictory());
 				if (board.getWinner() != NONE) {
 					break;
@@ -87,22 +99,66 @@ int Game::playGame() {
 	}
 	movesFile1.close();
 	movesFile2.close();
-    return SUCCESS;
 }
 
 int Game::startGame() {
+	std::cout << "start startGame" << std::endl;
 	int success = initBoard();
-	if (!success) {
+	if (success == ERROR) {
 		return ERROR;
 	}
+	std::cout << "in startGame" << std::endl;
+
 	if (firstTurn() != NONE) {
-		//TODO: write to output
-		std::cout << "GAME OVER" << std::endl;
-		return SUCCESS;
+		return writeToOutput();
 	}
-	success = playGame();
-	std::cout << "finished StartGame" << std::endl;
-	return success;
+	playGame();
+	std::cout << "finished StartGame" << std::endl; //DEBUG
+	return writeToOutput();
 }
 
-
+int Game::writeToOutput() {
+	std::ofstream output(OUTPUT, std::ofstream::trunc);
+	int line;
+	int winner = board.getWinner();
+	if (winner == FIRST_PLAYER) {
+		line = secondPlayerLine;
+	} else {
+		line = firstPlayerLine;
+	}
+	if(!output.is_open()) {
+		//TODO: ERRNO
+		std::cout << "Error: could not write to output file." << std::endl;
+		return ERROR;
+	}
+	output << "Winner: " << winner << std::endl;
+	switch(board.getReason()) {
+	case FLAG_CAPTURED:
+		output << "Reason: All flags of the opponent are captured" << std::endl;
+		break;
+	case ALL_MOVING_PIECES_EATEN:
+		output << "Reason: All moving PIECEs of the opponent are eaten" << std::endl;
+		break;
+	case TIE_GAME_OVER:
+		output << "Reason: A tie - both Moves input files done without a winner" << std::endl;
+		break;
+	case TIE_BOTH_FLAGS_CAPTURED:
+		output << "Reason: A tie - all flags are eaten by both players in the position files" << std::endl;
+		break;
+	case BAD_POSITIONING:
+		output << "Reason: Bad Positioning input file for player" << board.getOpponent(winner) << "line " << line << std::endl;
+		break;
+	case BOTH_PLAYERS_BAD_POSITIONING:
+		output << "Reason: Bad Positioning input file for both players - player 1: line " << firstPlayerLine << ", player 2: line " << secondPlayerLine << std::endl;
+		break;
+	case BAD_MOVE:
+		output << "Reason: Bad Moves input file for player " << board.getOpponent(winner) << "- line " << line << std::endl;
+		break;
+	default:
+		std::cout << "Error in REASON" << std::endl;
+		break;
+	}
+	board.printBoard(output);
+	output.close();
+	return SUCCESS;
+}

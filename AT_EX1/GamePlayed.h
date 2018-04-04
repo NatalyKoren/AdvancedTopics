@@ -16,6 +16,8 @@
 class Game {
 	int curPlayer;
 	GameBoard board;
+	int firstPlayerLine;
+	int secondPlayerLine;
 
 
 public:
@@ -41,9 +43,8 @@ public:
 	/*
 	 * after boards are parsed, parses move files
 	 * runs the game
-	 * returns SUCCESS or ERROR
 	 */
-	int playGame();
+	void playGame();
 
 	/*
 	 * Called by main
@@ -51,6 +52,12 @@ public:
 	 * return value: SUCCESS or ERROR
 	 */
 	int startGame();
+
+	/*
+	 * creates and writes to the output file
+	 * returns SUCCESS or ERROR
+	 */
+	int writeToOutput();
 };
 
 #endif /* GAMEPLAYED_H_ */
