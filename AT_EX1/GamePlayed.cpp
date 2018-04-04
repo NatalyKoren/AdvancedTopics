@@ -90,5 +90,19 @@ int Game::playGame() {
     return SUCCESS;
 }
 
+int Game::startGame() {
+	int success = initBoard();
+	if (!success) {
+		return ERROR;
+	}
+	if (firstTurn() != NONE) {
+		//TODO: write to output
+		std::cout << "GAME OVER" << std::endl;
+		return SUCCESS;
+	}
+	success = playGame();
+	std::cout << "finished StartGame" << std::endl;
+	return success;
+}
 
 

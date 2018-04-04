@@ -48,7 +48,7 @@ public:
 	/*
 	 * Called by main
 	 * calls all other game methods
-	 * return value: 0 if ok, 1 otherwise
+	 * return value: SUCCESS or ERROR
 	 */
 	int startGame();
 };

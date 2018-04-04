@@ -45,6 +45,8 @@ public:
 	 *  @return value: 0 if ok, player# otherwise
 	 */
 	int checkPos(GameBoard& board, const char& piece, int x, int y);
+
+	void initializePieceCount();
 };
 
 #endif /* PARSEBOARD_H_ */
