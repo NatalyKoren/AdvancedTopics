@@ -40,7 +40,7 @@ void PlayerPieces::incrementPieceNum(char piece, int num){
 		break;
 	}
 }
-void PlayerPieces::updateJokerMoovingCount(char previousPiece, char newPiece){
+void PlayerPieces::updateJokerMovingCount(char previousPiece, char newPiece){
 	if(newPiece != previousPiece){
 		// the joker got new representation
 		previousPiece = toupper(previousPiece);

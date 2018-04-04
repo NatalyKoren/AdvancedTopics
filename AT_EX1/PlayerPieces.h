@@ -40,7 +40,7 @@ public:
 	// set piece to player
 	void incrementPieceNum(char piece, int num);
 	void incrementJokerMoovingPieces(int num) { numOfMoovingJokers+=num; }
-	void updateJokerMoovingCount(char previousPiece, char newPiece);
+	void updateJokerMovingCount(char previousPiece, char newPiece);
 
 };
 

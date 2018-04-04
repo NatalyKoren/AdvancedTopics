@@ -5,7 +5,7 @@
 
 
 // gets line, checks format, calls all aiding functions
-int ParseBoard::parseBoardFile (std::string filename) {
+int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	std::string line;
 	int res = -1;
 	std::ifstream myfile (filename);
@@ -13,8 +13,7 @@ int ParseBoard::parseBoardFile (std::string filename) {
 		std::cout << "Unable to open file " << filename << std::endl;
 		return 1;
 	}
-	curPlayer = filename[18] - '0'; // gets the int value of the char
-	GameBoard board;
+	curPlayer = filename[6] - '0'; // gets the int value of the char
 
 	while (getline (myfile,line) && res <= 0) {     //getline returns a reference to myfile
 		curLine++;

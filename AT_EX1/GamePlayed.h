@@ -8,30 +8,49 @@
 #define GAMEPLAYED_H_
 #include <iostream>
 #include <fstream>
-#include "Position.h"
 #include "Definitions.h"
 #include "GameBoard.h"
 #include "Move.h"
+#include "parse_board.h"
 
 class Game {
 	int curPlayer;
 	GameBoard board;
 
+
 public:
 
 	/*
-	 * @param: the game board object
-	 * Called after parsing the board files
-	 * Checks if there's a fight at this stage and if so, runs it
-	 * @return value: 0 if tie, player# otherwise
+	 * constructor
 	 */
-	int firstTurn(GameBoard board);
+	Game();
 
 	/*
-	 * @param: filename
-	 * calls parseBoardFile and firstTurn
+	 * calls the board file parser
+	 * @return value: 0 if ok,
 	 */
-	int startGame(std::string fileName);
+	int initBoard();
+
+	/*
+	 * Called after parsing the board files
+	 * Checks if there's a fight at this stage and if so, runs it
+	 * @return value: winner (player# or TIE) or NONE if game continues
+	 */
+	int firstTurn();
+
+	/*
+	 * after boards are parsed, parses move files
+	 * runs the game
+	 * returns SUCCESS or ERROR
+	 */
+	int playGame();
+
+	/*
+	 * Called by main
+	 * calls all other game methods
+	 * return value: 0 if ok, 1 otherwise
+	 */
+	int startGame();
 };
 
 #endif /* GAMEPLAYED_H_ */

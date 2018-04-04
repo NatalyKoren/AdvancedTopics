@@ -56,13 +56,14 @@ bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
 	return false;
 }
 
-void GameBoard::updateBoardAfterMove(int player, Move* move){
+void GameBoard::updateBoardAfterMove(Move& move){
 	// assuming it is a valid move
 	int winner;
+	int player = move.getPlayer();
 	char previousPiece;
 	int opponent = getOpponent(player);
-	Position srcPos = move->getSrc(); // TODO check if it should be Position&
-	Position dstPos = move->getDst();
+	Position srcPos = move.getSrc(); // TODO check if it should be Position&
+	Position dstPos = move.getDst();
 	// get char to be updated.
 	char charToUpdate = getPieceAtPosition(player, srcPos);
 	// update player char
@@ -75,13 +76,13 @@ void GameBoard::updateBoardAfterMove(int player, Move* move){
 	// set source position to zero
 	setPieceAtPosition(player,0, srcPos);
 	//Update joker
-	if(move->getIsJokerUpdated()){
-		previousPiece = getPieceAtPosition(player, move->getJokerPos());
-		setPieceAtPosition(player, move->getJokerNewChar(), move->getJokerPos());
+	if(move.getIsJokerUpdated()){
+		previousPiece = getPieceAtPosition(player, move.getJokerPos());
+		setPieceAtPosition(player, move.getJokerNewChar(), move.getJokerPos());
 		if(player == FIRST_PLAYER)
-			firstPlayerPieces.updateJokerMoovingCount(previousPiece, move->getJokerNewChar());
+			firstPlayerPieces.updateJokerMovingCount(previousPiece, move.getJokerNewChar());
 		else
-			secondPlayerPieces.updateJokerMoovingCount(previousPiece, move->getJokerNewChar());
+			secondPlayerPieces.updateJokerMovingCount(previousPiece, move.getJokerNewChar());
 	}
 }
 
@@ -187,4 +188,19 @@ int GameBoard::testForJokerValidChange(Move& move){
 			return ILLEGAL_MOVE;
 	}
 	return VALID_MOVE;
+}
+
+int GameBoard::execMove(std::string line, Move& move) {
+	// Parse line format
+	if(move.parseLine(line) != VALID_LINE_FORMAT){
+		//TODO  PRINT TO FILE
+		return ERROR;
+	}
+	// check if move is a valid move
+	if(checkMove(move) != VALID_MOVE)
+		return ERROR;
+
+	updateBoardAfterMove(move);
+	return SUCCESS;
+
 }

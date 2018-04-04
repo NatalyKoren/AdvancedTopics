@@ -16,6 +16,9 @@ class GameBoard{
 	char secondPlayerBoard[N][M] = { {0} };
 	PlayerPieces firstPlayerPieces;
 	PlayerPieces secondPlayerPieces;
+	int winner;
+	int reason;
+
 public:
 	/***
 	 * Constructor
@@ -56,7 +59,7 @@ public:
 	 * If the move is updating a joker piece, then the function will also update the new
 	 * joker representation on player's board.
 	 */
-	void updateBoardAfterMove(int player, Move* move);
+	void updateBoardAfterMove(Move& move);
 	/***
 	 * return player piece at position.
 	 */
@@ -110,6 +113,12 @@ public:
 	 * updates the board if necessary
 	 */
 	bool checkAndRunFight(int player, Position& dstPos);
+
+	/*
+	 * performs all the move actions
+	 * return value: SUCCESs or ERROR
+	 */
+	int execMove(std::string line, Move& move);
 
 };
 

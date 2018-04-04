@@ -1,2 +1,6 @@
 /Debug/
 /Release/
+parseBoardTest
+*.cproject*
+ex1_simple*
+playerPieces

@@ -44,6 +44,7 @@ public:
 	void setJokerUpdated(bool isUpdated){isJokerChanged = isUpdated;}
 	// For tests and debugging
 	void printMove();
+	void setPlayer(int curPlayer){player = curPlayer;}
 
 };
 #endif /* MOVE_H_ */
