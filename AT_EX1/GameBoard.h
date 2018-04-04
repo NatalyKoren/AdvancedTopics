@@ -120,6 +120,10 @@ public:
 	 */
 	int execMove(std::string line, Move& move);
 
+	void setWinner(int newWinner) {winner = newWinner;}
+
+	int getWinner() {return winner;}
+
 };
 
 

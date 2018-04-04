@@ -60,8 +60,8 @@ int Game::playGame() {
 			else {
 				move.setPlayer(FIRST_PLAYER);
 				board.execMove(line1, move);
-				winner = board.checkVictory();
-				if (winner != NONE) {
+				board.setWinner(board.checkVictory());
+				if (board.getWinner() != NONE) {
 					break;
 				}
 			}
@@ -75,8 +75,8 @@ int Game::playGame() {
 			else {
 				move.setPlayer(SECOND_PLAYER);
 				board.execMove(line2, move);
-				winner = board.checkVictory();
-				if (winner != NONE) {
+				board.setWinner(board.checkVictory());
+				if (board.getWinner() != NONE) {
 					break;
 				}
 			}
