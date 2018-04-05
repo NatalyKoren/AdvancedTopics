@@ -21,7 +21,7 @@ public:
 	void setXposition(int pos){x=pos;}
 	void setYposition(int pos){y=pos;}
 	// Print Position
-	void printPosition(){ std::cout << "(" << x << "," << y << ")";}
+	void printPosition(){ std::cout << "(" << x+1 << "," << y+1 << ")";}
 };
 
 #endif /* POSITION_H_ */

@@ -98,6 +98,7 @@ int GameBoard::fight(Position& pos){
 	case BOMB:
 		return TIE; // Need to remove bomb from board
 	case FLAG:
+		if(secondPlayerPiece == BOMB) return TIE;
 		return SECOND_PLAYER;
 	case ROCK:
 		if(secondPlayerPiece == SCISSORS || secondPlayerPiece == FLAG) return FIRST_PLAYER;

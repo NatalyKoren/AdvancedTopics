@@ -33,7 +33,8 @@ int Game::firstTurn() {
 		for(int j = 0; j < M; j++) {
 			pos.setXposition(i);
 			pos.setYposition(j);
-			board.checkAndRunFight(FIRST_PLAYER, pos);
+			if(!board.isEmpty(FIRST_PLAYER,pos))
+				board.checkAndRunFight(FIRST_PLAYER, pos);
 		}
 	}
 	std::cout << "finished firstTurn" << std::endl;
@@ -52,7 +53,7 @@ void Game::playGame() {
 		std::cout << "Unable to open file " << MOVES1 << std::endl;
 		MOVES1_EMPTY = true;
 	}
-	std::ifstream movesFile2 (MOVES1);
+	std::ifstream movesFile2 (MOVES2);
 	if (!movesFile2.is_open()) {
 		std::cout << "Unable to open file " << MOVES2 << std::endl;
 		MOVES2_EMPTY = true;
@@ -60,8 +61,7 @@ void Game::playGame() {
 
 	while (!MOVES1_EMPTY || !MOVES2_EMPTY) {
 		if (!MOVES1_EMPTY) {
-			if(movesFile1.eof()){
-				getline(movesFile1,line1);
+			if(getline(movesFile1,line1)){
 				move.setPlayer(FIRST_PLAYER);
 				if(board.execMove(line1, move) == ERROR) {
 					break;
@@ -77,8 +77,7 @@ void Game::playGame() {
 		}
 
 		if (!MOVES2_EMPTY) {
-			if(movesFile2.eof()){
-				getline(movesFile2,line2);
+			if(getline(movesFile2,line2)){
 				move.setPlayer(SECOND_PLAYER);
 				if(board.execMove(line2, move) == ERROR) {
 					break;
