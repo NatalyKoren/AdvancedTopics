@@ -10,10 +10,10 @@
 #include <iostream>
 #include "Move.h"
 #include "Definitions.h"
-
+#include "GameBoard.h"
 int testParseLine();
 int testpositionBoundary();
-int testJokerValidChange();
-int testValidMove();
+
+
 
 #endif /* MOVEUNITTEST_H_ */

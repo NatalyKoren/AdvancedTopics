@@ -101,12 +101,15 @@ int GameBoard::fight(Position& pos){
 		return SECOND_PLAYER;
 	case ROCK:
 		if(secondPlayerPiece == SCISSORS || secondPlayerPiece == FLAG) return FIRST_PLAYER;
+		else if(secondPlayerPiece == BOMB) return TIE;
 		else return SECOND_PLAYER;
 	case PAPER:
 		if(secondPlayerPiece == ROCK || secondPlayerPiece == FLAG) return FIRST_PLAYER;
+		else if(secondPlayerPiece == BOMB) return TIE;
 		else return SECOND_PLAYER;
 	case SCISSORS:
 		if(secondPlayerPiece == PAPER || secondPlayerPiece == FLAG) return FIRST_PLAYER;
+		else if(secondPlayerPiece == BOMB) return TIE;
 		else return SECOND_PLAYER;
 	default:
 		return -1;
@@ -209,7 +212,7 @@ int GameBoard::checkMove(Move& move){
 	if(testForValidMovementOfBoard(move) == ILLEGAL_MOVE){
 		std::cout << "Illegal movement on board. Player: " << move.getPlayer() << " try to move from: ";
 		move.getSrc().printPosition();
-		std::cout << "to: ";
+		std::cout << " to: ";
 		move.getDst().printPosition();
 		std::cout << std::endl;
 		return ILLEGAL_MOVE;
@@ -219,7 +222,7 @@ int GameBoard::checkMove(Move& move){
 	if(charToMove == (char)0){
 		std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
 		move.getSrc().printPosition();
-		std::cout << "does not contain a player piece." << std::endl;
+		std::cout << " does not contain a player piece." << std::endl;
 		return ILLEGAL_MOVE;
 	}
 
@@ -295,7 +298,7 @@ int GameBoard::testForValidMovementOfBoard(Move& move){
 	int dstY = move.getDst().getYposition();
 	// todo check if src == dst is a valid move
 	if(srcX == dstX)
-		delta = dstY = srcY;
+		delta = dstY - srcY;
 	else if(srcY == dstY)
 		delta = dstX - srcX;
 	else return ILLEGAL_MOVE;

@@ -22,6 +22,7 @@ int createBoardAfterMove(Position& src, Position& dst, Position& jokerPos, char 
 void createMove(Move& move, Position src, Position dst, bool isJokerUpdated,
 		Position jokerPos, char jokerChar);
 bool compareBoardExceptPos(Position& pos, GameBoard& board);
-
-
+int testJokerValidChange();
+int testValidMove();
+int testExecMove();
 #endif /* GAMEBOARDUNITTEST_H_ */

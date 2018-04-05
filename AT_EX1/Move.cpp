@@ -41,8 +41,11 @@ bool Move::parseLine(std::string line){
 					&dummyInt, &dummyInt,&dummyInt, &dummyInt,
 					&dummyInt, &dummyInt, &dummyChar, &lineEnd) == 8)
 			return ILLEGAL_LINE_FORMAT;
-		if(!isupper(newJokerRep))
+		if(!isupper(newJokerRep)){
+			std::cout << "Illegal new representation for joker: " << newJokerRep << std::endl;
 			return ILLEGAL_LINE_FORMAT;
+		}
+
 		isJokerNewRep = true;
 	}
 

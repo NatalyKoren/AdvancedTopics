@@ -6,8 +6,8 @@
 
 #include "GameBoardUnitTest.h"
 #include "MoveUnitTest.h"
-#include <iostream>
-int main_tests(){
+
+int tests(){
 	// ~~~ Fight ~~~
 	int result = testFight();
 	if(result == 0)
@@ -45,16 +45,21 @@ int main_tests(){
 		std::cout << "Passed test position boundary " << std::endl;
 	else
 		std::cout << "test position boundary failed test number: " << result << std::endl;
-	//result = testJokerValidChange();
+	result = testJokerValidChange();
 	if(result == 0)
 		std::cout << "Passed test joker valid change " << std::endl;
 	else
 		std::cout << "test joker valid change failed test number: " << result << std::endl;
-	//result = testValidMove();
+	result = testValidMove();
 	if(result == 0)
 		std::cout << "Passed test valid move " << std::endl;
 	else
 		std::cout << "test valid move failed test number: " << result << std::endl;
-	std::cout << "Clion" << std::endl;
+	result = testExecMove();
+	if(result == 0)
+		std::cout << "Passed test exec move " << std::endl;
+	else
+		std::cout << "test exec move failed test number: " << result << std::endl;
+
 	return 0;
 }

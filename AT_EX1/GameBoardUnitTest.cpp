@@ -21,7 +21,7 @@ int testFight(){
 	if(!fightTest(8,8,SCISSORS,FLAG,FIRST_PLAYER, board))
 		return 4;
 	// TEST 5
-	if(!fightTest(6,5,SCISSORS,BOMB,SECOND_PLAYER, board))
+	if(!fightTest(6,5,SCISSORS,BOMB,TIE, board))
 		return 5;
 	// TEST 6
 	if(!fightTest(3,3,ROCK,PAPER,SECOND_PLAYER, board))
@@ -190,7 +190,7 @@ int testVictory(){
 	board.addPieceToGame(SECOND_PLAYER, FLAG, Position(2,4));
 	board.addPieceToGame(SECOND_PLAYER, BOMB, Position(2,5));
 	board.addPieceToGame(SECOND_PLAYER, ROCK, Position(2,6));
-	if(board.checkVictory() != TIE)
+	if(board.checkVictory() != NONE)
 		return 1;
 	// second player wins - flag piece
 	Position pos(1,4);
@@ -211,14 +211,14 @@ int testVictory(){
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
 	pos.setYposition(3);
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
-	if(board.checkVictory() != TIE)
+	if(board.checkVictory() != NONE)
 		return 4;
 	pos.setYposition(6);
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
 	if(board.checkVictory() != SECOND_PLAYER)
 		return 5;
 	board.addPieceToGame(FIRST_PLAYER, ROCK, Position(1,6));
-	if(board.checkVictory() != TIE)
+	if(board.checkVictory() != NONE)
 		return 5;
 	// first player wins - moving pieces
 	pos.setXposition(2);
@@ -228,11 +228,127 @@ int testVictory(){
 	board.updateAfterLoseFight(SECOND_PLAYER, pos);
 	pos.setYposition(3);
 	board.updateAfterLoseFight(SECOND_PLAYER, pos);
-	if(board.checkVictory() != TIE)
+	if(board.checkVictory() != NONE)
 		return 6;
 	pos.setYposition(6);
 	board.updateAfterLoseFight(SECOND_PLAYER, pos);
 	if(board.checkVictory() != FIRST_PLAYER)
 		return 7;
 	return 0;
+}
+
+int testValidMove(){
+    // try to move empty position
+    Move move(FIRST_PLAYER);
+    GameBoard board;
+    if(move.parseLine("1 2 1 3 \n") == ILLEGAL_LINE_FORMAT)
+        return 1;
+    if(board.checkMove(move) == VALID_MOVE)
+        return 2;
+    board.addPieceToGame(SECOND_PLAYER, ROCK, Position(0,1));
+    if(board.checkMove(move) == VALID_MOVE)
+        return 3;
+    if(move.parseLine("9 8 9 9 \n") == ILLEGAL_LINE_FORMAT)
+        return 4;
+    board.addPieceToGame(FIRST_PLAYER, ROCK, Position(8,7));
+    if(board.checkMove(move) != VALID_MOVE)
+        return 5;
+    // try to move to occupied position
+    board.addPieceToGame(FIRST_PLAYER, ROCK, Position(8,8));
+    if(board.checkMove(move) == VALID_MOVE)
+        return 6;
+    if(move.parseLine("1 1 1 2 \n") == ILLEGAL_LINE_FORMAT)
+        return 7;
+    // try to move a non moving piece
+    board.addPieceToGame(FIRST_PLAYER, BOMB, Position(0,0));
+    if(board.checkMove(move) == VALID_MOVE)
+        return 8;
+    if(move.parseLine("2 2 2 3 \n") == ILLEGAL_LINE_FORMAT)
+        return 9;
+    // try to move a non moving piece
+    board.addPieceToGame(FIRST_PLAYER, FLAG, Position(1,1));
+    if(board.checkMove(move) == VALID_MOVE)
+        return 10;
+	board.addPieceToGame(FIRST_PLAYER, SCISSORS, Position(5,5));
+	board.addPieceToGame(FIRST_PLAYER, 's', Position(3,3));
+	if(move.parseLine("6 6 6 7 J: 4 4 R\n") == ILLEGAL_LINE_FORMAT)
+		return 11;
+	if(board.checkMove(move) != VALID_MOVE)
+		return 12;
+
+
+    return 0;
+}
+int testJokerValidChange(){
+	Move move(FIRST_PLAYER);
+	GameBoard board;
+	board.addPieceToGame(FIRST_PLAYER, 'b', Position(4,5));
+	move.parseLine("1 2 3 4 J: 5 6 S \n");
+	if(board.testForJokerValidChange(move)!= VALID_MOVE)
+		return 1;
+	move.parseLine("1 2 3 4 J: 5 6 B \n");
+	if(board.testForJokerValidChange(move)!= VALID_MOVE)
+		return 2;
+	move.parseLine("1 2 3 4 J: 5 6 N \n");
+	if(board.testForJokerValidChange(move)== VALID_MOVE)
+		return 3;
+	move.parseLine("1 2 3 4 J: 5 6 K \n");
+	if(board.testForJokerValidChange(move)== VALID_MOVE)
+		return 4;
+
+	board.addPieceToGame(SECOND_PLAYER, 's', Position(6,6));
+	move.parseLine("1 2 3 4 J: 7 7 S \n");
+	if(board.testForJokerValidChange(move)== VALID_MOVE)
+		return 5;
+	// joker position does not contain a joker piece
+	board.addPieceToGame(FIRST_PLAYER, 'B', Position(0,0));
+	move.parseLine("1 2 3 4 J: 1 1 R \n");
+	if(board.testForJokerValidChange(move)== VALID_MOVE)
+		return 6;
+
+	return 0;
+}
+int testExecMove(){
+	std::string line = "1 1 1 2 J: 3 3 R";
+	GameBoard board;
+	Position pos(0,0);
+	Move move(FIRST_PLAYER);
+	board.addPieceToGame(FIRST_PLAYER, SCISSORS, Position(0,0));
+	board.addPieceToGame(SECOND_PLAYER, PAPER, Position(0,1));
+	board.addPieceToGame(FIRST_PLAYER, 'p', Position(2,2));
+	if(board.execMove(line, move) != SUCCESS)
+		return 1;
+	if(board.getPieceAtPosition(FIRST_PLAYER, pos)!=(char)0)
+		return 2;
+	pos.setYposition(1);
+	if(board.getPieceAtPosition(FIRST_PLAYER, pos)!=SCISSORS)
+		return 3;
+	if(board.getPieceAtPosition(SECOND_PLAYER, pos)!=(char)0)
+		return 4;
+	pos.setXposition(2);
+	pos.setYposition(2);
+	if(board.getPieceAtPosition(FIRST_PLAYER, pos)!='r')
+		return 5;
+
+	board.addPieceToGame(FIRST_PLAYER, ROCK, Position(5,5));
+	board.addPieceToGame(SECOND_PLAYER, BOMB, Position(5,6));
+	board.addPieceToGame(FIRST_PLAYER, 'r', Position(4,4));
+	std::string line2 = "6 6 6 7 J: 5 5 B";
+	if(board.execMove(line2, move) != SUCCESS)
+		return 6;
+	pos.setXposition(5);
+	pos.setYposition(5);
+	if(board.getPieceAtPosition(FIRST_PLAYER, pos)!=(char)0)
+		return 7;
+	pos.setYposition(6);
+	if(board.getPieceAtPosition(FIRST_PLAYER, pos)!=(char)0)
+		return 8;
+	if(board.getPieceAtPosition(SECOND_PLAYER, pos)!=(char)0)
+		return 9;
+	pos.setXposition(4);
+	pos.setYposition(4);
+	if(board.getPieceAtPosition(FIRST_PLAYER, pos)!='b')
+		return 10;
+    return 0;
+
 }
