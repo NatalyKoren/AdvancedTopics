@@ -103,7 +103,7 @@ int ParseBoard::checkLine (GameBoard& board, const char* line) {
 	if (piece == 'J') {
 		piece = tolower(jokerRep);
 	}
-	if (checkPos(board, piece, x, y) != 0) {
+	if (checkPos(board, piece, x-1, y-1) != 0) {
 		return curLine;
 	}
 

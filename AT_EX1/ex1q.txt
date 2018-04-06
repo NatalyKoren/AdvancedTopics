@@ -16,7 +16,8 @@ TODO:
 [] print board - Liron
 [] game board update new fields: winner, reason - Nataly
 [] Tests - Both
-[] need to handle empty lines on input files - Liron
+[---] need to handle empty lines on input files - Liron //LIRON: I don't see the problem
 [] documentation
 [] need to check getLine function errors (forum).
+[] remove debug printing - Liron
 
