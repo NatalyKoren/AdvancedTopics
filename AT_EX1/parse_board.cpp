@@ -23,7 +23,7 @@ int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	initializePieceCount();
 	std::ifstream myfile (filename);
 	if (!myfile.is_open()) {
-		std::cout << "Unable to open file " << filename << std::endl;
+		std::cout << "Unable to open file " << filename << ": " << std::strerror(errno) << std::endl;
 		return 1;
 	}
 	curPlayer = filename[6] - '0'; // gets the int value of the char
@@ -85,9 +85,9 @@ int ParseBoard::checkLine (GameBoard& board, const char* line) {
 	char piece;
 	int x;
 	int y;
-	char residue;
+	char jokerRep;
 	// check format:
-	int scanned = sscanf(line, "%c %i %i %s", &piece, &x, &y, &residue);
+	int scanned = sscanf(line, "%c %i %i %s", &piece, &x, &y, &jokerRep);
 	//std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
 	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
 		std::cout << "Error in board file: wrong format in line " << curLine << std::endl;
@@ -100,6 +100,9 @@ int ParseBoard::checkLine (GameBoard& board, const char* line) {
 	}
 
 	// check position:
+	if (piece == 'J') {
+		piece = tolower(jokerRep);
+	}
 	if (checkPos(board, piece, x, y) != 0) {
 		return curLine;
 	}

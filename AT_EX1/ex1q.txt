@@ -11,7 +11,7 @@ TODO:
 [V] outputfile
 [V] Main
 [] printing to std - Both
-[] errno - Liron
+[V] errno - Liron
 [V] update checkVictory - Nataly
 [] print board - Liron
 [] game board update new fields: winner, reason - Nataly

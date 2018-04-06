@@ -50,12 +50,12 @@ void Game::playGame() {
 	bool MOVES2_EMPTY = false;
 
 	if (!movesFile1.is_open()) {
-		std::cout << "Unable to open file " << MOVES1 << std::endl;
+		std::cout << "Unable to open file " << MOVES1 << ": " << std::strerror(errno) << std::endl;
 		MOVES1_EMPTY = true;
 	}
 	std::ifstream movesFile2 (MOVES2);
 	if (!movesFile2.is_open()) {
-		std::cout << "Unable to open file " << MOVES2 << std::endl;
+		std::cout << "Unable to open file " << MOVES2 << ": " << std::strerror(errno) << std::endl;
 		MOVES2_EMPTY = true;
 	}
 
@@ -124,8 +124,7 @@ int Game::writeToOutput() {
 		line = firstPlayerLine;
 	}
 	if(!output.is_open()) {
-		//TODO: ERRNO
-		std::cout << "Error: could not write to output file." << std::endl;
+		std::cout << "Error: could not write to output file:" << std::strerror(errno) << std::endl;
 		return ERROR;
 	}
 	if(winner == NONE) winner = TIE;

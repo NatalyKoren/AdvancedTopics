@@ -7,6 +7,7 @@
 #ifndef GAMEBOARD_H_
 #define GAMEBOARD_H_
 #include <fstream>
+#include <cctype>
 #include "Move.h"
 #include "Position.h"
 #include "Definitions.h"
@@ -106,7 +107,7 @@ public:
 	 * @param player
 	 * @param piece - piece to add to game board of player. Assuming that regular piece is upper case piece,
 	 * and a joker piece is lower case piece.
-	 * @param pos - position that contains the ppiece.
+	 * @param pos - position that contains the piece.
 	 */
 	void addPieceToGame(int player, char piece, Position pos);
 	/***
@@ -171,6 +172,7 @@ public:
 
 	/*
 	 * prints the state of the board to output
+	 * assumes the output file is already open for writing
 	 * TODO
 	 */
 	void printBoard(std::ofstream& output);

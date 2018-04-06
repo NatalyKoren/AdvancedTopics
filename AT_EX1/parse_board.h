@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstring>
+#include <cerrno>
+#include <cctype>
 #include "Position.h"
 #include "Definitions.h"
 #include "GameBoard.h"

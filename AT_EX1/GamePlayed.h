@@ -8,6 +8,8 @@
 #define GAMEPLAYED_H_
 #include <iostream>
 #include <fstream>
+#include <cerrno>
+#include <cstring>
 #include "Definitions.h"
 #include "GameBoard.h"
 #include "Move.h"
