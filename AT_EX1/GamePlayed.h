@@ -50,7 +50,7 @@ public:
 
 	/*
 	 * Called by main
-	 * calls all other game methods
+	 * calls all other game methods - runs the game from beginning to end.
 	 * return value: SUCCESS or ERROR
 	 */
 	int startGame();

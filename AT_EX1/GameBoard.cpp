@@ -333,10 +333,18 @@ void GameBoard::printBoard(std::ofstream& output) {
 				if (isEmpty(SECOND_PLAYER, pos)) {
 					output << " ";
 				} else {
-					output << (char)tolower(secondPlayerBoard[x][y]);
+					if(islower(secondPlayerBoard[x][y]))
+						output << 'j';
+					else
+						output << (char)tolower(secondPlayerBoard[x][y]);
 				}
 			}
-			else output << (char)toupper(firstPlayerBoard[x][y]);
+			else {
+				if(islower(secondPlayerBoard[x][y]))
+					output << 'J';
+				else
+					output << (char)toupper(firstPlayerBoard[x][y]);
+			}
 		}
 		output << std::endl;
 	}

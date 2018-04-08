@@ -38,7 +38,7 @@ int Game::firstTurn() {
 		}
 	}
 	// std::cout << "finished firstTurn" << std::endl;
-	return board.checkVictory(curPlayer);
+    return board.checkVictory(curPlayer);
 }
 
 void Game::playGame() {
@@ -58,8 +58,9 @@ void Game::playGame() {
 		std::cout << "Unable to open file " << MOVES2 << ": " << std::strerror(errno) << std::endl;
 		MOVES2_EMPTY = true;
 	}
-
+    // playing the game
 	while (!MOVES1_EMPTY || !MOVES2_EMPTY) {
+        // first player's turn
 		if (!MOVES1_EMPTY) {
 			if(getline(movesFile1,line1) && !line1.empty()){
 				move.setPlayer(FIRST_PLAYER);
@@ -129,6 +130,7 @@ int Game::writeToOutput() {
 	}
 	if(winner == NONE) winner = TIE;
 	output << "Winner: " << winner << std::endl;
+    // print reason to file
 	switch(board.getReason()) {
 	case FLAG_CAPTURED:
 		output << "Reason: All flags of the opponent are captured" << std::endl;
@@ -155,6 +157,7 @@ int Game::writeToOutput() {
 		std::cout << "Error in REASON" << std::endl;
 		break;
 	}
+    // print board state to file
 	board.printBoard(output);
 	output.close();
 	return SUCCESS;
