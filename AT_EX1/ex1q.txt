@@ -21,3 +21,9 @@ TODO:
 [] need to check getLine function errors (forum).
 [] remove debug printing - Liron
 
+TESTED:
+1. Tried to move bomb - caught
+2. Indexes out of bounds in board - caught
+3. Player tries to move piece to a location already occupied - caught
+4. Attempt to move more than one square horizontally/vertically - caught
+5. Game ended without any winner (moves files ended) - output file created successfully

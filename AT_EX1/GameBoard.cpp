@@ -230,7 +230,7 @@ int GameBoard::checkMove(Move& move){
 	if(charToMove == BOMB || charToMove == FLAG){
 		std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
 		move.getSrc().printPosition();
-		std::cout << "contain non moving piece: " << charToMove << std::endl;
+		std::cout << " contains non moving piece: " << charToMove << std::endl;
 		return ILLEGAL_MOVE;
 	}
 	// (4) Joker tests
