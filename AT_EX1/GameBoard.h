@@ -44,13 +44,14 @@ public:
 	bool isFight(int playerToCheck, Position& pos);
 	/***
 	 * Check the board for a winner.
+	 * @param curPlayer - determines the order of checking if moving pieces are gone
 	 * @return FIRST_PLAYER - first player wins - eat all opponents flags or all moving pieces.
 	 * SECOND_PLAYER - second  player wins.
 	 * TIE - both flags eaten, non moving pieces to both players.
 	 * NONE - there is no winner.
 	 * In case of a winner or a TIE, winner and reason are updated accordingly.
 	 */
-	int checkVictory();
+	int checkVictory(int curPlayer);
 	/***
 	 * The function receives a valid move and updates the boards accordingly.
 	 * In a case of a fight - the function will update the boards and players pieces
@@ -176,6 +177,12 @@ public:
 	 * TODO
 	 */
 	void printBoard(std::ofstream& output);
+
+	/*
+	 * updates the joker's params
+	 * returns ERROR if invalid attempt to change joker, SUCCESS otherwise
+	 */
+	int updateJoker(Move& move);
 
 };
 

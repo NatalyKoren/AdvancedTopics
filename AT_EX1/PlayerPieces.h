@@ -15,7 +15,7 @@ class PlayerPieces{
 	int bomb;
 	int flag;
 	int joker;
-	int numOfMoovingJokers;
+	int numOfMovingJokers;
 
 public:
 	PlayerPieces();
@@ -26,7 +26,7 @@ public:
 	void setBombNum(int num){bomb = num; }
 	void setFlagNum(int num){flag = num; }
 	void setJokerNum(int num){joker = num; }
-	void setNumOfMovingJoker(int num){numOfMoovingJokers = num; }
+	void setNumOfMovingJoker(int num){numOfMovingJokers = num; }
 	// --- Getters
 	int getScissorsNum(){ return scissors; }
 	int getRockNum(){ return rock; }
@@ -34,12 +34,12 @@ public:
 	int getBombNum(){ return bomb; }
 	int getFlagNum(){ return flag; }
 	int getJokerNum(){ return joker; }
-	int getNumOfMovingJoker(){return numOfMoovingJokers; }
+	int getNumOfMovingJoker(){return numOfMovingJokers; }
 	// --- Move pieces number
-	int getMovePiecesNum() { return (scissors+ rock + paper + numOfMoovingJokers); }
+	int getMovePiecesNum() { return (scissors+ rock + paper + numOfMovingJokers); }
 	// set piece to player
 	void incrementPieceNum(char piece, int num);
-	void incrementJokerMoovingPieces(int num) { numOfMoovingJokers+=num; }
+	void incrementJokerMovingPieces(int num) { numOfMovingJokers+=num; }
 	void updateJokerMovingCount(char previousPiece, char newPiece);
 
 };

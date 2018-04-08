@@ -19,11 +19,30 @@ TODO:
 [---] need to handle empty lines on input files - Liron //LIRON: I don't see the problem
 [] documentation
 [] need to check getLine function errors (forum).
-[] remove debug printing - Liron
+[V] remove debug printing - Liron
 
-TESTED:
+TESTED SUCCESSFULLY:
 1. Tried to move bomb - caught
 2. Indexes out of bounds in board - caught
 3. Player tries to move piece to a location already occupied - caught
 4. Attempt to move more than one square horizontally/vertically - caught
 5. Game ended without any winner (moves files ended) - output file created successfully
+6. Player 2 wins - captures opponent's flag - output file created successfully
+7. Player 1's moves file includes bad formatted line - player 1 loses. Output file created successfully
+8. Player 1 moves the joker AND changes it in same line - success 
+9. Player 1 changes joker in a turn where a non-joker piece moves - success
+10. Player 2 captures opponent's flag with Joker, which is the only moving piece, but then changes it to B - player 2 still wins
+11. Player 2 tries to change a joker with "J: <X> <Y> <CHAR>" where X, Y are empty - player 1 won
+12. Player 2 eats player 1's last moving piece with a joker, when this joker is player 2's only/
+    moving piece, and then changes it to Bomb - player 2 wins
+13. Player 1 turns joker (only moving piece) to Bomb. Player 2's last moving piece explodes on 
+	this bomb. Player 2 wins.
+14. Player 2's last moving piece fights with player 1's last moving piece, they're equal and both
+	are out. Player 2 wins
+
+FIXED BUGS:
+1. Joker changes representation - see http://moodle.tau.ac.il/mod/forum/discuss.php?d=49041
+    Solution: moved the testForJokerValidChange from checkMove to execMove (after updateBoardAfterMove)
+2. Changing joker failed to catch cases of "J: <X> <Y> <CHAR>" where X, Y are empty/don't contain joker
+3. In checkVictory - there is not scenario in which all moving pieces are eaten and there's a 
+	tie. Fixed so that checkVictory checks for the player who just played    
