@@ -171,10 +171,10 @@ public:
 	 */
 	int testForValidMovementOfBoard(Move& move);
 
-	/*
+	/***
 	 * prints the state of the board to output
 	 * assumes the output file is already open for writing
-	 * TODO
+	 * @param output - an open file for writing
 	 */
 	void printBoard(std::ofstream& output);
 
