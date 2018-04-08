@@ -61,7 +61,7 @@ void Game::playGame() {
 
 	while (!MOVES1_EMPTY || !MOVES2_EMPTY) {
 		if (!MOVES1_EMPTY) {
-			if(getline(movesFile1,line1)){
+			if(getline(movesFile1,line1) && !line1.empty()){
 				move.setPlayer(FIRST_PLAYER);
 				if(board.execMove(line1, move) == ERROR) {
 					break;
@@ -77,7 +77,7 @@ void Game::playGame() {
 		}
 
 		if (!MOVES2_EMPTY) {
-			if(getline(movesFile2,line2)){
+			if(getline(movesFile2,line2) && !line2.empty()){
 				move.setPlayer(SECOND_PLAYER);
 				if(board.execMove(line2, move) == ERROR) {
 					break;
