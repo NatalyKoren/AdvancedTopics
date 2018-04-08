@@ -6,7 +6,7 @@
 #include "PlayerPieces.h"
 
 PlayerPieces::PlayerPieces(): scissors(0), rock(0), paper(0), bomb(0), flag(0),
-								joker(0), numOfMoovingJokers(0) { }
+								joker(0), numOfMovingJokers(0) { }
 
 void PlayerPieces::incrementPieceNum(char piece, int num){
 	bool isMovingPiece = false;
@@ -28,7 +28,7 @@ void PlayerPieces::incrementPieceNum(char piece, int num){
 	case JOKER:
 		joker+= num;
 		if(isMovingPiece)
-			numOfMoovingJokers+=num;
+			numOfMovingJokers+=num;
 		break;
 	case BOMB:
 		bomb+= num;
@@ -47,9 +47,9 @@ void PlayerPieces::updateJokerMovingCount(char previousPiece, char newPiece){
 		newPiece = toupper(newPiece);
 		if(newPiece == BOMB && previousPiece != (char) 0)
 			// the joker changed from moving piece to non moving piece
-			incrementJokerMoovingPieces(-1);
+			incrementJokerMovingPieces(-1);
 		if(newPiece != BOMB && (previousPiece == BOMB || previousPiece == (char) 0 ))
 			// the joker changed from non moving piece to moving piece
-			incrementJokerMoovingPieces(1);
+			incrementJokerMovingPieces(1);
 	}
 }

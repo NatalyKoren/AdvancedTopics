@@ -19,14 +19,14 @@ int Game::initBoard() {
 	if (boards == ERROR) {
 		std::cout << "Error in parsing player two's board." << std::endl;
 	}
-	std::cout << "finished initBoard" << std::endl;
+	//std::cout << "finished initBoard" << std::endl;
 
 	return SUCCESS;
 }
 
 
 int Game::firstTurn() {
-	std::cout << "started firstTurn" << std::endl;
+	// std::cout << "started firstTurn" << std::endl;
 
 	Position pos (0,0);
 	for (int i = 0; i < N; i++) {
@@ -37,8 +37,8 @@ int Game::firstTurn() {
 				board.checkAndRunFight(FIRST_PLAYER, pos);
 		}
 	}
-	std::cout << "finished firstTurn" << std::endl;
-	return board.checkVictory();
+	// std::cout << "finished firstTurn" << std::endl;
+	return board.checkVictory(curPlayer);
 }
 
 void Game::playGame() {
@@ -67,7 +67,7 @@ void Game::playGame() {
 					break;
 				}
 				firstPlayerLine++;
-				if (board.checkVictory() != NONE) {
+				if (board.checkVictory(FIRST_PLAYER) != NONE) {
 					break;
 				}
 			}
@@ -83,7 +83,7 @@ void Game::playGame() {
 					break;
 				}
 				secondPlayerLine++;
-				if (board.checkVictory() != NONE) {
+				if (board.checkVictory(SECOND_PLAYER) != NONE) {
 					break;
 				}
 			}
@@ -99,18 +99,18 @@ void Game::playGame() {
 }
 
 int Game::startGame() {
-	std::cout << "start startGame" << std::endl;
+	//std::cout << "start startGame" << std::endl;
 	int success = initBoard();
 	if (success == ERROR) {
 		return ERROR;
 	}
-	std::cout << "in startGame" << std::endl;
+	//std::cout << "in startGame" << std::endl;
 
 	if (firstTurn() != NONE) {
 		return writeToOutput();
 	}
 	playGame();
-	std::cout << "finished StartGame" << std::endl; //DEBUG
+	//std::cout << "finished StartGame" << std::endl; //DEBUG
 	return writeToOutput();
 }
 

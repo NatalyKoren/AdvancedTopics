@@ -58,9 +58,8 @@ bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
 }
 
 void GameBoard::updateBoardAfterMove(Move& move){
-	// assuming it is a valid move
+	// assuming it is a vatestForJokerValidChangelid move
 	int player = move.getPlayer();
-	char previousPiece;
 	Position srcPos = move.getSrc(); // TODO check if it should be Position&
 	Position dstPos = move.getDst();
 	// get char to be updated.
@@ -74,16 +73,27 @@ void GameBoard::updateBoardAfterMove(Move& move){
 	}
 	// set source position to zero
 	setPieceAtPosition(player,0, srcPos);
-	//Update joker
-	if(move.getIsJokerUpdated()){
-		previousPiece = getPieceAtPosition(player, move.getJokerPos());
+
+}
+
+int GameBoard::updateJoker(Move& move) {
+	// Joker tests
+	if(testForJokerValidChange(move) == ILLEGAL_MOVE) {
+		reason = BAD_MOVE;
+		return ERROR;
+	}
+	int player = move.getPlayer();
+	if(move.getIsJokerUpdated()) {
+		char previousPiece = getPieceAtPosition(player, move.getJokerPos());
 		setPieceAtPosition(player, move.getJokerNewChar(), move.getJokerPos());
 		if(player == FIRST_PLAYER)
 			firstPlayerPieces.updateJokerMovingCount(previousPiece, move.getJokerNewChar());
 		else
 			secondPlayerPieces.updateJokerMovingCount(previousPiece, move.getJokerNewChar());
 	}
+	return SUCCESS;
 }
+
 
 int GameBoard::fight(Position& pos){
 	int firstPlayerPiece = getPieceAtPosition(FIRST_PLAYER,pos);
@@ -129,11 +139,20 @@ void GameBoard::updateAfterLoseFight(int player, Position& pos){
 	increasePieceNum(player,charToRemove,-1);
 }
 
-int GameBoard::checkVictory(){
-	int firstPlayerMoovinNum = firstPlayerPieces.getMovePiecesNum();
-	int secondPlayerMoovinNum = secondPlayerPieces.getMovePiecesNum();
-	if(firstPlayerPieces.getFlagNum() == 0){
-		if(secondPlayerPieces.getFlagNum() == 0){
+int GameBoard::checkVictory(int curPlayer){
+//	int curPlayerMovingNum = 0;
+	int opponentMovingNum = 0;
+	if (curPlayer == FIRST_PLAYER) {
+//		curPlayerMovingNum = firstPlayerPieces.getMovePiecesNum();
+		opponentMovingNum = secondPlayerPieces.getMovePiecesNum();
+	} else {
+//		curPlayerMovingNum = secondPlayerPieces.getMovePiecesNum();
+		opponentMovingNum = firstPlayerPieces.getMovePiecesNum();
+	}
+	//	int firstPlayerMovinNum = firstPlayerPieces.getMovePiecesNum();
+	//	int secondPlayerMovinNum = secondPlayerPieces.getMovePiecesNum();
+	if(firstPlayerPieces.getFlagNum() == 0) {
+		if(secondPlayerPieces.getFlagNum() == 0) {
 			winner = TIE;
 			reason = TIE_BOTH_FLAGS_CAPTURED;
 		}
@@ -144,33 +163,23 @@ int GameBoard::checkVictory(){
 		}
 	}
 	else if(secondPlayerPieces.getFlagNum() == 0){
-		// first player wins - fLag num of first player is not 0.
+		// first player wins - flag num of first player is not 0.
 		winner = FIRST_PLAYER;
 		reason = FLAG_CAPTURED;
 	}
 	// flags number of both players is not 0.
-	else if(firstPlayerMoovinNum==0 ){
-		if(secondPlayerMoovinNum == 0){
-			winner = TIE;
-			reason = ALL_MOVING_PIECES_EATEN;
-		}
-		else{
-			// second player wins
-			winner = SECOND_PLAYER;
-			reason = ALL_MOVING_PIECES_EATEN;
-		}
-	}
-	else if(secondPlayerMoovinNum == 0){
-		// first player wins
-		winner = FIRST_PLAYER;
+	else if (opponentMovingNum == 0) {
+		winner = curPlayer;
 		reason = ALL_MOVING_PIECES_EATEN;
 	}
-	else{
+
+	else {
 		winner = NONE;
 		reason = TIE_GAME_OVER;
 	}
 	return winner;
 }
+
 void GameBoard::addPieceToGame(int player, char piece, Position pos){
 	setPieceAtPosition(player,piece,pos);
 	increasePieceNum(player, piece, 1);
@@ -233,9 +242,7 @@ int GameBoard::checkMove(Move& move){
 		std::cout << " contains non moving piece: " << charToMove << std::endl;
 		return ILLEGAL_MOVE;
 	}
-	// (4) Joker tests
-	if(testForJokerValidChange(move) == ILLEGAL_MOVE)
-		return ILLEGAL_MOVE;
+
 	// Seems OK ...
 	return VALID_MOVE;
 }
@@ -275,18 +282,25 @@ int GameBoard::execMove(std::string line, Move& move) {
 	int opponentPlayer = getOpponent(currentPlayer);
 	// Parse line format
 	if(move.parseLine(line) != VALID_LINE_FORMAT){
-		std::cout << "Current line is not at the right format: < " << line << " >" << std::endl;
+		std::cout << "Current line is not at the right format: <" << line << ">" << std::endl;
 		winner = opponentPlayer;
 		reason = BAD_MOVE;
 		return ERROR;
 	}
 	// check if move is a valid move
 	if(checkMove(move) != VALID_MOVE){
+		std::cout << "Bad move for player " << currentPlayer << std::endl;
 		winner = opponentPlayer;
 		reason = BAD_MOVE;
 		return ERROR;
 	}
 	updateBoardAfterMove(move);
+	if (updateJoker(move) == ERROR) {
+		//std::cout << "Bad move for player " << currentPlayer << ": illegal attempt to change Joker" << std::endl;
+		reason = BAD_MOVE;
+		return ERROR;
+
+	}
 	return SUCCESS;
 
 }
