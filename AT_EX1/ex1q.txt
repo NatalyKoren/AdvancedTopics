@@ -19,7 +19,7 @@ TODO:
 [---] need to handle empty lines on input files - Liron //LIRON: I don't see the problem
 [] documentation
 [] need to check getLine function errors (forum).
-[] remove debug printing - Liron
+[V] remove debug printing - Liron
 
 TESTED SUCCESSFULLY:
 1. Tried to move bomb - caught
@@ -35,6 +35,10 @@ TESTED SUCCESSFULLY:
 11. Player 2 tries to change a joker with "J: <X> <Y> <CHAR>" where X, Y are empty - player 1 won
 12. Player 2 eats player 1's last moving piece with a joker, when this joker is player 2's only/
     moving piece, and then changes it to Bomb - player 2 wins
+13. Player 1 turns joker (only moving piece) to Bomb. Player 2's last moving piece explodes on 
+	this bomb. Player 2 wins.
+14. Player 2's last moving piece fights with player 1's last moving piece, they're equal and both
+	are out. Player 2 wins
 
 FIXED BUGS:
 1. Joker changes representation - see http://moodle.tau.ac.il/mod/forum/discuss.php?d=49041
