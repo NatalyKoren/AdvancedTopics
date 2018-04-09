@@ -1,9 +1,9 @@
-COMP = g++
+COMP = g++-5.3.0
 #put all your object files here
 OBJS = main.o GameBoard.o Move.o PlayerPieces.o parse_board.o GamePlayed.o
 #The executabel filename DON'T CHANGE
 EXEC = ex1
-CPP_COMP_FLAG = -std=c++11 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
+CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
 
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) -o $@
