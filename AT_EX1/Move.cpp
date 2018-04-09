@@ -62,7 +62,7 @@ bool Move::parseLine(std::string line){
 	return VALID_LINE_FORMAT;
 }
 
-void Move::printMove(){
+void Move::printMove() const{
 	std::cout << "Source position: " << src.getXposition() << "," << src.getYposition()  << std::endl;
 	std::cout << "Destination position: " << dst.getXposition() << "," << dst.getYposition()  << std::endl;
 	std::cout << "Player: " << player << std::endl;
@@ -74,7 +74,7 @@ void Move::printMove(){
 
 }
 
-int Move::boundaryTest(int index, bool isRowTest){
+int Move::boundaryTest(int index, bool isRowTest) const{
 	char rowOrColBound = (isRowTest)? N:M;
 	if(index < 0 || index >= rowOrColBound)
 		return INDEX_OUT_OF_BOUND;
@@ -82,7 +82,7 @@ int Move::boundaryTest(int index, bool isRowTest){
 
 
 }
-int Move::positionBoundaryTest(Position& pos){
+int Move::positionBoundaryTest(Position& pos) const{
 	int xPos = pos.getXposition();
 	int yPos = pos.getYposition();
 	if(boundaryTest(xPos, true) == INDEX_OUT_OF_BOUND)
@@ -93,7 +93,7 @@ int Move::positionBoundaryTest(Position& pos){
 }
 
 
-bool Move::isJokerValidChar(char newJokerChar){
+bool Move::isJokerValidChar(char newJokerChar) const{
 	newJokerChar = toupper(newJokerChar);
 	if(newJokerChar == SCISSORS || newJokerChar == ROCK ||
 			newJokerChar == PAPER || newJokerChar == BOMB)

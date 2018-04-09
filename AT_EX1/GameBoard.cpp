@@ -9,7 +9,7 @@
 GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces(),
 winner(NONE), reason (0){}
 
-char GameBoard::getPieceAtPosition(int player, Position& pos){
+char GameBoard::getPieceAtPosition(int player, Position& pos) const{
 	// pos is a legal position
 	if(player == FIRST_PLAYER){
 		return firstPlayerBoard[pos.getXposition()][pos.getYposition()];
@@ -26,7 +26,7 @@ void GameBoard::setPieceAtPosition(int player, char piece, Position& pos){
 	}
 }
 
-bool GameBoard::isFight(int playerToCheck, Position& pos){
+bool GameBoard::isFight(int playerToCheck, Position& pos) const{
 	int x = pos.getXposition();
 	int y = pos.getYposition();
 	if(playerToCheck == FIRST_PLAYER)
@@ -95,7 +95,7 @@ int GameBoard::updateJoker(Move& move) {
 }
 
 
-int GameBoard::fight(Position& pos){
+int GameBoard::fight(Position& pos) const{
 	int firstPlayerPiece = getPieceAtPosition(FIRST_PLAYER,pos);
 	int secondPlayerPiece = getPieceAtPosition(SECOND_PLAYER,pos);
 	//For joker cases
@@ -123,7 +123,7 @@ int GameBoard::fight(Position& pos){
 		else if(secondPlayerPiece == BOMB) return TIE;
 		else return SECOND_PLAYER;
 	default:
-		return -1;
+		return NONE;
 
 	}
 
@@ -184,11 +184,11 @@ void GameBoard::addPieceToGame(int player, char piece, Position pos){
 	setPieceAtPosition(player,piece,pos);
 	increasePieceNum(player, piece, 1);
 }
-bool GameBoard::isEmpty(int player, Position& pos){
+bool GameBoard::isEmpty(int player, Position& pos) const{
 	return (getPieceAtPosition(player,pos) == (char) 0);
 }
 
-int GameBoard::getJokerMovingPiece(int player){
+int GameBoard::getJokerMovingPiece(int player) const{
 	if(player== FIRST_PLAYER)
 		return firstPlayerPieces.getNumOfMovingJoker();
 	else return secondPlayerPieces.getNumOfMovingJoker();
@@ -247,7 +247,7 @@ int GameBoard::checkMove(Move& move){
 	return VALID_MOVE;
 }
 
-int GameBoard::testForJokerValidChange(Move& move){
+int GameBoard::testForJokerValidChange(Move& move) const{
 	char newJokerChar;
 	if(move.getIsJokerUpdated()){
 		// joker position is empty
@@ -324,7 +324,7 @@ int GameBoard::testForValidMovementOfBoard(Move& move){
 }
 
 
-void GameBoard::printBoard(std::ofstream& output) {
+void GameBoard::printBoard(std::ofstream& output) const{
 	for (int x = 0; x < N; x++) {
 		for (int y = 0; y < M; y++) {
 			Position pos (x,y);
@@ -339,7 +339,7 @@ void GameBoard::printBoard(std::ofstream& output) {
 				}
 			}
 			else {
-				if(islower(secondPlayerBoard[x][y]))
+				if(islower(firstPlayerBoard[x][y]))
 					output << 'J';
 				else
 					output << (char)toupper(firstPlayerBoard[x][y]);

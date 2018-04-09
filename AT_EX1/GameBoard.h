@@ -29,10 +29,11 @@ public:
 	GameBoard();
 	/***
 	 * The function assumes that at pos there is a fight.
+	 * Returns the winner of the fight or tie, without changing the board game.
 	 * @param pos - the fight position.
 	 * @return 0 - Tie, FIRST_PLAYER if first player wins, else return SECOND_PLAYER.
 	 */
-	int fight(Position& pos);
+	int fight(Position& pos) const;
 	/***
 	 * Check if there is a fight for playerToCheck.
 	 * The function need to check if pos is occupied by playerToCheck piece.
@@ -41,7 +42,7 @@ public:
 	 * @param pos - the position to check.
 	 * @return - true if there is a fight and false otherwise.
 	 */
-	bool isFight(int playerToCheck, Position& pos);
+	bool isFight(int playerToCheck, Position& pos) const;
 	/***
 	 * Check the board for a winner.
 	 * @param curPlayer - determines the order of checking if moving pieces are gone
@@ -67,7 +68,7 @@ public:
 	 * @param pos - the position on board
 	 * @return the char at position pos at player's board.
 	 */
-	char getPieceAtPosition(int player, Position& pos);
+	char getPieceAtPosition(int player, Position& pos) const;
 	/***
 	 * set player's piece at position with 'piece' character.
 	 * @param player  - player's board to be updated.
@@ -80,7 +81,7 @@ public:
 	 * @param player
 	 * @return SECOND_PLAYER if player is FIRST_PLAYER and FIRST_PLAYER otherwise.
 	 */
-	int getOpponent(int player){
+	int getOpponent(int player) const{
 		return (player == FIRST_PLAYER)? SECOND_PLAYER:FIRST_PLAYER;
 	}
 	/***
@@ -117,18 +118,18 @@ public:
 	 * @param pos - position to check
 	 * @return - true if pos doesn't contain a player piece
 	 */
-	bool isEmpty(int player, Position& pos);
+	bool isEmpty(int player, Position& pos) const;
 	/**
 	 * for tests
 	 */
-	int getJokerMovingPiece(int player);
+	int getJokerMovingPiece(int player) const;
 	/***
 	 * If move contains a joker change, then the function will test is the change is a valid change.
 	 * Tests: position contains a joker piece, new representation is a valid representation.
 	 * @param move - move to be tested
 	 * @return ILLEGAL_MOVE if the joker change is illegal change and VALID_MOVE otherwise.
 	 */
-	int testForJokerValidChange(Move& move);
+	int testForJokerValidChange(Move& move) const;
 	/***
 	 * Test if a move is a valid move.
 	 * Tests: boundary tests for src position and dst position, test if dst contains same player piece,
@@ -161,8 +162,8 @@ public:
 	void setWinner(int newWinner) {winner = newWinner;}
 	void setReason(int newReason) {reason = newReason;}
 	// Getters
-	int getWinner() {return winner;}
-	int getReason() {return reason;}
+	int getWinner() const{return winner;}
+	int getReason() const{return reason;}
 	/***
 	 * Assuming move contain a valid positions on board ( not out of bound ).
 	 * Check if the step in move is a valid step: only one step forward, backward, lefd side or right side.
@@ -176,7 +177,7 @@ public:
 	 * assumes the output file is already open for writing
 	 * @param output - an open file for writing
 	 */
-	void printBoard(std::ofstream& output);
+	void printBoard(std::ofstream& output)const;
 
 	/*
 	 * updates the joker's params
