@@ -325,7 +325,6 @@ int GameBoard::testForValidMovementOfBoard(Move& move){
 
 
 void GameBoard::printBoard(std::ofstream& output) {
-	//DEBUG
 	for (int x = 0; x < N; x++) {
 		for (int y = 0; y < M; y++) {
 			Position pos (x,y);

@@ -39,6 +39,11 @@ TESTED SUCCESSFULLY:
 	this bomb. Player 2 wins.
 14. Player 2's last moving piece fights with player 1's last moving piece, they're equal and both
 	are out. Player 2 wins
+15. Both players position flags at the same spot in board files - tie
+16. Player 1 positions 2 pieces on same sqaure in board file - illegal board file
+17. Player 2's Paper explodes on player 1's Bomb - Paper and Bomb are off the board
+18. Player 1 has Rock, Joker-Bomb and Flag.
+	Rock loses game and Joker changes to Scissors - player 1 wins because he can move
 
 FIXED BUGS:
 1. Joker changes representation - see http://moodle.tau.ac.il/mod/forum/discuss.php?d=49041
