@@ -24,7 +24,7 @@ int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	std::ifstream myfile (filename);
 	if (!myfile.is_open()) {
 		std::cout << "Unable to open file " << filename << ": " << std::strerror(errno) << std::endl;
-		return 1;
+		return ERROR;
 	}
 	curPlayer = filename[6] - '0'; // gets the int value of the char
 

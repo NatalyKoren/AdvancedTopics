@@ -3,7 +3,7 @@
  *
  *      Author: DELL
  */
-#include <cctype>
+
 #include "GameBoard.h"
 
 GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces(),
@@ -324,7 +324,7 @@ int GameBoard::testForValidMovementOfBoard(Move& move){
 }
 
 
-void GameBoard::printBoard(std::ofstream& output) const{
+int GameBoard::printBoard(std::ofstream& output) const{
 	for (int x = 0; x < N; x++) {
 		for (int y = 0; y < M; y++) {
 			Position pos (x,y);
@@ -344,8 +344,13 @@ void GameBoard::printBoard(std::ofstream& output) const{
 				else
 					output << (char)toupper(firstPlayerBoard[x][y]);
 			}
+			if(output.bad()){
+				std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
+				return ERROR;
+			}
 		}
 		output << std::endl;
 	}
+	return SUCCESS;
 }
 

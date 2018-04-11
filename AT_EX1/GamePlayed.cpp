@@ -3,25 +3,43 @@
  *
  *      Author: DELL
  */
-#include <iostream>
-#include <fstream>
+
 #include "GamePlayed.h"
 
-Game::Game(): curPlayer (FIRST_PLAYER), board(), firstPlayerLine(0), secondPlayerLine(0){}
+Game::Game(): curPlayer (FIRST_PLAYER), board(), firstPlayerLine(1), secondPlayerLine(1){}
 
 int Game::initBoard() {
 	ParseBoard parser = ParseBoard();
+	bool firstPlayerBadPositioningFile = false;
+	bool secondPlayerBadPositioningFile = false;
 	int boards = parser.parseBoardFile(BOARD1, board);
 	if (boards == ERROR) {
 		std::cout << "Error in parsing player one's board." << std::endl;
+		firstPlayerBadPositioningFile = true;
 	}
 	boards = parser.parseBoardFile(BOARD2, board);
 	if (boards == ERROR) {
 		std::cout << "Error in parsing player two's board." << std::endl;
+		secondPlayerBadPositioningFile = true;
 	}
 	//std::cout << "finished initBoard" << std::endl;
-
-	return SUCCESS;
+	if(firstPlayerBadPositioningFile && secondPlayerBadPositioningFile){
+		// Both players have bad positioning file
+		board.setWinner(TIE);
+		board.setReason(BOTH_PLAYERS_BAD_POSITIONING);
+	}
+	else if(firstPlayerBadPositioningFile){
+		// first player has bad positioning file - second player wins
+		board.setWinner(SECOND_PLAYER);
+		board.setReason(BAD_POSITIONING);
+	}
+	else if(secondPlayerBadPositioningFile){
+		// second player has bad positioning file - second player wins
+		board.setWinner(FIRST_PLAYER);
+		board.setReason(BAD_POSITIONING);
+	}
+	else return SUCCESS;
+	return ERROR;
 }
 
 
@@ -62,7 +80,7 @@ void Game::playGame() {
 	while (!MOVES1_EMPTY || !MOVES2_EMPTY) {
         // first player's turn
 		if (!MOVES1_EMPTY) {
-			if(getline(movesFile1,line1) && !line1.empty()){
+			if(getline(movesFile1,line1) && !isLineContainWhiteSpaceOnly(line1)){
 				move.setPlayer(FIRST_PLAYER);
 				if(board.execMove(line1, move) == ERROR) {
 					break;
@@ -78,7 +96,7 @@ void Game::playGame() {
 		}
 
 		if (!MOVES2_EMPTY) {
-			if(getline(movesFile2,line2) && !line2.empty()){
+			if(getline(movesFile2,line2) && !isLineContainWhiteSpaceOnly(line2)){
 				move.setPlayer(SECOND_PLAYER);
 				if(board.execMove(line2, move) == ERROR) {
 					break;
@@ -101,9 +119,8 @@ void Game::playGame() {
 
 int Game::startGame() {
 	//std::cout << "start startGame" << std::endl;
-	int success = initBoard();
-	if (success == ERROR) {
-		return ERROR;
+	if (initBoard() == ERROR) {
+		return writeToOutput();
 	}
 	//std::cout << "in startGame" << std::endl;
 
@@ -130,6 +147,12 @@ int Game::writeToOutput() {
 	}
 	if(winner == NONE) winner = TIE;
 	output << "Winner: " << winner << std::endl;
+    // check for error in writing to output file
+    //bad() function will check for badbit
+    if(output.bad()){
+        std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
+        return ERROR;
+    }
     // print reason to file
 	switch(board.getReason()) {
 	case FLAG_CAPTURED:
@@ -145,7 +168,7 @@ int Game::writeToOutput() {
 		output << "Reason: A tie - all flags are eaten by both players in the position files" << std::endl;
 		break;
 	case BAD_POSITIONING:
-		output << "Reason: Bad Positioning input file for player" << board.getOpponent(winner) << "line " << line << std::endl;
+		output << "Reason: Bad Positioning input file for player " << board.getOpponent(winner) << " line " << line << std::endl;
 		break;
 	case BOTH_PLAYERS_BAD_POSITIONING:
 		output << "Reason: Bad Positioning input file for both players - player 1: line " << firstPlayerLine << ", player 2: line " << secondPlayerLine << std::endl;
@@ -157,8 +180,25 @@ int Game::writeToOutput() {
 		std::cout << "Error in REASON" << std::endl;
 		break;
 	}
+    // check for error in writing to output file
+    //bad() function will check for badbit
+    if(output.bad()){
+        std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
+        return ERROR;
+    }
     // print board state to file
-	board.printBoard(output);
+	if(board.printBoard(output) == ERROR){
+        output.close();
+        return ERROR;
+    }
+
 	output.close();
 	return SUCCESS;
+}
+
+bool Game::isLineContainWhiteSpaceOnly(std::string line){
+    char tmp;
+    if(sscanf(line.c_str()," %c", &tmp) != 1)
+        return true;
+    return false;
 }

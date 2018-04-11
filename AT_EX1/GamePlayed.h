@@ -15,6 +15,7 @@
 #include "Move.h"
 #include "parse_board.h"
 
+
 class Game {
 	int curPlayer;
 	GameBoard board;
@@ -60,6 +61,12 @@ public:
 	 * returns SUCCESS or ERROR
 	 */
 	int writeToOutput();
+	/**
+	 * return true if line contains whitespaces only and false otherwise.
+	 * @param line - line to check
+	 * @return true if line contains whitespaces only and false otherwise.
+	 */
+	bool isLineContainWhiteSpaceOnly(std::string line);
 };
 
 #endif /* GAMEPLAYED_H_ */

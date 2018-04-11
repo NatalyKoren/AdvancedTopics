@@ -8,6 +8,8 @@
 #define GAMEBOARD_H_
 #include <fstream>
 #include <cctype>
+#include <cerrno>
+#include <cstring>
 #include "Move.h"
 #include "Position.h"
 #include "Definitions.h"
@@ -176,8 +178,9 @@ public:
 	 * prints the state of the board to output
 	 * assumes the output file is already open for writing
 	 * @param output - an open file for writing
+	 * @return SUCCESS if writing to file succeeded and ERROR otherwise.
 	 */
-	void printBoard(std::ofstream& output)const;
+	int printBoard(std::ofstream& output)const;
 
 	/*
 	 * updates the joker's params
