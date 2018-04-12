@@ -35,7 +35,7 @@ int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	}
 	myfile.close();
 	if (res != 0) {
-		std::cout << "Error in file format of player" << curPlayer << std::endl;
+		std::cout << "Error in file format of player " << curPlayer << std::endl;
 		return curLine;
 	}
 	if (checkPieces() != 0) {

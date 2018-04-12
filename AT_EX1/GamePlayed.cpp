@@ -15,7 +15,7 @@ int Game::initBoard() {
     int reason = SUCCESS;
 	int boards = parser.parseBoardFile(BOARD1, board);
 	if (boards != SUCCESS) {
-		std::cout << "Error in parsing player one's board." << std::endl;
+//		std::cout << "Error in parsing player one's board." << std::endl;
 		firstPlayerBadPositioningFile = true;
         firstPlayerLine = boards;
         reason = boards;
@@ -225,7 +225,7 @@ int Game::printReasonToOutputFile(std::ofstream& output, int reason, int winner)
             output << "Reason: A tie - all flags are eaten by both players in the position files" << std::endl;
             break;
         case BAD_POSITIONING:
-            output << "Reason: Bad Positioning input file for player " << board.getOpponent(winner) << " line " << line << std::endl;
+            output << "Reason: Bad Positioning input file for player " << board.getOpponent(winner) << " - line " << line << std::endl;
             break;
         case BOTH_PLAYERS_BAD_POSITIONING:
             output << "Reason: Bad Positioning input file for both players - player 1: line " << firstPlayerLine << ", player 2: line " << secondPlayerLine << std::endl;

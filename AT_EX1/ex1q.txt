@@ -10,12 +10,12 @@ TODO:
 [V] valid move update - Nataly
 [V] outputfile
 [V] Main
-[] printing to std - Both
+[V] printing to std - Both
 [V] errno - Liron
 [V] update checkVictory - Nataly
-[] print board - Liron
+[V] print board - Liron
 [] game board update new fields: winner, reason - Nataly
-[] Tests - Both
+[V] Tests - Both
 [---] need to handle empty lines on input files - Liron //LIRON: I don't see the problem
 [] documentation
 [] need to check getLine function errors (forum).
@@ -50,4 +50,5 @@ FIXED BUGS:
     Solution: moved the testForJokerValidChange from checkMove to execMove (after updateBoardAfterMove)
 2. Changing joker failed to catch cases of "J: <X> <Y> <CHAR>" where X, Y are empty/don't contain joker
 3. In checkVictory - there is not scenario in which all moving pieces are eaten and there's a 
-	tie. Fixed so that checkVictory checks for the player who just played    
+	tie. Fixed so that checkVictory checks for the player who just played
+4. Errors in the format of printing to the output file    

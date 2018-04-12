@@ -287,12 +287,12 @@ int GameBoard::testForJokerValidChange(Move& move) const{
 			return ILLEGAL_MOVE;
 		}
 		if(!changesJokerPosToSrc && move.getSrc().isEqual(jokerPos)){
-			std::cout << "Joker position for Player: " << move.getPlayer() << " will be changed after the move." << std::endl;
-			std::cout << "Joker position: ";
-			jokerPos.printPosition();
-			std::cout << " will be changed to: ";
-			move.getDst().printPosition();
-			std::cout << std::endl;
+//			std::cout << "Joker position for Player: " << move.getPlayer() << " will be changed after the move." << std::endl;
+//			std::cout << "Joker position: ";
+//			jokerPos.printPosition();
+//			std::cout << " will be changed to: ";
+//			move.getDst().printPosition();
+//			std::cout << std::endl;
 			return ILLEGAL_MOVE;
 		}
 
