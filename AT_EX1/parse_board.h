@@ -52,4 +52,10 @@ public:
 	void initializePieceCount();
 };
 
+/**
+ * return true if line contains whitespaces only and false otherwise.
+ * @param line - line to check
+ * @return true if line contains whitespaces only and false otherwise.
+ */
+bool isLineContainWhiteSpaceOnly(std::string line);
 #endif /* PARSEBOARD_H_ */

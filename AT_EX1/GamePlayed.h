@@ -61,12 +61,16 @@ public:
 	 * returns SUCCESS or ERROR
 	 */
 	int writeToOutput();
-	/**
-	 * return true if line contains whitespaces only and false otherwise.
-	 * @param line - line to check
-	 * @return true if line contains whitespaces only and false otherwise.
+	/***
+	 * Print reason to output file
+	 * The function assumes the output file is opened for writing
+	 * @param output - output file to write
+	 * @param reason - the reason to write to output file
+	 * @param winner - the winner of the game: first player, seconf player or a tie.
+	 * @return ERROR if an error occurred. SUCCESS otherwise.
 	 */
-	bool isLineContainWhiteSpaceOnly(std::string line);
+	int printReasonToOutputFile(std::ofstream& output, int reason, int winner) const;
+
 };
 
 #endif /* GAMEPLAYED_H_ */

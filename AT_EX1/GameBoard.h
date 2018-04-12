@@ -48,13 +48,14 @@ public:
 	/***
 	 * Check the board for a winner.
 	 * @param curPlayer - determines the order of checking if moving pieces are gone
+	 * @param initStage - true if we check victory after the init boards stage and false otherwise
 	 * @return FIRST_PLAYER - first player wins - eat all opponents flags or all moving pieces.
 	 * SECOND_PLAYER - second  player wins.
 	 * TIE - both flags eaten, non moving pieces to both players.
 	 * NONE - there is no winner.
 	 * In case of a winner or a TIE, winner and reason are updated accordingly.
 	 */
-	int checkVictory(int curPlayer);
+	int checkVictory(int curPlayer, bool initStage);
 	/***
 	 * The function receives a valid move and updates the boards accordingly.
 	 * In a case of a fight - the function will update the boards and players pieces

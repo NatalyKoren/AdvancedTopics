@@ -35,6 +35,7 @@
 
 #define ERROR (1)
 #define SUCCESS (0)
+#define MISSING_INPUT_FILE (-1)
 
 enum GameMessage {ILLEGAL_LINE_FORMAT,
 				  VALID_LINE_FORMAT,

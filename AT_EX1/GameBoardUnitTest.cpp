@@ -190,18 +190,18 @@ int testVictory(){
 	board.addPieceToGame(SECOND_PLAYER, FLAG, Position(2,4));
 	board.addPieceToGame(SECOND_PLAYER, BOMB, Position(2,5));
 	board.addPieceToGame(SECOND_PLAYER, ROCK, Position(2,6));
-	if(board.checkVictory(FIRST_PLAYER) != NONE)
+	if(board.checkVictory(FIRST_PLAYER, false) != NONE)
 		return 1;
 	// second player wins - flag piece
 	Position pos(1,4);
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
-	if(board.checkVictory(FIRST_PLAYER) != SECOND_PLAYER)
+	if(board.checkVictory(FIRST_PLAYER, false) != SECOND_PLAYER)
 		return 2;
 	board.addPieceToGame(FIRST_PLAYER, FLAG, pos);
 	// first player wins -flag piece
 	Position pos1(2,4);
 	board.updateAfterLoseFight(SECOND_PLAYER, pos1);
-	if(board.checkVictory(FIRST_PLAYER) != FIRST_PLAYER)
+	if(board.checkVictory(FIRST_PLAYER, false) != FIRST_PLAYER)
 		return 3;
 	board.addPieceToGame(SECOND_PLAYER, FLAG, pos1);
 	// second player wins - moving pieces
@@ -211,14 +211,14 @@ int testVictory(){
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
 	pos.setYposition(3);
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
-	if(board.checkVictory(FIRST_PLAYER) != NONE)
+	if(board.checkVictory(FIRST_PLAYER, false) != NONE)
 		return 4;
 	pos.setYposition(6);
 	board.updateAfterLoseFight(FIRST_PLAYER, pos);
-	if(board.checkVictory(FIRST_PLAYER) != SECOND_PLAYER)
+	if(board.checkVictory(FIRST_PLAYER, false) != SECOND_PLAYER)
 		return 5;
 	board.addPieceToGame(FIRST_PLAYER, ROCK, Position(1,6));
-	if(board.checkVictory(FIRST_PLAYER) != NONE)
+	if(board.checkVictory(FIRST_PLAYER, false) != NONE)
 		return 5;
 	// first player wins - moving pieces
 	pos.setXposition(2);
@@ -228,11 +228,11 @@ int testVictory(){
 	board.updateAfterLoseFight(SECOND_PLAYER, pos);
 	pos.setYposition(3);
 	board.updateAfterLoseFight(SECOND_PLAYER, pos);
-	if(board.checkVictory(FIRST_PLAYER) != NONE)
+	if(board.checkVictory(FIRST_PLAYER, false) != NONE)
 		return 6;
 	pos.setYposition(6);
 	board.updateAfterLoseFight(SECOND_PLAYER, pos);
-	if(board.checkVictory(FIRST_PLAYER) != FIRST_PLAYER)
+	if(board.checkVictory(FIRST_PLAYER, false) != FIRST_PLAYER)
 		return 7;
 	return 0;
 }

@@ -24,11 +24,11 @@ int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	std::ifstream myfile (filename);
 	if (!myfile.is_open()) {
 		std::cout << "Unable to open file " << filename << ": " << std::strerror(errno) << std::endl;
-		return curLine;
+		return MISSING_INPUT_FILE;
 	}
 	curPlayer = filename[6] - '0'; // gets the int value of the char
 
-	while (getline (myfile,line) && res <= 0) {     //getline returns a reference to myfile
+	while (getline (myfile,line) && res <= 0 && !isLineContainWhiteSpaceOnly(line)) {     //getline returns a reference to myfile
         curLine++;
 		const char* charLine = line.c_str(); //convert string to const char*
 		res = checkLine(board, charLine);
@@ -126,4 +126,11 @@ int ParseBoard::checkPos(GameBoard& board, const char& piece, int x, int y) {
 	curPos = pos;
 	board.addPieceToGame(curPlayer, piece, pos);
 	return 0;
+}
+
+bool isLineContainWhiteSpaceOnly(std::string line){
+	char tmp;
+	if(sscanf(line.c_str()," %c", &tmp) != 1)
+		return true;
+	return false;
 }

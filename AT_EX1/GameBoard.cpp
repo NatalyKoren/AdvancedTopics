@@ -77,11 +77,7 @@ void GameBoard::updateBoardAfterMove(Move& move){
 }
 
 int GameBoard::updateJoker(Move& move) {
-	// Joker tests
-	if(testForJokerValidChange(move) == ILLEGAL_MOVE) {
-		reason = BAD_MOVE;
-		return ERROR;
-	}
+
 	int player = move.getPlayer();
 	if(move.getIsJokerUpdated()) {
 		char previousPiece = getPieceAtPosition(player, move.getJokerPos());
@@ -139,14 +135,14 @@ void GameBoard::updateAfterLoseFight(int player, Position& pos){
 	increasePieceNum(player,charToRemove,-1);
 }
 
-int GameBoard::checkVictory(int curPlayer){
-//	int curPlayerMovingNum = 0;
+int GameBoard::checkVictory(int curPlayer, bool initStage){
+	int curPlayerMovingNum = 0;
 	int opponentMovingNum = 0;
 	if (curPlayer == FIRST_PLAYER) {
-//		curPlayerMovingNum = firstPlayerPieces.getMovePiecesNum();
+		curPlayerMovingNum = firstPlayerPieces.getMovePiecesNum();
 		opponentMovingNum = secondPlayerPieces.getMovePiecesNum();
 	} else {
-//		curPlayerMovingNum = secondPlayerPieces.getMovePiecesNum();
+		curPlayerMovingNum = secondPlayerPieces.getMovePiecesNum();
 		opponentMovingNum = firstPlayerPieces.getMovePiecesNum();
 	}
 	//	int firstPlayerMovinNum = firstPlayerPieces.getMovePiecesNum();
@@ -169,10 +165,19 @@ int GameBoard::checkVictory(int curPlayer){
 	}
 	// flags number of both players is not 0.
 	else if (opponentMovingNum == 0) {
-		winner = curPlayer;
-		reason = ALL_MOVING_PIECES_EATEN;
+        winner = curPlayer;
+        reason = ALL_MOVING_PIECES_EATEN;
+        // init stage - maybe two player does not have moving pieces
+        if(initStage && curPlayerMovingNum == 0){
+            winner = TIE;
+            reason = ALL_MOVING_PIECES_EATEN;
+        }
 	}
-
+        // init stage - all player moving pieces are eaten
+    else if(initStage && curPlayerMovingNum == 0){
+        winner = getOpponent(curPlayer);
+        reason = ALL_MOVING_PIECES_EATEN;
+    }
 	else {
 		winner = NONE;
 		reason = TIE_GAME_OVER;
@@ -242,26 +247,35 @@ int GameBoard::checkMove(Move& move){
 		std::cout << " contains non moving piece: " << charToMove << std::endl;
 		return ILLEGAL_MOVE;
 	}
-
+	// Joker tests
+	if(testForJokerValidChange(move) == ILLEGAL_MOVE) {
+		return ILLEGAL_MOVE;
+	}
 	// Seems OK ...
 	return VALID_MOVE;
 }
 
 int GameBoard::testForJokerValidChange(Move& move) const{
 	char newJokerChar;
+	Position jokerPos = move.getJokerPos();
+	bool changesJokerPosToSrc = false;
 	if(move.getIsJokerUpdated()){
 		// joker position is empty
-		if(isEmpty(move.getPlayer(), move.getJokerPos())){
-			std::cout << "Joker position for Player: " << move.getPlayer() << " is empty. Position ";
-			move.getJokerPos().printPosition();
-			std::cout << std::endl;
-			return ILLEGAL_MOVE;
+		if(isEmpty(move.getPlayer(), jokerPos)){
+			if(!jokerPos.isEqual(move.getDst())){
+				std::cout << "Joker position for Player: " << move.getPlayer() << " is empty. Position ";
+				move.getJokerPos().printPosition();
+				std::cout << std::endl;
+				return ILLEGAL_MOVE;
+			}
+			jokerPos = move.getSrc();
+			changesJokerPosToSrc = true;
 		}
 
 		// joker position doesn't contain a joker piece
-		if(!islower(getPieceAtPosition(move.getPlayer(),move.getJokerPos()))){
+		if(!islower(getPieceAtPosition(move.getPlayer(),jokerPos))){
 			std::cout << "Joker position for Player: " << move.getPlayer() << " doesn't contain a joker's piece. Position ";
-			move.getJokerPos().printPosition();
+			jokerPos.printPosition();
 			std::cout << std::endl;
 			return ILLEGAL_MOVE;
 		}
@@ -270,6 +284,15 @@ int GameBoard::testForJokerValidChange(Move& move) const{
 		newJokerChar = move.getJokerNewChar();
 		if(!move.isJokerValidChar(newJokerChar)){
 			std::cout << "Joker new representation for player" << move.getPlayer() << " is invalid: " << toupper(newJokerChar) << std::endl;
+			return ILLEGAL_MOVE;
+		}
+		if(!changesJokerPosToSrc && move.getSrc().isEqual(jokerPos)){
+			std::cout << "Joker position for Player: " << move.getPlayer() << " will be changed after the move." << std::endl;
+			std::cout << "Joker position: ";
+			jokerPos.printPosition();
+			std::cout << " will be changed to: ";
+			move.getDst().printPosition();
+			std::cout << std::endl;
 			return ILLEGAL_MOVE;
 		}
 
