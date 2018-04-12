@@ -15,7 +15,7 @@
 #define B (2)
 #define J (2)
 #define F (1)
-#define PIECE_COUNT   (13)
+
 #define FIRST_PLAYER  (1)
 #define SECOND_PLAYER (2)
 # define TIE          (0)

@@ -9,8 +9,7 @@
 
 #include "Position.h"
 #include <iostream>
-#include <stdio.h>
-#include <algorithm>
+#include <cstdio>
 #include "Definitions.h"
 
 class Move{
