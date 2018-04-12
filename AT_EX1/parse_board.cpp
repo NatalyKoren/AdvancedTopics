@@ -88,7 +88,7 @@ int ParseBoard::checkLine (GameBoard& board, const char* line) {
 	char jokerRep;
 	char garbage;
 	// check format:
-	int scanned = sscanf(line, "%c %i %i %c %c", &piece, &x, &y, &jokerRep, &garbage);
+	int scanned = sscanf(line, " %c %i %i %c %c", &piece, &x, &y, &jokerRep, &garbage);
 	//std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
 	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
 		std::cout << "Error in board file: wrong format in line " << curLine << std::endl;
