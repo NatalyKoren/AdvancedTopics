@@ -13,14 +13,16 @@ int Game::initBoard() {
 	bool firstPlayerBadPositioningFile = false;
 	bool secondPlayerBadPositioningFile = false;
 	int boards = parser.parseBoardFile(BOARD1, board);
-	if (boards == ERROR) {
+	if (boards != SUCCESS) {
 		std::cout << "Error in parsing player one's board." << std::endl;
 		firstPlayerBadPositioningFile = true;
+        firstPlayerLine = boards;
 	}
 	boards = parser.parseBoardFile(BOARD2, board);
-	if (boards == ERROR) {
+	if (boards != SUCCESS) {
 		std::cout << "Error in parsing player two's board." << std::endl;
 		secondPlayerBadPositioningFile = true;
+        secondPlayerLine = boards;
 	}
 	//std::cout << "finished initBoard" << std::endl;
 	if(firstPlayerBadPositioningFile && secondPlayerBadPositioningFile){
@@ -174,7 +176,7 @@ int Game::writeToOutput() {
 		output << "Reason: Bad Positioning input file for both players - player 1: line " << firstPlayerLine << ", player 2: line " << secondPlayerLine << std::endl;
 		break;
 	case BAD_MOVE:
-		output << "Reason: Bad Moves input file for player " << board.getOpponent(winner) << "- line " << line << std::endl;
+		output << "Reason: Bad Moves input file for player " << board.getOpponent(winner) << " - line " << line << std::endl;
 		break;
 	default:
 		std::cout << "Error in REASON" << std::endl;

@@ -50,14 +50,14 @@ bool Move::parseLine(std::string line){
 	}
 
 	// Update move data
-	src.setXposition(fromX-1);
-	src.setYposition(fromY-1);
-	dst.setXposition(toX-1);
-	dst.setYposition(toY-1);
+	src.setXposition(fromY-1);
+	src.setYposition(fromX-1);
+	dst.setXposition(toY-1);
+	dst.setYposition(toX-1);
 	isJokerChanged = isJokerNewRep;
 	newJokerChar = tolower(newJokerRep);
-	jokerPos.setXposition(jokerX-1);
-	jokerPos.setYposition(jokerY-1);
+	jokerPos.setXposition(jokerY-1);
+	jokerPos.setYposition(jokerX-1);
 
 	return VALID_LINE_FORMAT;
 }

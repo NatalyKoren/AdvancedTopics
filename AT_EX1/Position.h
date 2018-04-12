@@ -22,6 +22,7 @@ public:
 	void setYposition(int pos){y=pos;}
 	// Print Position
 	void printPosition()const{ std::cout << "(" << x+1 << "," << y+1 << ")";}
+	bool isEqual(Position& other) {return (other.x == x) && (other.y == y);}
 };
 
 #endif /* POSITION_H_ */

@@ -18,28 +18,28 @@ void ParseBoard::initializePieceCount() {
 // gets line, checks format, calls all aiding functions
 int ParseBoard::parseBoardFile (const char* filename, GameBoard& board) {
 	std::string line;
-	int res = -1;
+	int res = SUCCESS;
 	curLine = 0;
 	initializePieceCount();
 	std::ifstream myfile (filename);
 	if (!myfile.is_open()) {
 		std::cout << "Unable to open file " << filename << ": " << std::strerror(errno) << std::endl;
-		return ERROR;
+		return curLine;
 	}
 	curPlayer = filename[6] - '0'; // gets the int value of the char
 
 	while (getline (myfile,line) && res <= 0) {     //getline returns a reference to myfile
-		curLine++;
+        curLine++;
 		const char* charLine = line.c_str(); //convert string to const char*
 		res = checkLine(board, charLine);
 	}
 	myfile.close();
 	if (res != 0) {
 		std::cout << "Error in file format of player" << curPlayer << std::endl;
-		return curPlayer;
+		return curLine;
 	}
 	if (checkPieces() != 0) {
-		return curPlayer;
+		return curLine;
 	}
 	return res;
 }
@@ -63,17 +63,17 @@ int ParseBoard::checkPieces() {
 
 int ParseBoard::validatePieceChar (const char& piece) {
 	switch(piece) {
-	case 'R': pieceCount[0]--;
+	case ROCK: pieceCount[0]--;
 	return 0;
-	case 'P': pieceCount[1]--;
+	case PAPER: pieceCount[1]--;
 	return 0;
-	case 'S': pieceCount[2]--;
+	case SCISSORS: pieceCount[2]--;
 	return 0;
-	case 'B': pieceCount[3]--;
+	case BOMB: pieceCount[3]--;
 	return 0;
-	case 'J': pieceCount[4]--;
+	case JOKER: pieceCount[4]--;
 	return 0;
-	case 'F': pieceCount[5]--;
+	case FLAG: pieceCount[5]--;
 	return 0;
 	default:
 		std::cout << "Error in board file: undefined piece in line " << curLine << std::endl;
@@ -108,16 +108,16 @@ int ParseBoard::checkLine (GameBoard& board, const char* line) {
 		return curLine;
 	}
 
-	return 0;
+	return SUCCESS;
 }
 
 
 int ParseBoard::checkPos(GameBoard& board, const char& piece, int x, int y) {
-	if (x > N || y > N || x < 0 || y < 0) {
+	if (x > M || y > N || x < 0 || y < 0) {
 		std::cout << "Error in board file: piece location out of bounds in line " << curLine << std::endl;
 		return curPlayer;
 	}
-	Position pos = {x, y};
+	Position pos(y,x);
 	char occupied = board.getPieceAtPosition(curPlayer, pos);
 	if (occupied > 0) {
 		std::cout << "Error in board file: double positioning at line " << curLine << std::endl;

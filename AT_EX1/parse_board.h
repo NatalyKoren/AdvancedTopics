@@ -23,7 +23,7 @@ public:
     ParseBoard();
 	// @param: board file, board object
 	// gets line, checks format, calls all aiding functions
-	// @return value: 0 if correct, player# if error
+	// @return value: 0 if correct, line# if error
 	int parseBoardFile (const char* filename, GameBoard& board);
 
 	// @param: game board, line from file
