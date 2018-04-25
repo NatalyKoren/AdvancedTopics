@@ -1,6 +1,8 @@
 #ifndef OURPIECEPOSITION_H_
 #define OURPIECEPOSITION_H_
 
+// an instance is created for each of the pieces of the board
+
 class OurPiecePosition : public PiecePosition {
     Point pos;
 	char piece;
