@@ -3,7 +3,7 @@ AdvancedTopics EX2:
 [V] Point - same as position
 [V] PiecePosition - Describe the position on board - copy from move
 [] board - a dummy dummy class !! just dummy class.... 
-[Liron] fightInfo - GameBoard
+[Liron] fightInfo - GameBoard will create an instznce of fightInfo
 [Liron] JokerChanged - copy from move
 [V] Move - copy from move
 [] create moveChecker - two main functions: bool checkMove(Board&,Move&),bool checkJokerChangeValid(Board&,jokerChange&)
