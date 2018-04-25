@@ -8,16 +8,16 @@
 #ifndef OURMOVE_H_
 #define OURMOVE_H_
 
-#include "GamePoint.h"
+#include "InterfacePoint.h"
 #include <iostream>
 #include <cstdio>
 #include "Definitions.h"
 
-class GameMove{
-	GamePoint from;
-	GamePoint to;
+class InterfaceMove{
+	Point from;
+	Point to;
 public:
-	GameMove(GamePoint src, GamePoint dst):from(src),to(dst) {}
+	InterfaceMove(Point src, Point dst):from(src),to(dst) {}
 	// Getters
 	virtual const Point& getFrom() const {return from;}
 	virtual const Point& getTo() const {return to;}

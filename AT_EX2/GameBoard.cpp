@@ -1,39 +1,36 @@
-//
-// Created by DELL on 25/04/2018.
-//
 
 #include "GameBoard.h"
 
 GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces(),
                         winner(NONE), reason (0){}
 
-char GameBoard::getPieceAtPosition(int player, const Point& pos) const{
+char GameBoard::getPieceAtPosition(int player, Position& pos) const{
     // pos is a legal position
     if(player == FIRST_PLAYER){
-        return firstPlayerBoard[pos.getX()][pos.getY()];
+        return firstPlayerBoard[pos.getXposition()][pos.getYposition()];
     }
-    return secondPlayerBoard[pos.getX()][pos.getY()];
+    return secondPlayerBoard[pos.getXposition()][pos.getYposition()];
 }
 
-void GameBoard::setPieceAtPosition(int player, char piece, const Point& pos){
+void GameBoard::setPieceAtPosition(int player, char piece, Position& pos){
     if(player == FIRST_PLAYER){
-        firstPlayerBoard[pos.getX()][pos.getY()] = piece;
+        firstPlayerBoard[pos.getXposition()][pos.getYposition()] = piece;
     }
     else{
-        secondPlayerBoard[pos.getX()][pos.getY()] = piece;
+        secondPlayerBoard[pos.getXposition()][pos.getYposition()] = piece;
     }
 }
 
-bool GameBoard::isFight(int playerToCheck, const Point& pos) const{
-    int x = pos.getX();
-    int y = pos.getY();
+bool GameBoard::isFight(int playerToCheck, Position& pos) const{
+    int x = pos.getXposition();
+    int y = pos.getYposition();
     if(playerToCheck == FIRST_PLAYER)
         return (firstPlayerBoard[x][y] != (char) 0);
     else return (secondPlayerBoard[x][y] != (char) 0);
 }
 
 
-bool GameBoard::checkAndRunFight(int player, const Point& dstPos) {
+bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
     int opponent = getOpponent(player);
     int winner;
     if(isFight(opponent, dstPos)){
@@ -55,11 +52,11 @@ bool GameBoard::checkAndRunFight(int player, const Point& dstPos) {
     return false;
 }
 
-void GameBoard::updateBoardAfterMove(Move& move, int player){
+void GameBoard::updateBoardAfterMove(GameMove& move){
     // assuming it is a vatestForJokerValidChangelid move
-
-    const Point& srcPos = move.getFrom(); // TODO check if it should be Position&
-    const Point& dstPos = move.getTo();
+    int player = move.getPlayer();
+    Position srcPos = move.getSrc(); // TODO check if it should be Position&
+    Position dstPos = move.getDst();
     // get char to be updated.
     char charToUpdate = getPieceAtPosition(player, srcPos);
     // update player char
@@ -74,7 +71,7 @@ void GameBoard::updateBoardAfterMove(Move& move, int player){
 
 }
 
-int GameBoard::updateJoker(Move& move) {
+int GameBoard::updateJoker(GameMove& move) {
 
     int player = move.getPlayer();
     if(move.getIsJokerUpdated()) {
@@ -197,7 +194,7 @@ int GameBoard::getJokerMovingPiece(int player) const{
     else return secondPlayerPieces.getNumOfMovingJoker();
 }
 
-int GameBoard::checkMove(Move& move){
+int GameBoard::checkMove(GameMove& move){
     char charToMove;
     // (1) boundary tests
     // test src boundary
@@ -222,7 +219,7 @@ int GameBoard::checkMove(Move& move){
         std::cout << std::endl;
         return ILLEGAL_MOVE;
     }
-    if(testForValidMovementOfBoard(move) == ILLEGAL_MOVE){
+    if(move.testForValidMovementOfBoard() == ILLEGAL_MOVE){
         std::cout << "Illegal movement on board. Player: " << move.getPlayer() << " try to move from: ";
         move.getSrc().printPosition();
         std::cout << " to: ";
@@ -253,7 +250,7 @@ int GameBoard::checkMove(Move& move){
     return VALID_MOVE;
 }
 
-int GameBoard::testForJokerValidChange(Move& move) const{
+int GameBoard::testForJokerValidChange(GameMove& move) const{
     char newJokerChar;
     Position jokerPos = move.getJokerPos();
     bool changesJokerPosToSrc = false;
@@ -297,8 +294,8 @@ int GameBoard::testForJokerValidChange(Move& move) const{
     }
     return VALID_MOVE;
 }
-
-int GameBoard::execMove(std::string line, Move& move) {
+/*
+int GameBoard::execMove(std::string line, GameMove& move) {
     int currentPlayer = move.getPlayer();
     int opponentPlayer = getOpponent(currentPlayer);
     // Parse line format
@@ -324,25 +321,8 @@ int GameBoard::execMove(std::string line, Move& move) {
     }
     return SUCCESS;
 
-}
+}*/
 
-int GameBoard::testForValidMovementOfBoard(Move& move){
-    int delta;
-    int srcX = move.getSrc().getXposition();
-    int srcY = move.getSrc().getYposition();
-    int dstX = move.getDst().getXposition();
-    int dstY = move.getDst().getYposition();
-    // todo check if src == dst is a valid move
-    if(srcX == dstX)
-        delta = dstY - srcY;
-    else if(srcY == dstY)
-        delta = dstX - srcX;
-    else return ILLEGAL_MOVE;
-    // moving on same row or on same column
-    if(delta == -1 || delta == 1)
-        return VALID_MOVE;
-    else return ILLEGAL_MOVE;
-}
 
 
 int GameBoard::printBoard(std::ofstream& output) const{
@@ -374,4 +354,3 @@ int GameBoard::printBoard(std::ofstream& output) const{
     }
     return SUCCESS;
 }
-
