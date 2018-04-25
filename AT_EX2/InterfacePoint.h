@@ -9,11 +9,11 @@
 #include "Point.h"
 #include <iostream>
 
-class GamePoint : public Point {
+class InterfacePoint : public Point {
 	int x;
 	int y;
 public:
-	GamePoint(int x,int y):x(x),y(y){}
+    InterfacePoint(int x,int y):x(x),y(y){}
 	// --- Getters ---
 	virtual int getX() const {return x;}
 	int getY() const {return y;}

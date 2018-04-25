@@ -160,7 +160,7 @@ public:
 	 * @return ERROR if the move is not a valid move and SUCCESS otherwise.
 	 * In case of an ERROR- move is not a valid move, winner and reason are updated accordingly.
 	 */
-	int execMove(std::string line, Move& move);
+	int execMove(std::string line, Move& move); // TODO - Need to change this - now it is a split operation
 	// Setters
 	void setWinner(int newWinner) {winner = newWinner;}
 	void setReason(int newReason) {reason = newReason;}
