@@ -1,0 +1,51 @@
+AdvancedTopics EX2:
+  
+[V] Point - same as position
+[V] PiecePosition - Describe the position on board - copy from move
+[] board - a dummy dummy class !! just dummy class.... 
+[Liron] fightInfo - GameBoard
+[Liron] JokerChanged - copy from move
+[V] Move - copy from move
+[] create moveChecker - two main functions: bool checkMove(Board&,Move&),bool checkJokerChangeValid(Board&,jokerChange&)
+Game manager will call this after get move and get joker changed. 
+[] PlayerAlgorithm - getJokerChange() need to take from move
+[] FilePlayerAlgorithm - parse_board + GameBoard + parse move - will update move filed and JokerChnaged filed. Will have a bool field for isJokerChanged.
+the origin Move from ex1 is being splitted to 2 classes.
+[] Liron - LAST TO IMPLEMENT - AutoPlayerAlgorithm - Generate random Files from python 
+
+New:
+[] GameManager - GamePlayed::int firstTurn(); - for perform all fights on the initial positions
+need to include here GameBoard.h
+In GameBoard need to change:
+function checkAndRunFight to 2 functions - one that checks and one that run the fight and update a fightinfo.
+			- 
+
+Flow of the game:
+[1]
+Command Line - support the following options:
+auto-vs-file		//  first player “auto”, second file - read files as player2, as in Ex1
+file-vs-auto		//  second player “auto”, first file - read files as player1, as in Ex1
+auto-vs-auto		//  both players are “auto” - see FAQ below
+file-vs-file		//  both players are file based - read files for both, as in Ex1
+
+[2]
+Positioning
+Game should call PlayerAlgorithm methods:
+getInitialPositions(int player); // with 1 - for player 1
+getInitialPositions(int player); // with 2 - for player 2
+Then perform all fights on the initial positions and call PlayerAlgorithm methods
+notifyOnInitialBoard(const Board& b, const std::vector<FightInfo>& fights);
+Note: FilePlayerAlgorithm probably ignores the info provided in notifyOnInitialBoard, that is: the method is probably empty in class FilePlayerAlgorithm.
+
+[3]
+Moves
+Player 1 starts.
+[A TURN] For each turn, Game should call on the two PlayerAlgorithms:
+getMove();
+For the player who just moved:
+notifyFightResult(const FightInfo& fightInfo); // only if there was a fight
+getJokerChange();
+For the other player:
+void notifyOnOpponentMove(const Move& move);
+void notifyFightResult(const FightInfo& fightInfo); // only if there was a fight
+=> go back to [A TURN] for this player
