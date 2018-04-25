@@ -34,7 +34,7 @@ public:
      * @param pos - the fight position.
      * @return 0 - Tie, FIRST_PLAYER if first player wins, else return SECOND_PLAYER.
      */
-    int fight(GamePoint& pos) const;
+    int fight(const Point& pos) const;
     /***
      * Check if there is a fight for playerToCheck.
      * The function need to check if pos is occupied by playerToCheck piece.
@@ -43,7 +43,7 @@ public:
      * @param pos - the position to check.
      * @return - true if there is a fight and false otherwise.
      */
-    bool isFight(int playerToCheck, GamePoint& pos) const;
+    bool isFight(int playerToCheck, const Point& pos) const;
     /***
      * Check the board for a winner.
      * @param curPlayer - determines the order of checking if moving pieces are gone
@@ -62,22 +62,23 @@ public:
      * If the move is updating a joker piece, then the function will also update the new
      * joker representation on player's board.
      * @param move - the move to be updated on board.
+     * @param player - the player that performs the move.
      */
-    void updateBoardAfterMove(Move& move);
+    void updateBoardAfterMove(Move& move, int player);
     /***
      * Return player piece at position.
      * @param player -  the player that we want his piece on board.
      * @param pos - the position on board
      * @return the char at position pos at player's board.
      */
-    char getPieceAtPosition(int player, GamePoint& pos) const;
+    char getPieceAtPosition(int player, const Point& pos) const;
     /***
      * set player's piece at position with 'piece' character.
      * @param player  - player's board to be updated.
      * @param piece - piece to update
      * @param pos - position on player's board.
      */
-    void setPieceAtPosition(int player, char piece, GamePoint& pos);
+    void setPieceAtPosition(int player, char piece, const Point& pos);
     /***
      * return the opponent of a player.
      * @param player
@@ -102,7 +103,7 @@ public:
      * @param player - the player that looses the fight.
      * @param pos - the position of the fight.
      */
-    void updateAfterLoseFight(int player, GamePoint& pos);
+    void updateAfterLoseFight(int player, const Point& pos);
     /***
      * Add piece to game board of a player.
      * Updated data:
@@ -113,14 +114,14 @@ public:
      * and a joker piece is lower case piece.
      * @param pos - position that contains the piece.
      */
-    void addPieceToGame(int player, char piece, GamePoint pos);
+    void addPieceToGame(int player, char piece, Point pos);
     /***
      * Check if position on board contains a player piece.
      * @param player - player to check
      * @param pos - position to check
      * @return - true if pos doesn't contain a player piece
      */
-    bool isEmpty(int player, GamePoint& pos) const;
+    bool isEmpty(int player, const Point& pos) const;
     /**
      * for tests
      */
@@ -150,14 +151,14 @@ public:
      * @param dstPos - contains player piece.
      * @return true if there was a fight and false otherwise.
      */
-    bool checkAndRunFight(int player, GamePoint& dstPos);
+    bool checkAndRunFight(int player, const Point& dstPos);
 
     /***
      * Get a move line to be parsed and execute the move on board if the move is a valid move.
      * @param line - line containing a move to be parsed.
      * @param move - move to bu updated according to line.
      * @return ERROR if the move is not a valid move and SUCCESS otherwise.
-     * In case of an ERROR- move is not a valid move, winner and reason are updated accordingly.
+     * In case of an ERROR- move is not a valid move, cnwinner and reason are updated accordingly.
      */
     int execMove(std::string line, Move& move);
     // Setters
