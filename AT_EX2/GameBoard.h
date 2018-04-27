@@ -12,8 +12,10 @@
 #include "Position.h"
 #include "Definitions.h"
 #include "PlayerPieces.h"
+#include "GameFightInfo.h"
+#include "Board.h"
 
-class GameBoard{
+class GameBoard : public Board{
     char firstPlayerBoard[N][M];
     char secondPlayerBoard[N][M];
     PlayerPieces firstPlayerPieces;
@@ -62,21 +64,21 @@ public:
      * joker representation on player's board.
      * @param move - the move to be updated on board.
      */
-    void updateBoardAfterMove(GameMove& move);
+    void updateBoardAfterMove(GameMove& move, GameFightInfo& fightInfo);
     /***
      * Return player piece at position.
      * @param player -  the player that we want his piece on board.
      * @param pos - the position on board
      * @return the char at position pos at player's board.
      */
-    char getPieceAtPosition(int player, Position& pos) const;
+    char getPieceAtPosition(int player, const Point& pos) const;
     /***
      * set player's piece at position with 'piece' character.
      * @param player  - player's board to be updated.
      * @param piece - piece to update
      * @param pos - position on player's board.
      */
-    void setPieceAtPosition(int player, char piece, Position& pos);
+    void setPieceAtPosition(int player, char piece, const Point& pos);
     /***
      * return the opponent of a player.
      * @param player
@@ -119,7 +121,7 @@ public:
      * @param pos - position to check
      * @return - true if pos doesn't contain a player piece
      */
-    bool isEmpty(int player, Position& pos) const;
+    bool isEmpty(int player, const Point& pos) const;
     /**
      * for tests
      */
@@ -149,7 +151,7 @@ public:
      * @param dstPos - contains player piece.
      * @return true if there was a fight and false otherwise.
      */
-    bool checkAndRunFight(int player, Position& dstPos);
+    bool checkAndRunFight(int player, Position &dstPos, GameFightInfo& fightInfo);
 
     /***
      * Get a move line to be parsed and execute the move on board if the move is a valid move.
@@ -180,7 +182,8 @@ public:
      * returns ERROR if invalid attempt to change joker, SUCCESS otherwise
      */
     int updateJoker(GameMove& move);
-
+    // --- interface function ---
+    virtual int getPlayer(const Point& pos) const; // 1 for player 1s piece, 2 for 2, 0 if empty
 };
 
 #endif //AT_EX2_GAMEBOARD_H

@@ -1,11 +1,13 @@
 AdvancedTopics EX2:
   
-[V] Point - same as position
-[V] PiecePosition - Describe the position on board - copy from move
-[] board - a dummy dummy class !! just dummy class.... 
+[V] Point - position will inherit from it
+[V] PiecePosition - Describe the position on board
+[] board - GameBoard will inherit from it
+    [] In GameBoard need to change:
+        [] function checkAndRunFight to 2 functions - one that checks and one that run the fight and update a fightinfo. Nataly - did something different.
 [V] fightInfo - GameBoard
 [V] JokerChanged - copy from move
-[V] Move - copy from move
+[V] Move - GameMove will inherit from it - copy from move
 [] Nataly - Don't need it right now. create moveChecker - two main functions: bool checkMove(Board&,Move&),bool checkJokerChangeValid(Board&,jokerChange&)
 Game manager will call this after get move and get joker changed.
 
@@ -17,8 +19,7 @@ the origin Move from ex1 is being splitted to 2 classes.
 New:
 [] GameManager - GamePlayed::int firstTurn(); - for perform all fights on the initial positions
 need to include here GameBoard.h
-In GameBoard need to change:
-function checkAndRunFight to 2 functions - one that checks and one that run the fight and update a fightinfo.
+
 			- 
 
 Flow of the game:

@@ -4,19 +4,12 @@
 
 #include "GameMove.h"
 
-GameMove::GameMove(int player):isJokerChanged(false), jokerPos(0,0),
-                       newJokerChar((char)0), player(player),src(0,0), dst(0,0) {}
-
 
 void GameMove::printMove() const{
-    std::cout << "Source position: " << src.getXposition() << "," << src.getYposition()  << std::endl;
-    std::cout << "Destination position: " << dst.getXposition() << "," << dst.getYposition()  << std::endl;
+    std::cout << "Source position: " << src.getX() << "," << src.getY()  << std::endl;
+    std::cout << "Destination position: " << dst.getX() << "," << dst.getY()  << std::endl;
     std::cout << "Player: " << player << std::endl;
-    std::cout << "Need to Update Joker? : " << isJokerChanged << std::endl;
-    if(isJokerChanged){
-        std::cout << "Joker position: " << jokerPos.getXposition() << "," << jokerPos.getYposition()  << std::endl;
-        std::cout << "Joker new char: " << newJokerChar << std::endl;
-    }
+    jokerInfo.printJokerInfo();
 
 }
 
@@ -28,9 +21,9 @@ int GameMove::boundaryTest(int index, bool isRowTest) const{
 
 
 }
-int GameMove::positionBoundaryTest(Position& pos) const{
-    int xPos = pos.getXposition();
-    int yPos = pos.getYposition();
+int GameMove::positionBoundaryTest(const Point& pos) const{
+    int xPos = pos.getX();
+    int yPos = pos.getY();
     if(boundaryTest(xPos, true) == INDEX_OUT_OF_BOUND)
         return INDEX_OUT_OF_BOUND;
     if(boundaryTest(yPos, false) == INDEX_OUT_OF_BOUND)
@@ -48,9 +41,8 @@ bool GameMove::isJokerValidChar(char newJokerChar) const{
 }
 
 void GameMove::updateJokerFields(const Point& pos, char newRep){
-    jokerPos.setXposition(pos.getX());
-    jokerPos.setYposition(pos.getY());
-    newJokerChar = newRep;
+    jokerInfo.setJokerPosition(pos);
+    jokerInfo.setNewJokerRep(newRep);
 }
 
 void GameMove::updateMoveFields(const Point& srcMove,const Point& dstMove){
@@ -62,10 +54,10 @@ void GameMove::updateMoveFields(const Point& srcMove,const Point& dstMove){
 
 int GameMove::testForValidMovementOfBoard(){
     int delta;
-    int srcX = src.getXposition();
-    int srcY = src.getYposition();
-    int dstX = dst.getXposition();
-    int dstY = dst.getYposition();
+    int srcX = src.getX();
+    int srcY = src.getY();
+    int dstX = dst.getX();
+    int dstY = dst.getY();
     if(srcX == dstX)
         delta = dstY - srcY;
     else if(srcY == dstY)
@@ -76,3 +68,5 @@ int GameMove::testForValidMovementOfBoard(){
         return VALID_MOVE;
     else return ILLEGAL_MOVE;
 }
+
+void printPoint(const Point& p) { std::cout << "(" << p.getY()+1 << "," << p.getX()+1 << ")";}

@@ -1,3 +1,5 @@
+#ifndef __PLAYER_ALGORITHM_H_
+#define __PLAYER_ALGORITHM_H_
 
 //--------------------------
 // PlayerAlgorithm Interface
@@ -26,4 +28,7 @@ public:
 	virtual void notifyFightResult(const FightInfo& fightInfo) = 0; // called only if there was a fight
 	virtual unique_ptr<Move> getMove() = 0;
 	virtual unique_ptr<JokerChange> getJokerChange() = 0; // nullptr if no change is requested
+	virtual ~PlayerAlgorithm() {}
 };
+
+#endif

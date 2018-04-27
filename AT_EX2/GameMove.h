@@ -10,18 +10,29 @@
 #include <cstdio>
 #include "Definitions.h"
 #include "Move.h"
-#include "JokerChange.h"
+#include "GameJokerChanged.h"
 #include "Position.h"
-
-class GameMove{
-    bool isJokerChanged;
-    Position jokerPos;
-    char newJokerChar;
+extern void printPoint(const Point& p);
+class GameMove : public Move{
     int player;
     Position src;
     Position dst;
+    GameJokerChanged jokerInfo;
 public:
-    GameMove(int player);
+    // --- constructors ---
+    GameMove(int player): player(player),src(-1,-1), dst(-1,-1), jokerInfo() { }
+    // this will be used is case there is a joker change in current move
+    GameMove(int player, Position from, Position to, bool isJokerChnage, Position jokerPos, char newJokerChar):
+            player(player),src(from.getX(),from.getY()), dst(to.getX(), to.getY()),
+            jokerInfo(isJokerChnage, jokerPos.getX(), jokerPos.getY(), newJokerChar) { }
+
+    // In case there is not a joker change
+    GameMove(int player, Position from, Position to):
+            player(player),src(from.getX(),from.getY()), dst(to.getX(), to.getY()),
+            jokerInfo() { }
+
+
+
     /***
      * Update fields data with move info.
      * @param moveData - move to be updated
@@ -40,7 +51,7 @@ public:
      * @return INDEX_OUT_OF_BOUND if position is not a valid position on board (out of bound).
      * Otherwise VALID_INDEX is returned.
      */
-    int positionBoundaryTest (Position& pos) const;
+    int positionBoundaryTest (const Point& pos) const;
     /***
      * Test if index is in row boundary or column boundary.
      * @param index - index to be tested. Assumed to be 0-based index.
@@ -63,20 +74,23 @@ public:
      * @return ILLEGAL_MOVE if the step is not a valid step and VALID_MOVE otherwise.
      */
     int testForValidMovementOfBoard();
+    // --- inteface functions ---
+    virtual const Point& getFrom() const {return src;}
+    virtual const Point& getTo() const {return dst;}
     bool isJokerValidChar (char newJokerRep) const;
     // Getters
-    Position& getJokerPos(){ return jokerPos; }
-    char getJokerNewChar()const{ return newJokerChar; }
+    const Point& getJokerPos(){ return jokerInfo.getJokerChangePosition(); }
+    // this suppose to be const.. because of the interface const qualifier needs to be removed.
+    char getJokerNewChar(){ return jokerInfo.getJokerNewRep(); }
     int getPlayer()const{ return player; }
-    Position& getDst(){ return dst; }
-    Position& getSrc(){ return src; }
-    bool getIsJokerUpdated()const{ return isJokerChanged; }
+
+    bool getIsJokerUpdated()const{ return jokerInfo.getIsJokerChanged(); }
     // Setters
     void setSrcPosition(Position& pos){src = pos;}
     void setDstPosition(Position& pos){dst = pos; }
-    void setJokerPosition(Position& pos){jokerPos = pos;}
-    void setJokerChar(char ch){newJokerChar = ch;}
-    void setJokerUpdated(bool isUpdated){isJokerChanged = isUpdated;}
+    void setJokerPosition(Position& pos){jokerInfo.setJokerPosition(pos);}
+    void setJokerChar(char ch){jokerInfo.setNewJokerRep(ch);}
+    void setJokerUpdated(bool isUpdated){jokerInfo.setIsJokerChanged(isUpdated);}
     void setPlayer(int curPlayer){player = curPlayer;}
     // For tests and debugging
     void printMove() const;
@@ -84,7 +98,8 @@ public:
 
 };
 
-
+// global function
+void printPoint(const Point& p);
 
 
 #endif //AT_EX2_GAMEMOVE_H

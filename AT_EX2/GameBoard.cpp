@@ -4,33 +4,33 @@
 GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces(),
                         winner(NONE), reason (0){}
 
-char GameBoard::getPieceAtPosition(int player, Position& pos) const{
+char GameBoard::getPieceAtPosition(int player, const Point& pos) const{
     // pos is a legal position
     if(player == FIRST_PLAYER){
-        return firstPlayerBoard[pos.getXposition()][pos.getYposition()];
+        return firstPlayerBoard[pos.getX()][pos.getY()];
     }
-    return secondPlayerBoard[pos.getXposition()][pos.getYposition()];
+    return secondPlayerBoard[pos.getX()][pos.getY()];
 }
 
-void GameBoard::setPieceAtPosition(int player, char piece, Position& pos){
+void GameBoard::setPieceAtPosition(int player, char piece, const Point& pos){
     if(player == FIRST_PLAYER){
-        firstPlayerBoard[pos.getXposition()][pos.getYposition()] = piece;
+        firstPlayerBoard[pos.getX()][pos.getY()] = piece;
     }
     else{
-        secondPlayerBoard[pos.getXposition()][pos.getYposition()] = piece;
+        secondPlayerBoard[pos.getX()][pos.getY()] = piece;
     }
 }
 
 bool GameBoard::isFight(int playerToCheck, Position& pos) const{
-    int x = pos.getXposition();
-    int y = pos.getYposition();
+    int x = pos.getX();
+    int y = pos.getY();
     if(playerToCheck == FIRST_PLAYER)
         return (firstPlayerBoard[x][y] != (char) 0);
     else return (secondPlayerBoard[x][y] != (char) 0);
 }
 
 
-bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
+bool GameBoard::checkAndRunFight(int player, Position &dstPos, GameFightInfo& fightInfo) {
     int opponent = getOpponent(player);
     int winner;
     if(isFight(opponent, dstPos)){
@@ -47,23 +47,31 @@ bool GameBoard::checkAndRunFight(int player, Position& dstPos) {
             updateAfterLoseFight(player,dstPos);
             updateAfterLoseFight(opponent,dstPos);
         }
+        // Update fight info
+        fightInfo.setIsFight(true);
+        fightInfo.setPosition(dstPos);
+        fightInfo.setWinner(winner);
+        // TODO: the meaning is the winner opponent?
+        fightInfo.setOpponentPiece(getPieceAtPosition(getOpponent(winner),dstPos));
         return true;
     }
+    // update fight info
+    fightInfo.setIsFight(false);
     return false;
 }
 
-void GameBoard::updateBoardAfterMove(GameMove& move){
+void GameBoard::updateBoardAfterMove(GameMove& move, GameFightInfo& fightInfo){
     // assuming it is a vatestForJokerValidChangelid move
     int player = move.getPlayer();
-    Position srcPos = move.getSrc(); // TODO check if it should be Position&
-    Position dstPos = move.getDst();
+    Position srcPos = move.getFrom();
+    Position dstPos = move.getTo();
     // get char to be updated.
     char charToUpdate = getPieceAtPosition(player, srcPos);
     // update player char
     setPieceAtPosition(player,charToUpdate, dstPos);
 
     // No fight- need only to update player's dest position
-    if (!checkAndRunFight(player, dstPos)) {
+    if (!checkAndRunFight(player, dstPos,fightInfo)) {
         setPieceAtPosition(player,charToUpdate, dstPos);
     }
     // set source position to zero
@@ -184,7 +192,7 @@ void GameBoard::addPieceToGame(int player, char piece, Position pos){
     setPieceAtPosition(player,piece,pos);
     increasePieceNum(player, piece, 1);
 }
-bool GameBoard::isEmpty(int player, Position& pos) const{
+bool GameBoard::isEmpty(int player, const Point& pos) const{
     return (getPieceAtPosition(player,pos) == (char) 0);
 }
 
@@ -198,47 +206,47 @@ int GameBoard::checkMove(GameMove& move){
     char charToMove;
     // (1) boundary tests
     // test src boundary
-    if(move.positionBoundaryTest(move.getSrc()) == INDEX_OUT_OF_BOUND){
+    if(move.positionBoundaryTest(move.getFrom()) == INDEX_OUT_OF_BOUND){
         std::cout << "Illegal source position. Player: " << move.getPlayer() << " insert out of bound source position: ";
-        move.getSrc().printPosition();
+        printPoint(move.getFrom());
         std::cout << std::endl;
         return INDEX_OUT_OF_BOUND;
     }
     // test dst boundary
-    if(move.positionBoundaryTest(move.getDst()) == INDEX_OUT_OF_BOUND){
+    if(move.positionBoundaryTest(move.getTo()) == INDEX_OUT_OF_BOUND){
         std::cout << "Illegal destination position. Player: " << move.getPlayer() << " insert out of bound source position: ";
-        move.getDst().printPosition();
+       printPoint(move.getTo());
         std::cout << std::endl;
         return INDEX_OUT_OF_BOUND;
     }
     // boundary is valid
     // (2) moving to position contain same player piece
-    if(!(isEmpty(move.getPlayer(),move.getDst()))){
+    if(!(isEmpty(move.getPlayer(), move.getTo()))){
         std::cout << "Illegal move. Player: " << move.getPlayer() << " try to move to destination position occupied by him. Destination position: ";
-        move.getDst().printPosition();
+        printPoint(move.getTo());
         std::cout << std::endl;
         return ILLEGAL_MOVE;
     }
     if(move.testForValidMovementOfBoard() == ILLEGAL_MOVE){
         std::cout << "Illegal movement on board. Player: " << move.getPlayer() << " try to move from: ";
-        move.getSrc().printPosition();
+        printPoint(move.getFrom());
         std::cout << " to: ";
-        move.getDst().printPosition();
+        printPoint(move.getTo());
         std::cout << std::endl;
         return ILLEGAL_MOVE;
     }
     // (3) try to move non moving piece
-    charToMove = getPieceAtPosition(move.getPlayer(),move.getSrc());
+    charToMove = getPieceAtPosition(move.getPlayer(), move.getFrom());
     if(charToMove == (char)0){
         std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
-        move.getSrc().printPosition();
+        printPoint(move.getFrom());
         std::cout << " does not contain a player piece." << std::endl;
         return ILLEGAL_MOVE;
     }
 
     if(toupper(charToMove) == BOMB || charToMove == FLAG ){
         std::cout << "Illegal source position for Player " << move.getPlayer() << ". Position ";
-        move.getSrc().printPosition();
+        printPoint(move.getFrom());
         std::cout << " contains non moving piece." << std::endl;
         return ILLEGAL_MOVE;
     }
@@ -252,18 +260,18 @@ int GameBoard::checkMove(GameMove& move){
 
 int GameBoard::testForJokerValidChange(GameMove& move) const{
     char newJokerChar;
-    Position jokerPos = move.getJokerPos();
+    Position jokerPos(move.getJokerPos());
     bool changesJokerPosToSrc = false;
     if(move.getIsJokerUpdated()){
         // joker position is empty
         if(isEmpty(move.getPlayer(), jokerPos)){
-            if(!jokerPos.isEqual(move.getDst())){
+            if(!jokerPos.isEqual(move.getTo())){
                 std::cout << "Joker position for Player: " << move.getPlayer() << " is empty. Position ";
-                move.getJokerPos().printPosition();
+                jokerPos.printPosition();
                 std::cout << std::endl;
                 return ILLEGAL_MOVE;
             }
-            jokerPos = move.getSrc();
+            jokerPos = move.getFrom();
             changesJokerPosToSrc = true;
         }
 
@@ -281,12 +289,12 @@ int GameBoard::testForJokerValidChange(GameMove& move) const{
             std::cout << "Joker new representation for player" << move.getPlayer() << " is invalid: " << toupper(newJokerChar) << std::endl;
             return ILLEGAL_MOVE;
         }
-        if(!changesJokerPosToSrc && move.getSrc().isEqual(jokerPos)){
+        if(!changesJokerPosToSrc && jokerPos.isEqual(move.getFrom())){
 //			std::cout << "Joker position for Player: " << move.getPlayer() << " will be changed after the move." << std::endl;
 //			std::cout << "Joker position: ";
 //			jokerPos.printPosition();
 //			std::cout << " will be changed to: ";
-//			move.getDst().printPosition();
+//			move.getTo().printPosition();
 //			std::cout << std::endl;
             return ILLEGAL_MOVE;
         }
@@ -353,4 +361,12 @@ int GameBoard::printBoard(std::ofstream& output) const{
         output << std::endl;
     }
     return SUCCESS;
+}
+
+int GameBoard::getPlayer(const Point& pos) const{
+    if(!isEmpty(FIRST_PLAYER,pos))
+        return FIRST_PLAYER;
+    if(!isEmpty(SECOND_PLAYER,pos))
+        return SECOND_PLAYER;
+    return TIE;
 }
