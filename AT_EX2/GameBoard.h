@@ -160,7 +160,7 @@ public:
      * @return ERROR if the move is not a valid move and SUCCESS otherwise.
      * In case of an ERROR- move is not a valid move, winner and reason are updated accordingly.
      */
-    int execMove(std::string line, GameMove& move);
+    //int execMove(std::string line, GameMove& move);
     // Setters
     void setWinner(int newWinner) {winner = newWinner;}
     void setReason(int newReason) {reason = newReason;}

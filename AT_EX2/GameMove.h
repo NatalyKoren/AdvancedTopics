@@ -95,6 +95,9 @@ public:
     // For tests and debugging
     void printMove() const;
 
+    // only for unit test!!
+    bool parseLine(std::string line);
+
 
 };
 

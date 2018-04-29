@@ -31,5 +31,8 @@ public:
     void setWinner(int win) { winner = win;}
     void setIsFight(bool newVal){ isFight = newVal;}
 
+    // --- Getters ---
+    bool getIsFight() { return isFight;}
+
 };
 #endif /* OURFIGHTINFO_H_ */

@@ -25,9 +25,9 @@ need to include here GameBoard.h
 Flow of the game:
 [1]
 Command Line - support the following options:
-auto-vs-file		//  first player ג€�autoג€�, second file - read files as player2, as in Ex1
-file-vs-auto		//  second player ג€�autoג€�, first file - read files as player1, as in Ex1
-auto-vs-auto		//  both players are ג€�autoג€� - see FAQ below
+auto-vs-file		//  first player "auto", second file - read files as player2, as in Ex1
+file-vs-auto		//  second player "auto", first file - read files as player1, as in Ex1
+auto-vs-auto		//  both players are "auto" - see FAQ below
 file-vs-file		//  both players are file based - read files for both, as in Ex1
 
 [2]

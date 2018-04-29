@@ -32,6 +32,7 @@ bool GameBoard::isFight(int playerToCheck, Position& pos) const{
 
 bool GameBoard::checkAndRunFight(int player, Position &dstPos, GameFightInfo& fightInfo) {
     int opponent = getOpponent(player);
+    char opponentPiece = getPieceAtPosition(opponent,dstPos);
     int winner;
     if(isFight(opponent, dstPos)){
         //Fight
@@ -51,8 +52,8 @@ bool GameBoard::checkAndRunFight(int player, Position &dstPos, GameFightInfo& fi
         fightInfo.setIsFight(true);
         fightInfo.setPosition(dstPos);
         fightInfo.setWinner(winner);
-        // TODO: the meaning is the winner opponent?
-        fightInfo.setOpponentPiece(getPieceAtPosition(getOpponent(winner),dstPos));
+        // TODO: the meaning is the winner opponent? or the player's opponent?
+        fightInfo.setOpponentPiece(opponentPiece);
         return true;
     }
     // update fight info

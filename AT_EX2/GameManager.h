@@ -7,14 +7,17 @@
 
 #include "GameBoard.h"
 #include "PlayerAlgorithm.h"
+#include "Definitions.h"
+#include "FilePlayerAlgorithm.h"
 
 class GameManager{
     GameBoard game;
     int currentPlayer;
-    PlayerAlgorithm *firstPlayerAlgorithm;
-    PlayerAlgorithm *secondPlayerAlgorithm;
+    //std::unique_ptr<PlayerAlgorithm> firstPlayerAlgorithm;
+    PlayerAlgorithm* firstPlayerAlgorithm = new FilePlayerAlgorithm();
+    //std::unique_ptr<PlayerAlgorithm> secondPlayerAlgorithm;
 public:
-    GameManager(int firtPlayerType,int secondPlayerType);
+    GameManager(int firstPlayerType,int secondPlayerType);
     void updateInitialPositions();
     void performAllFightAfterInitBoards();
     void createBoardInfoAfterInit();
