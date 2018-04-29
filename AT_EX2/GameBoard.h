@@ -114,7 +114,7 @@ public:
      * and a joker piece is lower case piece.
      * @param pos - position that contains the piece.
      */
-    void addPieceToGame(int player, char piece, Position pos);
+    void addPieceToGame(int player, char piece, const Point& pos);
     /***
      * Check if position on board contains a player piece.
      * @param player - player to check

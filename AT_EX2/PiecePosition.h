@@ -17,7 +17,7 @@
 class Point;
 //--------------------------
 
-class PiecePosition {
+class 	PiecePosition {
 public:
 	virtual const Point& getPosition() const = 0;
 	virtual char getPiece() const = 0; // R, P, S, B, J or F

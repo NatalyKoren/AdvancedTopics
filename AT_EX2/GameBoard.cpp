@@ -189,7 +189,7 @@ int GameBoard::checkVictory(int curPlayer, bool initStage){
     return winner;
 }
 
-void GameBoard::addPieceToGame(int player, char piece, Position pos){
+void GameBoard::addPieceToGame(int player, char piece, const Point& pos){
     setPieceAtPosition(player,piece,pos);
     increasePieceNum(player, piece, 1);
 }

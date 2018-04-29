@@ -9,17 +9,19 @@
 #include "PlayerAlgorithm.h"
 #include "Definitions.h"
 #include "FilePlayerAlgorithm.h"
+#include "AutoPlayerAlgorithm.h"
 
 class GameManager{
     GameBoard game;
     int currentPlayer;
-    //std::unique_ptr<PlayerAlgorithm> firstPlayerAlgorithm;
-    PlayerAlgorithm* firstPlayerAlgorithm = new FilePlayerAlgorithm();
-    //std::unique_ptr<PlayerAlgorithm> secondPlayerAlgorithm;
+    std::unique_ptr<PlayerAlgorithm> firstPlayerAlgorithm;
+    std::unique_ptr<PlayerAlgorithm> secondPlayerAlgorithm;
 public:
     GameManager(int firstPlayerType,int secondPlayerType);
-    void updateInitialPositions();
-    void performAllFightAfterInitBoards();
+    // return error or success
+    int updateInitialPositions();
+    int updatePositionsOnBoard(int player, std::vector<unique_ptr<PiecePosition>>& vectorToUpdate);
+    int performAllFightAfterInitBoards();
     void createBoardInfoAfterInit();
 
 
