@@ -132,7 +132,7 @@ public:
      * @param move - move to be tested
      * @return ILLEGAL_MOVE if the joker change is illegal change and VALID_MOVE otherwise.
      */
-    int testForJokerValidChange(GameMove& move) const;
+    int testForJokerValidChange(const GameJokerChanged& jokerInfo) const;
     /***
      * Test if a move is a valid move.
      * Tests: boundary tests for src position and dst position, test if dst contains same player piece,
@@ -160,7 +160,7 @@ public:
      * @return ERROR if the move is not a valid move and SUCCESS otherwise.
      * In case of an ERROR- move is not a valid move, winner and reason are updated accordingly.
      */
-    //int execMove(std::string line, GameMove& move);
+    int execMove(GameMove &move, GameFightInfo& fightInfo);
     // Setters
     void setWinner(int newWinner) {winner = newWinner;}
     void setReason(int newReason) {reason = newReason;}
@@ -181,9 +181,10 @@ public:
      * updates the joker's params
      * returns ERROR if invalid attempt to change joker, SUCCESS otherwise
      */
-    int updateJoker(GameMove& move);
+    void updateJoker(const GameJokerChanged& jokerInfo);
     // --- interface function ---
     virtual int getPlayer(const Point& pos) const; // 1 for player 1s piece, 2 for 2, 0 if empty
+    int execJokerChange(GameJokerChanged& jokerInfo);
 };
 
 #endif //AT_EX2_GAMEBOARD_H

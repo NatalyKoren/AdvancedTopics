@@ -64,7 +64,7 @@ bool GameBoard::checkAndRunFight(int player, Position &dstPos, GameFightInfo& fi
 }
 
 void GameBoard::updateBoardAfterMove(GameMove& move, GameFightInfo& fightInfo){
-    // assuming it is a vatestForJokerValidChangelid move
+    // assuming it is a valid move
     int player = move.getPlayer();
     Position srcPos = move.getFrom();
     Position dstPos = move.getTo();
@@ -82,18 +82,16 @@ void GameBoard::updateBoardAfterMove(GameMove& move, GameFightInfo& fightInfo){
 
 }
 
-int GameBoard::updateJoker(GameMove& move) {
+void GameBoard::updateJoker(const GameJokerChanged& jokerInfo) {
 
-    int player = move.getPlayer();
-    if(move.getIsJokerUpdated()) {
-        char previousPiece = getPieceAtPosition(player, move.getJokerPos());
-        setPieceAtPosition(player, move.getJokerNewChar(), move.getJokerPos());
-        if(player == FIRST_PLAYER)
-            firstPlayerPieces.updateJokerMovingCount(previousPiece, move.getJokerNewChar());
-        else
-            secondPlayerPieces.updateJokerMovingCount(previousPiece, move.getJokerNewChar());
-    }
-    return SUCCESS;
+    int player = jokerInfo.getPlayer();
+    char jokerRep = tolower(jokerInfo.getJokerNewRep());
+    char previousPiece = getPieceAtPosition(player, jokerInfo.getJokerChangePosition());
+    setPieceAtPosition(player, jokerRep, jokerInfo.getJokerChangePosition());
+    if(player == FIRST_PLAYER)
+        firstPlayerPieces.updateJokerMovingCount(previousPiece, jokerRep);
+    else
+        secondPlayerPieces.updateJokerMovingCount(previousPiece, jokerRep);
 }
 
 
@@ -253,56 +251,36 @@ int GameBoard::checkMove(GameMove& move){
         std::cout << " contains non moving piece." << std::endl;
         return ILLEGAL_MOVE;
     }
-    // Joker tests
-    if(testForJokerValidChange(move) == ILLEGAL_MOVE) {
-        return ILLEGAL_MOVE;
-    }
     // Seems OK ...
     return VALID_MOVE;
 }
 
-int GameBoard::testForJokerValidChange(GameMove& move) const{
+int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
     char newJokerChar;
-    Position jokerPos(move.getJokerPos());
-    bool changesJokerPosToSrc = false;
-    if(move.getIsJokerUpdated()){
-        // joker position is empty
-        if(isEmpty(move.getPlayer(), jokerPos)){
-            if(!jokerPos.isEqual(move.getTo())){
-                std::cout << "Joker position for Player: " << move.getPlayer() << " is empty. Position ";
-                jokerPos.printPosition();
-                std::cout << std::endl;
-                return ILLEGAL_MOVE;
-            }
-            jokerPos = move.getFrom();
-            changesJokerPosToSrc = true;
-        }
-
-        // joker position doesn't contain a joker piece
-        if(!islower(getPieceAtPosition(move.getPlayer(),jokerPos))){
-            std::cout << "Joker position for Player: " << move.getPlayer() << " doesn't contain a joker's piece. Position ";
-            jokerPos.printPosition();
-            std::cout << std::endl;
-            return ILLEGAL_MOVE;
-        }
-
-        // test if joker new char is a valid char: S,R,P,B
-        newJokerChar = move.getJokerNewChar();
-        if(!move.isJokerValidChar(newJokerChar)){
-            std::cout << "Joker new representation for player" << move.getPlayer() << " is invalid: " << toupper(newJokerChar) << std::endl;
-            return ILLEGAL_MOVE;
-        }
-        if(!changesJokerPosToSrc && jokerPos.isEqual(move.getFrom())){
-//			std::cout << "Joker position for Player: " << move.getPlayer() << " will be changed after the move." << std::endl;
-//			std::cout << "Joker position: ";
-//			jokerPos.printPosition();
-//			std::cout << " will be changed to: ";
-//			move.getTo().printPosition();
-//			std::cout << std::endl;
-            return ILLEGAL_MOVE;
-        }
-
+    int player = jokerInfo.getPlayer();
+    Position jokerPos(jokerInfo.getJokerChangePosition());
+    // joker position is empty
+    if(isEmpty(player, jokerPos)){
+        std::cout << "Joker position for Player: " << player << " is empty. Position ";
+        jokerPos.printPosition();
+        std::cout << std::endl;
+        return ILLEGAL_MOVE;
     }
+    // joker position doesn't contain a joker piece
+    if(!islower(getPieceAtPosition(player,jokerPos))){
+        std::cout << "Joker position for Player: " << player << " doesn't contain a joker's piece. Position ";
+        jokerPos.printPosition();
+        std::cout << std::endl;
+        return ILLEGAL_MOVE;
+    }
+
+    // test if joker new char is a valid char: S,R,P,B
+    if(!jokerInfo.isJokerValidChar()){
+        std::cout << "Joker new representation for player" << player << " is invalid: " << toupper(newJokerChar) << std::endl;
+        return ILLEGAL_MOVE;
+    }
+
+
     return VALID_MOVE;
 }
 /*
@@ -372,4 +350,35 @@ int GameBoard::getPlayer(const Point& pos) const{
     if(!isEmpty(SECOND_PLAYER,pos))
         return SECOND_PLAYER;
     return TIE;
+}
+
+int GameBoard::execMove(GameMove &move, GameFightInfo& fightInfo) {
+    int currentPlayer = move.getPlayer();
+    int opponentPlayer = getOpponent(currentPlayer);
+
+    // check if move is a valid move
+    if(checkMove(move) != VALID_MOVE){
+        std::cout << "Bad move for player " << currentPlayer << std::endl;
+        winner = opponentPlayer;
+        reason = BAD_MOVE;
+        return ERROR;
+    }
+    updateBoardAfterMove(move, fightInfo);
+
+    return SUCCESS;
+}
+
+int GameBoard::execJokerChange(GameJokerChanged& jokerInfo){
+    int curPlayer = jokerInfo.getPlayer();
+    int opponentPlayer = getOpponent(curPlayer);
+    // Test if joker change is valid
+    if(testForJokerValidChange(jokerInfo) == ILLEGAL_MOVE){
+        std::cout << "Bad joker change for player: " << curPlayer << ": illegal attempt to change Joker." << std::endl;
+        winner = opponentPlayer;
+        reason = BAD_MOVE;
+        return ERROR;
+    }
+    // Execute joker change
+    updateJoker(jokerInfo);
+    return SUCCESS;
 }
