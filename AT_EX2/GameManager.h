@@ -20,8 +20,9 @@ public:
     GameManager(int firstPlayerType,int secondPlayerType);
     // return error or success
     int updateInitialPositions();
+    // updates the vector on player's board
     int updatePositionsOnBoard(int player, std::vector<unique_ptr<PiecePosition>>& vectorToUpdate);
-    int performAllFightAfterInitBoards();
+    int performAllFightAfterInitBoards(std::vector<FightInfo>& fights);
     void createBoardInfoAfterInit();
 
 

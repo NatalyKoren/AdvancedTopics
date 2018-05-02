@@ -92,7 +92,7 @@ int testUpdateAfterMove(){
         return 23;
     if(fightInfo.getWinner() != FIRST_PLAYER)
         return 20;
-    if(fightInfo.getOpponentPiece() != PAPER)
+    if(fightInfo.getPiece(SECOND_PLAYER) != PAPER)
         return 21;
     if(fightInfo.getPosition().getY() != 1 || fightInfo.getPosition().getX() != 1)
         return 22;
@@ -131,7 +131,7 @@ int testUpdateAfterMove(){
         return 25;
     if(fightInfo.getWinner() != SECOND_PLAYER)
         return 26;
-    if(fightInfo.getOpponentPiece() != PAPER)
+    if(fightInfo.getPiece(SECOND_PLAYER) != PAPER)
         return 27;
     if(fightInfo.getPosition().getX() != 3 || fightInfo.getPosition().getY() != 5)
         return 28;
@@ -156,7 +156,7 @@ int testUpdateAfterMove(){
         return 29;
     if(fightInfo.getWinner() != SECOND_PLAYER)
         return 30;
-    if(fightInfo.getOpponentPiece() != ROCK)
+    if(fightInfo.getPiece(FIRST_PLAYER) != ROCK)
         return 31;
     if(fightInfo.getPosition().getX() != 7 || fightInfo.getPosition().getY() != 7)
         return 32;

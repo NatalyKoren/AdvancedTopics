@@ -64,9 +64,7 @@ int GameManager::updateInitialPositions(){
         game.setReason(BAD_POSITIONING);
     }
     else return SUCCESS;
-    if(reason == MISSING_INPUT_FILE)
-        return reason;
-    else return ERROR;
+    return ERROR;
 }
 
 int GameManager::updatePositionsOnBoard(int player, std::vector<unique_ptr<PiecePosition>>& vectorToUpdate){
@@ -85,7 +83,7 @@ int GameManager::updatePositionsOnBoard(int player, std::vector<unique_ptr<Piece
     return SUCCESS;
 }
 
-int GameManager::performAllFightAfterInitBoards(){
+int GameManager::performAllFightAfterInitBoards(std::vector<FightInfo>& fights){
     Position pos (0,0);
     GameFightInfo fightInfo;
     for (int i = 0; i < N; i++) {
