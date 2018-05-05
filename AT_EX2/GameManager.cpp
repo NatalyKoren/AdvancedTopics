@@ -142,6 +142,9 @@ void GameManager::playGame(){
         else
             movesCounter++;
 
+        // check for victory
+        if (game.checkVictory(currentPlayer, false) != NONE)
+            break;
 
         // getJoker change
         jokerChange = getJokerChangeFromPlayer(currentPlayer);
@@ -158,9 +161,7 @@ void GameManager::playGame(){
         notifyToPlayerAfterOpponentsMove(opponent, currentMove);
         notifyToPlayerOnFightResults(opponent, currentFight);
 
-        // check for victory
-        if (game.checkVictory(currentPlayer, false) != NONE)
-            break;
+
 
         // replace player
         currentPlayer = game.getOpponent(currentPlayer);

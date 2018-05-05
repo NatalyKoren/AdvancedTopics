@@ -67,7 +67,7 @@ public:
 	 * gets the line from the moves file to parse move and joker change
 	 * returns an empty line if can't read from the file
 	 */
-	const char* getMovesLine();
+    std::string getMovesLine();
 
 	///-----------End of Move file parsing--------------
 

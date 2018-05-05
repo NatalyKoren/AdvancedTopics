@@ -32,28 +32,29 @@ int FilePlayerAlgorithm::checkPieces() {
 			//std::cout << "Index: " << i << " Count: " << pieceCount[i] << std::endl;
 			return ERROR;
 		}
-		if (pieceCount[pieceCountSize-1] > 0) {
-			std::cout << "Board file format error: flag not placed on board." << std::endl;
-			return ERROR;
-		}
+
 	}
+    if (pieceCount[pieceCountSize-1] > 0) {
+        std::cout << "Board file format error: flag not placed on board." << std::endl;
+        return ERROR;
+    }
 	return SUCCESS;
 }
 
 int FilePlayerAlgorithm::checkAndUpdatePieceChar (const char& piece) {
 	switch(piece) {
 	case ROCK: pieceCount[0]--;
-	return checkPieces();
+	return SUCCESS;
 	case PAPER: pieceCount[1]--;
-	return checkPieces();
+	return SUCCESS;
 	case SCISSORS: pieceCount[2]--;
-	return checkPieces();
+	return SUCCESS;
 	case BOMB: pieceCount[3]--;
-	return checkPieces();
+	return SUCCESS;
 	case JOKER: pieceCount[4]--;
-	return checkPieces();
+	return SUCCESS;
 	case FLAG: pieceCount[5]--;
-	return checkPieces();
+	return SUCCESS;
 	default:
 		std::cout << "Error in board file: undefined piece " << std::endl;
 		return ERROR;
@@ -75,7 +76,7 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 	char jokerRep;
 	char garbage;
 	// check format:
-	int scanned = sscanf(line, " %c %i %i %c %c", &piece, &x, &y, &jokerRep, &garbage);
+	int scanned = sscanf(line, " %c %i %i %c %c", &piece, &y, &x, &jokerRep, &garbage);
 	//std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
 	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
 		std::cout << "Error in board file: wrong format " << std::endl;
@@ -97,7 +98,7 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 		x = -1;
 		y = -1;
 	}
-	Position pos(x, y);
+	Position pos(x-1, y-1);
 	InterfacePiecePosition piecePos(pos, piece, jokerRep);
 	return std::make_unique<InterfacePiecePosition>(piecePos);
 }
@@ -130,12 +131,12 @@ void FilePlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 }
 
 
-const char* FilePlayerAlgorithm::getMovesLine() {
+std::string FilePlayerAlgorithm::getMovesLine() {
 	std::string stringLine;
 	if(getline (movesFile, stringLine)) {
-		return stringLine.c_str();
+		return stringLine;
 	}
-	return "";
+	return NULL;
 }
 
 void FilePlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) {
@@ -151,30 +152,37 @@ void FilePlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
 }
 
 unique_ptr<Move> FilePlayerAlgorithm::getMove(){
-	const char* curLine = getMovesLine();
+	const char* curLine = getMovesLine().c_str();
 	// try to get Joker Line
 	int fromX,fromY,toX,toY, jokerX,jokerY;
 	int dummyInt;
 	char newJokerRep,lineEnd, dummyChar;
+    bool isJokerCurChange = true;
+
+    if(curLine==NULL){
+        // EOF reached - return illegal move
+        fromX = -1;
+        fromY = -1;
+    }
 
 	// try to get Joker Line
-	if(sscanf(curLine, "%d %d %d %d J: %d %d %c",
-			&fromX, &fromY,&toX, &toY, &jokerX, &jokerY, &newJokerRep) != 7) {
+    else if(sscanf(curLine, "%d %d %d %d J: %d %d %c",
+			&fromY, &fromX,&toY, &toX, &jokerY, &jokerX, &newJokerRep) != 7) {
 		// try to get a regular line
-		if(sscanf(curLine, "%d %d %d %d", &fromX, &fromY,&toX, &toY) != 4) {
+		if(sscanf(curLine, "%d %d %d %d", &fromY, &fromX,&toY, &toX) != 4) {
 			// wrong format - return an illegal move
-			fromX = 0;
 			fromY = 0;
+			fromX = 0;
 		}
 		// line format is correct without joker update
 		// test for line length
 		else if(sscanf(curLine, "%d %d %d %d %c",
 				&dummyInt, &dummyInt,&dummyInt, &dummyInt, &lineEnd) == 5) {
 			// wrong format - return an illegal move
-			fromX = 0;
 			fromY = 0;
+			fromX = 0;
 		}
-		jokerChanged.setIsJokerChanged(false);
+        isJokerCurChange = false;
 	}
 	// line format is correct with joker update
 	else{
@@ -182,18 +190,18 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 		if(sscanf(curLine, "%d %d %d %d J: %d %d %c %c",
 				&dummyInt, &dummyInt,&dummyInt, &dummyInt,
 				&dummyInt, &dummyInt, &dummyChar, &lineEnd) == 8) {
-			jokerX = 0;
 			jokerY = 0;
+			jokerX = 0;
 		}
 	}
 
 	// Update move data
-	Position srcPos(fromX, fromY);
-	Position dstPos(toX, toY);
+	Position srcPos(fromX-1, fromY-1);
+	Position dstPos(toX-1, toY-1);
 	GameMove curMove(player, srcPos, dstPos);
 
-	Position jokerPos(jokerX, jokerY);
-	jokerChanged.setIsJokerChanged(true);
+	Position jokerPos(jokerX-1, jokerY-1);
+	jokerChanged.setIsJokerChanged(isJokerCurChange);
 	jokerChanged.setJokerPosition(jokerPos);
 	jokerChanged.setNewJokerRep(newJokerRep);
 	return std::make_unique<GameMove>(curMove);

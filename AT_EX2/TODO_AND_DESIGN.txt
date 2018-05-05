@@ -66,3 +66,9 @@ Moves:
 Scoring function to boards: -Each opponent player piece: -50
                             -Each player piece: +50
                             - Minimal Distance to non-movving piece: we want to get the flag. Clac min distance and then perform 1/min distance.
+
+
+Passed test for file-vs-file:
+Test 2
+Test 3
+Test 4
