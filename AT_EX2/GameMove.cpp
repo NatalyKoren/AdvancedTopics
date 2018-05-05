@@ -4,12 +4,10 @@
 
 #include "GameMove.h"
 
-
 void GameMove::printMove() const{
     std::cout << "Source position: " << src.getX() << "," << src.getY()  << std::endl;
     std::cout << "Destination position: " << dst.getX() << "," << dst.getY()  << std::endl;
     std::cout << "Player: " << player << std::endl;
-    jokerInfo.printJokerInfo();
 
 }
 
@@ -32,24 +30,14 @@ int GameMove::positionBoundaryTest(const Point& pos) const{
 }
 
 
-bool GameMove::isJokerValidChar(char newJokerChar) const{
-    newJokerChar = toupper(newJokerChar);
-    if(newJokerChar == SCISSORS || newJokerChar == ROCK ||
-       newJokerChar == PAPER || newJokerChar == BOMB)
-        return true;
-    else return false;
-}
 
-void GameMove::updateJokerFields(const Point& pos, char newRep){
-    jokerInfo.setJokerPosition(pos);
-    jokerInfo.setNewJokerRep(newRep);
-}
-
-void GameMove::updateMoveFields(const Point& srcMove,const Point& dstMove){
-    src.setXposition(srcMove.getX());
-    src.setYposition(srcMove.getY());
-    dst.setXposition(srcMove.getX());
-    dst.setYposition(srcMove.getY());
+void GameMove::updateMoveFields(Move& move){
+    Position srcPos(move.getFrom());
+    Position toPos(move.getTo());
+    src.setXposition(srcPos.getX());
+    src.setYposition(srcPos.getY());
+    dst.setXposition(toPos.getX());
+    dst.setYposition(toPos.getY());
 }
 
 int GameMove::testForValidMovementOfBoard(){
@@ -72,7 +60,9 @@ int GameMove::testForValidMovementOfBoard(){
 void printPoint(const Point& p) { std::cout << "(" << p.getY()+1 << "," << p.getX()+1 << ")";}
 
 // only for unit testss!!!1
+
 bool GameMove::parseLine(std::string line){
+    /*
     // try to get Joker Line
     int fromX,fromY,toX,toY, jokerX,jokerY;
     int dummyInt;
@@ -122,6 +112,6 @@ bool GameMove::parseLine(std::string line){
     jokerInfo.setNewJokerRep(tolower(newJokerRep));
     jokerInfo.setJokerPosition(Position(jokerY-1, jokerX-1));
 
-
+ */
     return VALID_LINE_FORMAT;
 }

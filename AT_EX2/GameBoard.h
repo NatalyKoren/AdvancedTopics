@@ -127,12 +127,12 @@ public:
      */
     int getJokerMovingPiece(int player) const;
     /***
-     * If move contains a joker change, then the function will test if the change is a valid change.
+     * If move contains a joker change, then the function will test is the change is a valid change.
      * Tests: position contains a joker piece, new representation is a valid representation.
      * @param move - move to be tested
      * @return ILLEGAL_MOVE if the joker change is illegal change and VALID_MOVE otherwise.
      */
-    int testForJokerValidChange(GameMove& move) const;
+    int testForJokerValidChange(const GameJokerChanged& jokerInfo) const;
     /***
      * Test if a move is a valid move.
      * Tests: boundary tests for src position and dst position, test if dst contains same player piece,
@@ -144,8 +144,8 @@ public:
     int checkMove(GameMove& move);
 
     /***
-     * The function assumes that dstPos contains player piece. It check if dstPos also contains an opponent piece.
-     * If so, there is a fight between them. The function will run the fight and update the board accordingly.
+     * The function assumes that dstPos contains player piece. It check is dstPos also contains the opponent piece.
+     * If so, there is a fight between them. The function will run the fight and update to board accordingly.
      * The function will only update dstPos on players boards and the pieces count.
      * @param player - player that has a piece at dstPos
      * @param dstPos - contains player piece.
@@ -160,7 +160,7 @@ public:
      * @return ERROR if the move is not a valid move and SUCCESS otherwise.
      * In case of an ERROR- move is not a valid move, winner and reason are updated accordingly.
      */
-    //int execMove(std::string line, GameMove& move);
+    int execMove(GameMove &move, GameFightInfo& fightInfo);
     // Setters
     void setWinner(int newWinner) {winner = newWinner;}
     void setReason(int newReason) {reason = newReason;}
@@ -181,9 +181,10 @@ public:
      * updates the joker's params
      * returns ERROR if invalid attempt to change joker, SUCCESS otherwise
      */
-    int updateJoker(GameMove& move);
+    void updateJoker(const GameJokerChanged& jokerInfo);
     // --- interface function ---
     virtual int getPlayer(const Point& pos) const; // 1 for player 1s piece, 2 for 2, 0 if empty
+    int execJokerChange(GameJokerChanged& jokerInfo);
 };
 
 #endif //AT_EX2_GAMEBOARD_H

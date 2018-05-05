@@ -17,34 +17,21 @@ class GameMove : public Move{
     int player;
     Position src;
     Position dst;
-    GameJokerChanged jokerInfo;
 public:
     // --- constructors ---
-    GameMove(int player): player(player),src(-1,-1), dst(-1,-1), jokerInfo() { }
+    GameMove(int player): player(player),src(-1,-1), dst(-1,-1) { }
     // this will be used is case there is a joker change in current move
-    GameMove(int player, Position from, Position to, bool isJokerChange, Position jokerPos, char newJokerChar):
-            player(player),src(from.getX(),from.getY()), dst(to.getX(), to.getY()),
-            jokerInfo(isJokerChange, jokerPos.getX(), jokerPos.getY(), newJokerChar) { }
-
-    // In case there is not a joker change
     GameMove(int player, Position from, Position to):
-            player(player),src(from.getX(),from.getY()), dst(to.getX(), to.getY()),
-            jokerInfo() { }
-
-
-
+            player(player),src(from.getX(),from.getY()), dst(to.getX(), to.getY()) { }
+    // Copy from move interface
+    GameMove(int movePlayer, Move& move):player(movePlayer),src(move.getFrom()), dst(move.getTo()) { }
     /***
      * Update fields data with move info.
      * @param moveData - move to be updated
      */
 
-    void updateMoveFields(const Point& srcMove,const Point& dstMove);
-    /***
-     * Updates joker fields with data
-     * @param jokerInfo - the data data to be updated
-     */
+    void updateMoveFields(Move& move);
 
-    void updateJokerFields(const Point& pos, char newRep);
     /***
      * Test if pos is a valid position on board. Assuming pos contain 0-based indexes.
      * @param pos - position to be tested.
@@ -59,13 +46,6 @@ public:
      * @return INDEX_OUT_OF_BOUND if index is out of bound. Otherwise VALID_INDEX is returned.
      */
     int boundaryTest (int index, bool isRowTest) const;
-    /***
-     * Test is new joker representation is a valid representation for joker.
-     * @param newJokerRep - char to be tested.
-     * @return true if newJokerChar is a valid joker representation and false otherwise.
-     * valid representation is: BOMB, SCISSORS, ROCK, PAPER.
-     */
-
 
     /***
      * Assuming move contain a valid positions on board ( not out of bound ).
@@ -77,20 +57,13 @@ public:
     // --- inteface functions ---
     virtual const Point& getFrom() const {return src;}
     virtual const Point& getTo() const {return dst;}
-    bool isJokerValidChar (char newJokerRep) const;
     // Getters
-    const Point& getJokerPos(){ return jokerInfo.getJokerChangePosition(); }
     // this suppose to be const.. because of the interface const qualifier needs to be removed.
-    char getJokerNewChar(){ return jokerInfo.getJokerNewRep(); }
     int getPlayer()const{ return player; }
 
-    bool getIsJokerUpdated()const{ return jokerInfo.getIsJokerChanged(); }
     // Setters
     void setSrcPosition(Position& pos){src = pos;}
     void setDstPosition(Position& pos){dst = pos; }
-    void setJokerPosition(Position& pos){jokerInfo.setJokerPosition(pos);}
-    void setJokerChar(char ch){jokerInfo.setNewJokerRep(ch);}
-    void setJokerUpdated(bool isUpdated){jokerInfo.setIsJokerChanged(isUpdated);}
     void setPlayer(int curPlayer){player = curPlayer;}
     // For tests and debugging
     void printMove() const;
