@@ -28,6 +28,8 @@
 #define BOMB     'B'
 #define JOKER    'J'
 #define FLAG     'F'
+#define UNKNOWN_PIECE 'X'
+#define MOVING_PIECE 'M'
 #define NUM_OF_DIFF_PIECES (6)
 #define BOARD1	"..//player1.rps_board"
 #define BOARD2	"..//player2.rps_board"

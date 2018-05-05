@@ -77,10 +77,10 @@ void FilePlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 
 std::string FilePlayerAlgorithm::getMovesLine() {
 	std::string stringLine;
-	if(getline (movesFile, stringLine)) {
-		return stringLine;
-	}
-	return NULL;
+	// if reached EOF - stringLine will be empty.
+	getline (movesFile, stringLine);
+	return stringLine;
+
 }
 
 void FilePlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) {
@@ -96,14 +96,15 @@ void FilePlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
 }
 
 unique_ptr<Move> FilePlayerAlgorithm::getMove(){
-	const char* curLine = getMovesLine().c_str();
+    std::string line = getMovesLine();
+	const char* curLine = line.c_str();
 	// try to get Joker Line
 	int fromX,fromY,toX,toY, jokerX,jokerY;
 	int dummyInt;
 	char newJokerRep,lineEnd, dummyChar;
     bool isJokerCurChange = true;
 
-    if(curLine==NULL){
+    if(line.empty()){
         // EOF reached - return illegal move
         fromX = -1;
         fromY = -1;

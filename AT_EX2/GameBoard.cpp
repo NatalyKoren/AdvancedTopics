@@ -132,7 +132,7 @@ void GameBoard::increasePieceNum(int player, char piece, int num){
     else secondPlayerPieces.incrementPieceNum(piece, num);
 }
 
-void GameBoard::updateAfterLoseFight(int player, Position& pos){
+void GameBoard::updateAfterLoseFight(int player, const Position& pos){
     char charToRemove = getPieceAtPosition(player, pos);
     setPieceAtPosition(player,(char)0, pos);
     increasePieceNum(player,charToRemove,-1);

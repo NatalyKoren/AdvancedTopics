@@ -103,7 +103,7 @@ public:
      * @param player - the player that looses the fight.
      * @param pos - the position of the fight.
      */
-    void updateAfterLoseFight(int player, Position& pos);
+    void updateAfterLoseFight(int player, const Position& pos);
     /***
      * Add piece to game board of a player.
      * Updated data:

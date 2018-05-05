@@ -106,7 +106,7 @@ int GameManager::updateInitialPositions(){
 		std::cout << "Error in first player positioning stage" << std::endl;
 		firstPlayerBadPositioningFile = true;
 	}
-
+	initializePieceCount();
 	updateResult = updatePositionsOnBoard(SECOND_PLAYER, secondPlayerPositions);
 	if(updateResult == ERROR){
 		std::cout << "Error in second player positioning stage" << std::endl;
