@@ -19,7 +19,7 @@ using std::unique_ptr;
 
 class FilePlayerAlgorithm : public PlayerAlgorithm{
     int player;
-    char* curLine;
+    GameJokerChanged jokerChanged;
     std::ifstream movesFile;
 	int pieceCount[NUM_OF_DIFF_PIECES];
 	Position curPos;
@@ -28,10 +28,7 @@ class FilePlayerAlgorithm : public PlayerAlgorithm{
 public:
 	///-----------Board file--------------
 
-	/*
-	 * gets the line from the moves file to parse move and joker change
-	 */
-	int getMovesLine();
+
 
 	//Initialises the field pieceCount according to the number of each piece provided in Definitions.h
 	void initializePieceCount();
@@ -66,11 +63,11 @@ public:
 
 	///-----------Move file--------------
 
-//	/*
-//	 * Called by getMove, returns a valid Move object if the line in the file is valid,
-//	 * and a move with src(-1, -1) otherwise
-//	 */
-//	unique_ptr<Move> parseMoveLine();
+	/*
+	 * gets the line from the moves file to parse move and joker change
+	 * returns an empty line if can't read from the file
+	 */
+	const char* getMovesLine();
 
 	///-----------End of Move file parsing--------------
 
