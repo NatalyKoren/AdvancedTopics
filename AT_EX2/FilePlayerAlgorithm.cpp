@@ -138,6 +138,9 @@ const char* FilePlayerAlgorithm::getMovesLine() {
 	return "";
 }
 
+void FilePlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) {
+	// File Player does not support this method
+}
 
 void FilePlayerAlgorithm::notifyOnOpponentMove(const Move& move){
 	// File Player does not support this method
@@ -198,6 +201,6 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 
 unique_ptr<JokerChange> FilePlayerAlgorithm::getJokerChange() {
 	if (jokerChanged.getIsJokerChanged())
-		return std::make_unique<GameJokerChanged>(jokerChanged.getIsJokerChanged(), jokerChanged.getJokerChangePosition().getX(), jokerChanged.getJokerChangePosition().getY(), jokerChanged.getJokerNewRep());
+		return std::make_unique<GameJokerChanged>(player, jokerChanged.getIsJokerChanged(), jokerChanged.getJokerChangePosition().getX(), jokerChanged.getJokerChangePosition().getY(), jokerChanged.getJokerNewRep());
 	return nullptr;
 }

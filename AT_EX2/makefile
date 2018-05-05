@@ -1,9 +1,9 @@
 COMP = g++
 #put all your object files here
-OBJS = main.o  autoPlayerAlgorithm.o filePlayerAlgorithm.o GameBoard.o GameJokerChanged.o GameManager.o GameMove.o PlayerPieces.o
+OBJS = main.o AutoPlayerAlgorithm.o FilePlayerAlgorithm.o GameBoard.o GameJokerChanged.o GameManager.o GameMove.o PlayerPieces.o
 #The executabel filename DON'T CHANGE
 EXEC = ex2
-CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
+CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -pedantic-errors -DNDEBUG
 
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) -o $@
@@ -17,9 +17,11 @@ GameMove.o: GameMove.cpp GameMove.h Move.h Point.h Position.h Definitions.h Game
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 PlayerPieces.o: PlayerPieces.cpp PlayerPieces.h Definitions.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-filePlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h PlayerAlgorithm.cpp GameMove.h GameMove.cpp InterfacePiecePosition.h
+FilePlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h FilePlayerAlgorithm.h FilePlayerAlgorithm.cpp GameMove.h GameMove.cpp InterfacePiecePosition.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-GameManager.o: GameManager.cpp GameManager.h GameBoard.h PlayerAlgorithm.h FilePlayerAlgorithm.h AutoPlayerAlgorithm.h
+AutoPlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h GameMove.h GameMove.cpp InterfacePiecePosition.h
+	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
+GameManager.o: GameManager.cpp GameManager.h GameBoard.h PlayerAlgorithm.h FilePlayerAlgorithm.h AutoPlayerAlgorithm.cpp AutoPlayerAlgorithm.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 clean:
 	rm -f $(OBJS) $(EXEC)

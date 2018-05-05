@@ -79,7 +79,7 @@ public:
     // In case of an error in positioning file: put (char)0 in 'piece' field of InterfacePiecePosition class.
     virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill);
     // don't need implementation for file player - Does not important
-    virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) {}
+    virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights);
     virtual void notifyOnOpponentMove(const Move& move); // called only on opponents move
     virtual void notifyFightResult(const FightInfo& fightInfo); // called only if there was a fight
     virtual unique_ptr<Move> getMove();
