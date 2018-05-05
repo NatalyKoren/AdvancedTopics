@@ -12,8 +12,9 @@ AdvancedTopics EX2:
 Game manager will call this after get move and get joker changed.
 
 [] PlayerAlgorithm - getJokerChange() need to take from move
-[] FilePlayerAlgorithm - parse_board + GameBoard + parse move - will update move filed and JokerChnaged filed. Will have a bool field for isJokerChanged.
-the origin Move from ex1 is being splitted to 2 classes.
+[] FilePlayerAlgorithm - parse_board + GameBoard + parse move - will update move field and JokerChnaged field. 
+   Will have a bool field for isJokerChanged.
+   The origin Move from ex1 is being splitted to 2 classes.
 [] Liron - LAST TO IMPLEMENT - AutoPlayerAlgorithm - Generate random Files from python 
 
 New:

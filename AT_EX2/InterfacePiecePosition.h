@@ -4,7 +4,7 @@
 // an instance is created for each of the pieces of the board
 
 class InterfacePiecePosition : public PiecePosition {
-    Point pos;
+    Position pos;
 	char piece;
 	char jokerRep;
 

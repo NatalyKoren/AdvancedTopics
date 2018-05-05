@@ -127,7 +127,7 @@ public:
      */
     int getJokerMovingPiece(int player) const;
     /***
-     * If move contains a joker change, then the function will test is the change is a valid change.
+     * If move contains a joker change, then the function will test if the change is a valid change.
      * Tests: position contains a joker piece, new representation is a valid representation.
      * @param move - move to be tested
      * @return ILLEGAL_MOVE if the joker change is illegal change and VALID_MOVE otherwise.
@@ -144,8 +144,8 @@ public:
     int checkMove(GameMove& move);
 
     /***
-     * The function assumes that dstPos contains player piece. It check is dstPos also contains the opponent piece.
-     * If so, there is a fight between them. The function will run the fight and update to board accordingly.
+     * The function assumes that dstPos contains player piece. It check if dstPos also contains an opponent piece.
+     * If so, there is a fight between them. The function will run the fight and update the board accordingly.
      * The function will only update dstPos on players boards and the pieces count.
      * @param player - player that has a piece at dstPos
      * @param dstPos - contains player piece.

@@ -1,0 +1,5 @@
+algo ideas:
+have a class for opponent pieces with fields:
+bool didPieceMove (helps identify flags and bombs)
+bool pieceType (with another symbol for unknown)
+int minStrength (the strength of the piece that the opponent has eaten)

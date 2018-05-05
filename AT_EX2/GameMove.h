@@ -22,9 +22,9 @@ public:
     // --- constructors ---
     GameMove(int player): player(player),src(-1,-1), dst(-1,-1), jokerInfo() { }
     // this will be used is case there is a joker change in current move
-    GameMove(int player, Position from, Position to, bool isJokerChnage, Position jokerPos, char newJokerChar):
+    GameMove(int player, Position from, Position to, bool isJokerChange, Position jokerPos, char newJokerChar):
             player(player),src(from.getX(),from.getY()), dst(to.getX(), to.getY()),
-            jokerInfo(isJokerChnage, jokerPos.getX(), jokerPos.getY(), newJokerChar) { }
+            jokerInfo(isJokerChange, jokerPos.getX(), jokerPos.getY(), newJokerChar) { }
 
     // In case there is not a joker change
     GameMove(int player, Position from, Position to):
