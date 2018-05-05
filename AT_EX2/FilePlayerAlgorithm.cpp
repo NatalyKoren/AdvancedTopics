@@ -96,8 +96,8 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 		x = -1;
 		y = -1;
 	}
-
-	InterfacePiecePosition piecePos = InterfacePiecePosition(Position(x, y), piece, jokerRep);
+	Position pos(x, y);
+	InterfacePiecePosition piecePos(pos, piece, jokerRep);
 	return std::make_unique<InterfacePiecePosition>(piecePos);
 }
 
@@ -179,7 +179,7 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 		curMove.setSrcPosition(srcPos);
 		curMove.setDstPosition(dstPos);
 	}
-	return std::make_unique<Move>(curMove);
+	return std::make_unique<GameMove>(curMove);
 }
 
 unique_ptr<JokerChange> FilePlayerAlgorithm::getJokerChange() {

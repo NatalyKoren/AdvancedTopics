@@ -2,6 +2,7 @@
 #define OURPIECEPOSITION_H_
 
 #include "PiecePosition.h"
+#include "Position.h"
 // an instance is created for each of the pieces of the board
 
 class InterfacePiecePosition : public PiecePosition {
