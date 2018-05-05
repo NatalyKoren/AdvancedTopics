@@ -5,8 +5,8 @@
 
 
 
-FilePlayerAlgorithm::FilePlayerAlgorithm(int playerNum):player(playerNum), curPos(-1, -1),
-isJokerchanged(false), jokerChanged(){
+FilePlayerAlgorithm::FilePlayerAlgorithm(int playerNum):player(playerNum),
+jokerChanged(), curPos(-1, -1){
 	if (playerNum == 1) {
 		movesFile = std::ifstream(MOVES1);
 	} else {
@@ -198,6 +198,6 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 
 unique_ptr<JokerChange> FilePlayerAlgorithm::getJokerChange() {
 	if (jokerChanged.getIsJokerChanged())
-		return std::make_unique<GameJokerChanged>(jokerChanged.getIsJokerChanged(), jokerChanged.getJokerChangePosition().getX, jokerChanged.getJokerChangePosition().getY, jokerChanged.getJokerNewRep());
+		return std::make_unique<GameJokerChanged>(jokerChanged.getIsJokerChanged(), jokerChanged.getJokerChangePosition().getX(), jokerChanged.getJokerChangePosition().getY(), jokerChanged.getJokerNewRep());
 	return nullptr;
 }
