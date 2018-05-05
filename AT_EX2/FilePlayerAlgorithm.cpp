@@ -38,10 +38,6 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 		y = -1;
 	}
 
-	// check position:
-	if (piece == 'J') {
-		piece = tolower(jokerRep);
-	}
 	if (checkPos(x-1, y-1) == ERROR) {
 		x = -1;
 		y = -1;
