@@ -16,8 +16,8 @@ class GameJokerChanged : public JokerChange{
 public:
     // --- constructors ---
     // if we pass all the parameters the joker have been changed
-    GameJokerChanged(bool isJokernewRep, int x, int y,char c):
-            isJokerChanged(isJokernewRep),jokerPos(x,y),newJokerChar(c) { }
+    GameJokerChanged(bool isJokerNewRep, int x, int y,char c):
+            isJokerChanged(isJokerNewRep),jokerPos(x,y),newJokerChar(c) { }
     // empty ctor
     GameJokerChanged(): isJokerChanged(false),jokerPos(-1,-1),newJokerChar((char)0) { }
     // for readability
