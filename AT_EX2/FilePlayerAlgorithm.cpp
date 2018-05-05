@@ -5,15 +5,13 @@
 
 
 
-FilePlayerAlgorithm::FilePlayerAlgorithm(int playerNum) {
-	player = playerNum;
+FilePlayerAlgorithm::FilePlayerAlgorithm(int playerNum):player(playerNum), curPos(-1, -1) {
 	if (playerNum == 1) {
 		movesFile = std::ifstream(MOVES1);
 	} else {
 		movesFile = std::ifstream(MOVES2);
 	}
 	initializePieceCount();
-	curPos = Position(-1, -1);
 }
 
 void FilePlayerAlgorithm::initializePieceCount() {
@@ -69,8 +67,7 @@ int FilePlayerAlgorithm::checkPos(int x, int y) {
 	return SUCCESS;
 }
 
-InterfacePiecePosition FilePlayerAlgorithm::parseBoardLine (const char* line) {
-	InterfacePiecePosition piecePos;
+unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const char* line) {
 	char piece;
 	int x;
 	int y;
@@ -100,7 +97,8 @@ InterfacePiecePosition FilePlayerAlgorithm::parseBoardLine (const char* line) {
 		y = -1;
 	}
 
-	return new InterfacePiecePosition(new Position(x, y), piece, jokerRep);
+	InterfacePiecePosition piecePos = InterfacePiecePosition(Position(x, y), piece, jokerRep);
+	return std::make_unique<InterfacePiecePosition>(piecePos);
 }
 
 bool FilePlayerAlgorithm::isLineContainWhiteSpaceOnly(std::string line){
@@ -153,7 +151,7 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 	GameMove curMove = GameMove(player);
 	int fromX,fromY,toX,toY;
 	int dummyInt;
-	char newJokerRep,lineEnd, dummyChar;
+	char lineEnd;
 	// getting a line from the moves file
 	if (getMovesLine() == ERROR) {
 		std::cout << "Illegal move format" << std::endl;

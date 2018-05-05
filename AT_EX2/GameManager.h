@@ -77,6 +77,13 @@ public:
     */
     int printReasonToOutputFile(std::ofstream& output, int reason, int winner) const;
 
+	/***
+	 * Test is new joker representation is a valid representation for joker.
+	 * @param newJokerRep - char to be tested.
+	 * @return true if newJokerChar is a valid joker representation and false otherwise.
+	 * valid representation is: BOMB, SCISSORS, ROCK, PAPER.
+	 */
+	bool isJokerValidChar (char newJokerRep) const;
 
 
 };

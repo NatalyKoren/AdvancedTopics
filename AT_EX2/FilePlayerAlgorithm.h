@@ -12,6 +12,7 @@
 #include "Definitions.h"
 #include "PlayerAlgorithm.h"
 #include "GameMove.h"
+#include "InterfacePiecePosition.h"
 #include <memory.h>
 
 using std::unique_ptr;
@@ -58,7 +59,7 @@ public:
 	// @param: line from file
 	// checks the syntax (length, types etc.)
 	// @return value: a valid PiecePosition if ok, an invalid one otherwise
-	InterfacePiecePosition parseBoardLine (const char* line);
+	unique_ptr<InterfacePiecePosition> parseBoardLine (const char* line);
 
 	///-----------End of board file parsing--------------
 
