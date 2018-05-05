@@ -4,6 +4,7 @@
 
 #ifndef AT_EX2_GAMEJOKERCHANGED_H
 #define AT_EX2_GAMEJOKERCHANGED_H
+#include "Definitions.h"
 #include "Position.h"
 #include "JokerChange.h"
 

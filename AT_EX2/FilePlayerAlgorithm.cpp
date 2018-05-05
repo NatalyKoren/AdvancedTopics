@@ -3,6 +3,8 @@
 //
 #include "FilePlayerAlgorithm.h"
 
+
+
 FilePlayerAlgorithm::FilePlayerAlgorithm(int playerNum) {
 	player = playerNum;
 	if (playerNum == 1) {
@@ -128,9 +130,16 @@ void FilePlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 	boardFile.close();
 }
 
-unique_ptr<Move> FilePlayerAlgorithm::parseMoveLine() {
 
+int FilePlayerAlgorithm::getMovesLine() {
+	std::string stringLine;
+	if(getline (movesFile, stringLine)) {
+		curLine = stringLine.c_str();
+		return SUCCESS;
+	}
+	return ERROR;
 }
+
 
 void FilePlayerAlgorithm::notifyOnOpponentMove(const Move& move){
 	// File Player does not support this method
@@ -141,9 +150,77 @@ void FilePlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
 }
 
 unique_ptr<Move> FilePlayerAlgorithm::getMove(){
-	return std::make_unique<GameMove>(FIRST_PLAYER);
+	GameMove curMove = GameMove(player);
+	int fromX,fromY,toX,toY;
+	int dummyInt;
+	char newJokerRep,lineEnd, dummyChar;
+	// getting a line from the moves file
+	if (getMovesLine() == ERROR) {
+		std::cout << "Illegal move format" << std::endl;
+		fromX = 0;
+		fromY = 0;
+	} else {
+		const char* charLine = curLine;
+		if(sscanf(charLine, "%d %d %d %d", &fromX, &fromY,&toX, &toY) != 4){
+			// wrong format
+			std::cout << "Illegal move format" << std::endl;
+			fromX = 0;
+			fromY = 0;
+		}
+		// line format is correct without joker update
+		// test for line length
+		if(sscanf(charLine, "%d %d %d %d %c",
+				&dummyInt, &dummyInt, &dummyInt, &dummyInt, &lineEnd) == 5) {
+			std::cout << "Illegal move format" << std::endl;
+			fromX = 0;
+			fromY = 0;
+		}
+		//Should the indexes be reversed?
+		Position srcPos = Position(fromX-1, fromY-1);
+		Position dstPos = Position (toX-1, toY-1);
+		curMove.setSrcPosition(srcPos);
+		curMove.setDstPosition(dstPos);
+	}
+	return std::make_unique<Move>(curMove);
 }
 
-unique_ptr<JokerChange> FilePlayerAlgorithm::getJokerChange(){
-	return std::make_unique<GameJokerChanged>();
+unique_ptr<JokerChange> FilePlayerAlgorithm::getJokerChange() {
+	char newJokerRep, dummyChar;
+	int jokerX, jokerY, dummyInt;
+	GameJokerChanged curJokerChange = GameJokerChanged();
+	// We assume a line was read from the file with getMove()
+	if (curLine == NULL) {
+		return std::make_unique<GameJokerChanged>(curJokerChange);
+	}
+
+	if(sscanf(curLine, "%d %d %d %d J: %d %d %c",
+			&dummyInt, &dummyInt, &dummyInt, &dummyInt, &jokerX, &jokerY, &newJokerRep) != 7) {
+		if(sscanf(curLine, "%d %d %d %d",
+				&dummyInt, &dummyInt,&dummyInt, &dummyInt) != 4){
+			// wrong format in the move part - returning nullptr
+			std::cout << "Illegal moves line" << std::endl;
+			return nullptr;
+		} else if (sscanf(curLine, "%d %d %d %d J: %d %d %c",
+				&dummyInt, &dummyInt, &dummyInt, &dummyInt, &jokerX, &jokerY, &newJokerRep) > 4) {
+			// returning an illegal joker change
+			jokerX = 0;
+			jokerY = 0;
+		}
+	}
+	// There are at least 7 params in the line
+	else {
+		if(sscanf(curLine, "%d %d %d %d J: %d %d %c %c",
+				&dummyInt, &dummyInt,&dummyInt, &dummyInt,
+				&dummyInt, &dummyInt, &dummyChar, &dummyChar) == 8) {
+			// returning an illegal joker change
+			jokerX = 0;
+			jokerY = 0;
+		}
+	}
+
+	Position jokerPos = Position(jokerX-1, jokerY-1);
+	curJokerChange.setNewJokerRep(newJokerRep);
+	curJokerChange.setJokerPosition(jokerPos);
+	//TODO: how to use isJokerChanged?
+	return std::make_unique<GameJokerChanged>(curJokerChange);
 }
