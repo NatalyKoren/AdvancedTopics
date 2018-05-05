@@ -12,54 +12,8 @@ jokerChanged(), curPos(-1, -1){
 	} else {
 		movesFile = std::ifstream(MOVES2);
 	}
-	initializePieceCount();
 }
 
-void FilePlayerAlgorithm::initializePieceCount() {
-	pieceCount[0] = R;
-	pieceCount[1] = P;
-	pieceCount[2] = S;
-	pieceCount[3] = B;
-	pieceCount[4] = J;
-	pieceCount[5] = F;
-}
-
-int FilePlayerAlgorithm::checkPieces() {
-	int pieceCountSize = sizeof(pieceCount) / sizeof(pieceCount[0]);
-	for (int i = 0; i < pieceCountSize; i++) {
-		if (pieceCount[i] < 0) {
-			std::cout << "Board file format error: too many pieces of same type." << std::endl;
-			//std::cout << "Index: " << i << " Count: " << pieceCount[i] << std::endl;
-			return ERROR;
-		}
-
-	}
-    if (pieceCount[pieceCountSize-1] > 0) {
-        std::cout << "Board file format error: flag not placed on board." << std::endl;
-        return ERROR;
-    }
-	return SUCCESS;
-}
-
-int FilePlayerAlgorithm::checkAndUpdatePieceChar (const char& piece) {
-	switch(piece) {
-	case ROCK: pieceCount[0]--;
-	return SUCCESS;
-	case PAPER: pieceCount[1]--;
-	return SUCCESS;
-	case SCISSORS: pieceCount[2]--;
-	return SUCCESS;
-	case BOMB: pieceCount[3]--;
-	return SUCCESS;
-	case JOKER: pieceCount[4]--;
-	return SUCCESS;
-	case FLAG: pieceCount[5]--;
-	return SUCCESS;
-	default:
-		std::cout << "Error in board file: undefined piece " << std::endl;
-		return ERROR;
-	}
-}
 
 int FilePlayerAlgorithm::checkPos(int x, int y) {
 	if (x > M || y > N || x < 0 || y < 0) {
@@ -80,12 +34,6 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 	//std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
 	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
 		std::cout << "Error in board file: wrong format " << std::endl;
-		x = -1;
-		y = -1;
-	}
-
-	// check char and update piece count:
-	if (checkAndUpdatePieceChar(piece) == ERROR) {
 		x = -1;
 		y = -1;
 	}

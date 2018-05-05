@@ -21,27 +21,11 @@ class FilePlayerAlgorithm : public PlayerAlgorithm{
     int player;
     GameJokerChanged jokerChanged;
     std::ifstream movesFile;
-	int pieceCount[NUM_OF_DIFF_PIECES];
 	Position curPos;
 	char curPiece;
 
 public:
 	///-----------Board file--------------
-
-
-
-	//Initialises the field pieceCount according to the number of each piece provided in Definitions.h
-	void initializePieceCount();
-
-	// verifies that the number of each piece is legal
-	// @return value: SUCCESS if ok, ERROR otherwise
-	int checkPieces();
-
-	//@param: piece char parsed from line
-	// updates pieceCount, an array that counts the pieces
-	// calls checkPieces to verify that there aren't too many pieces of one type
-	// @return value: SUCCESS if piece is ok, ERROR if not one of the game's pieces
-	int checkAndUpdatePieceChar (const char& piece);
 
 	/*
 	 * @param: (x,y) from file

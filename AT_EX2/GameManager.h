@@ -10,15 +10,36 @@
 #include "Definitions.h"
 #include "FilePlayerAlgorithm.h"
 #include "AutoPlayerAlgorithm.h"
+#include "PlayerPieces.h"
 
 class GameManager{
     GameBoard game;
     int currentPlayer;
     std::unique_ptr<PlayerAlgorithm> firstPlayerAlgorithm;
     std::unique_ptr<PlayerAlgorithm> secondPlayerAlgorithm;
+    int pieceCount[NUM_OF_DIFF_PIECES];
 public:
     // --- Constructor ---
     GameManager(int firstPlayerType,int secondPlayerType);
+
+	//Initialises the field pieceCount according to the number of each piece provided in Definitions.h
+	void initializePieceCount();
+
+	// verifies that the number of each piece is legal
+	// @return value: SUCCESS if ok, ERROR otherwise
+	int checkPieces();
+
+	//@param: piece char parsed from line
+	// updates pieceCount, an array that counts the pieces
+	// calls checkPieces to verify that there aren't too many pieces of one type
+	// @return value: SUCCESS if piece is ok, ERROR if not one of the game's pieces
+	int checkAndUpdatePieceChar (const char& piece);
+
+	/*
+	 * validates all the positions in the vector
+	 */
+	int checkInitialPositions(std::unique_ptr<PiecePosition>& pieceInfo, int player);
+
     /**
      * calls getInitialPositions of both players.
      * Then updates the PiecePosition vector in game board.
