@@ -73,6 +73,7 @@ int GameManager::updatePositionsOnBoard(int player, std::vector<unique_ptr<Piece
         pieceType = pieceInfo->getPiece();
         if(pieceType == (char)0){
             // Indicating an error on positioning
+            // TODO change this
             return ERROR;
         }
         // need to set lower case character in case of a joker

@@ -52,3 +52,17 @@ For the other player:
 void notifyOnOpponentMove(const Move& move);
 void notifyFightResult(const FightInfo& fightInfo); // only if there was a fight
 => go back to [A TURN] for this player
+
+Auto-Player:
+Fields:
+- player
+-GameBoard: On the opponents board: X - Don't know anything about this piece
+                                    M- It's a moving piece
+
+Init Board: - Random
+            - Optimization: Random position for flog + bomb around it.
+
+Moves:
+Scoring function to boards: -Each opponent player piece: -50
+                            -Each player piece: +50
+                            - Minimal Distance to non-movving piece: we want to get the flag. Clac min distance and then perform 1/min distance.
