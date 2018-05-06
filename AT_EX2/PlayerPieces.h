@@ -39,6 +39,7 @@ public:
     int getNumOfMovingJoker()const {return numOfMovingJokers; }
     // --- Move pieces number
     int getMovePiecesNum() const{ return (scissors+ rock + paper + numOfMovingJokers); }
+    int getPieceCount() const {return scissors+rock+paper+bomb+flag+joker;}
     // set piece to player
     /***
      * Increment piece number of a player by num. Num can be a negative num.

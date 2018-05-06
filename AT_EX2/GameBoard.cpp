@@ -381,3 +381,10 @@ int GameBoard::execJokerChange(GameJokerChanged& jokerInfo){
     updateJoker(jokerInfo);
     return SUCCESS;
 }
+
+int GameBoard::getPlayerPieceCount(int player)const{
+    if(player == FIRST_PLAYER)
+        return firstPlayerPieces.getPieceCount();
+    else return secondPlayerPieces.getPieceCount();
+
+}

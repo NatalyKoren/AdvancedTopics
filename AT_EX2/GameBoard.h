@@ -154,9 +154,8 @@ public:
     bool checkAndRunFight(int player, Position &dstPos, GameFightInfo& fightInfo);
 
     /***
-     * Get a move line to be parsed and execute the move on board if the move is a valid move.
-     * @param line - line containing a move to be parsed.
-     * @param move - move to bu updated according to line.
+     * Get a move and execute the move on board if the move is a valid move.
+     * @param move - move to be updated on board.
      * @return ERROR if the move is not a valid move and SUCCESS otherwise.
      * In case of an ERROR- move is not a valid move, winner and reason are updated accordingly.
      */
@@ -184,7 +183,14 @@ public:
     void updateJoker(const GameJokerChanged& jokerInfo);
     // --- interface function ---
     virtual int getPlayer(const Point& pos) const; // 1 for player 1s piece, 2 for 2, 0 if empty
+    /***
+     * Check if a joker change is a valid change. If it is valid, perform the change.
+     * @param jokerInfo - the joker change info
+     * @return ERROR if jokerInfo is not a valid change. Otherwise return SUCCESS.
+     */
     int execJokerChange(GameJokerChanged& jokerInfo);
+
+    int getPlayerPieceCount(int player) const;
 };
 
 #endif //AT_EX2_GAMEBOARD_H

@@ -48,7 +48,9 @@ enum GameMessage {ILLEGAL_LINE_FORMAT,
 				  ILLEGAL_MOVE,
 				  VALID_MOVE,
 	              FILE_PLAYER,
-				  AUTO_PLAYER};
+				  AUTO_PLAYER,
+				  MOVING_VECTOR,
+				  NON_MOVING_VECTOR};
 
 enum Reason {	FLAG_CAPTURED,
 				ALL_MOVING_PIECES_EATEN,
