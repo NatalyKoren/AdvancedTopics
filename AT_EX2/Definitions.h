@@ -60,4 +60,8 @@ enum Reason {	FLAG_CAPTURED,
 				BOTH_PLAYERS_BAD_POSITIONING,
 				BAD_MOVE};
 
+enum MoveDirection{
+	UP, DOWN, LEFT, RIGHT
+};
+
 #endif /* DEFINITIONS_H_ */

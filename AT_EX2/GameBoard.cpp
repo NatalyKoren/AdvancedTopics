@@ -202,7 +202,7 @@ int GameBoard::getJokerMovingPiece(int player) const{
     else return secondPlayerPieces.getNumOfMovingJoker();
 }
 
-int GameBoard::checkMove(GameMove& move){
+int GameBoard::checkMove(GameMove& move) const{
     char charToMove;
     // (1) boundary tests
     // test src boundary

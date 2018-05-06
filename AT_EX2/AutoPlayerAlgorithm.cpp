@@ -35,6 +35,7 @@ void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
     game.setPieceAtPosition(opponent, (char)0, moveFrom);
     // set piece at destination position to be moving piece
     game.setPieceAtPosition(opponent, MOVING_PIECE,moveTo);
+    removePieceFromVector(NON_MOVING_VECTOR, move.getTo());
 }
 
 void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
@@ -57,7 +58,7 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
         game.updateAfterLoseFight(player,fightPos);
         removePieceFromVector(MOVING_VECTOR, fightPos);
         // it is a moving piece of the opponent - need to find put which one
-        opponentPiece = getPieceFromWinningFight(loseChar);
+        opponentPiece = fightInfo.getPiece(opponent);
         game.setPieceAtPosition(opponent, opponentPiece,fightPos);
         removePieceFromVector(NON_MOVING_VECTOR, fightPos);
     }
@@ -104,19 +105,96 @@ void AutoPlayerAlgorithm::removePieceFromVector(int vectorType, const Position& 
 
 
 
-void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move) const{
+void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move){
+    // should update move with best move.
     int opponentPiecesScore = getOpponentPieceScore();
     int playerPieceScore = game.getPlayerPieceCount(player)*10;
     int piecesScore = playerPieceScore - opponentPiecesScore;
+    float minDist = -std::numeric_limits<float>::infinity(); // negative infinity
+    int xPos,yPos,currentScore;
+    GameMove moveToCheck(player);
+
+    for(const unique_ptr<Position>& piecePos: playerMovingPositions){
+        // set move source position
+        move.setSrcPosition(*(piecePos));
+        // check every direction for position
+        for(int moveDirection = UP; moveDirection > RIGHT; moveDirection++){
+            // update move with current direction
+            updateMoveWithDirection(moveToCheck,moveDirection);
+            if(game.checkMove(moveToCheck) == VALID_MOVE){
+                // this is a valid move, need to check for scoring
+                currentScore = scoreMoveOnBoard(moveToCheck);
+                if(currentScore < minDist){
+                    // this is the best move so far
+                    minDist = currentScore;
+                    move.setSrcPosition(moveToCheck.getFrom());
+                    move.setDstPosition(moveToCheck.getTo());
+                }
+            }
+        }
+    }
+
+
     // need to check for all the valid moves in playerMovingPositions
     // calculate the best move
 }
-
-int AutoPlayerAlgorithm::scoringFunction() const{
-    return 0;
+void AutoPlayerAlgorithm::updateMoveWithDirection(GameMove& moveToCheck, int moveDirection) const{
+    int xPos = moveToCheck.getFrom().getX();
+    int yPos = moveToCheck.getFrom().getY();
+    switch(moveDirection){
+        case UP:
+            xPos-=1;
+            break;
+        case DOWN:
+            xPos+=1;
+            break;
+        case LEFT:
+            yPos-=1;
+            break;
+        case RIGHT:
+            yPos+=1;
+            break;
+        default:
+            //should never get here
+            break;
+    }
+    moveToCheck.setDstPosition(xPos,yPos);
 }
 
+float AutoPlayerAlgorithm::scoreMoveOnBoard(GameMove& moveToCheck){
+    // first check for a fight
+    int opponentChar = game.getPieceAtPosition(opponent, moveToCheck.getTo());
+    int ourChar = game.getPieceAtPosition(player, moveToCheck.getFrom());
+    int winner;
+    if(opponentChar == UNKNOWN_PIECE){
+        // we want to go there - it maybe a flag!
+        return -10;
+    }
+    else if(opponentChar != (char)0){
+        // it is some moving piece
+        winner = getWinnerOfFight(ourChar, opponentChar);
+        if(winner == player){
+            // we won the fight
+            return -5;
+        }
+        else if(winner == opponent || winner == TIE){
+            // we are losing the fight - Don't want this move
+            return std::numeric_limits<float>::infinity();
+        }
+        else{
+            // we don't know who wins
+            // todo can improve this by adding this score to the distance calculation
+            return 2;
+        }
+        // TODO: now need to calculate distances from non moving pieces
+
+    }
+    return 0.0;
+}
+
+
 int AutoPlayerAlgorithm::getOpponentPieceScore() const{
+    /*
     char pieceType;
     int movingPieces = 0;
     int nonMovingPieces = 0;
@@ -133,30 +211,42 @@ int AutoPlayerAlgorithm::getOpponentPieceScore() const{
         }
     }
     return nonMovingPieces*10 + movingPieces*5;
+     */
+    int nonMovingCount = nonMovingPositions.size();
+    return nonMovingCount*10 + (opponentPieceCount - nonMovingCount)*5;
 }
 
 
-char AutoPlayerAlgorithm::getPieceFromWinningFight(char losingPiece) const{
-    char winningPiece;
-    switch(losingPiece){
+
+int AutoPlayerAlgorithm::getWinnerOfFight(char ourChar, char opponentChar) const{
+    // assuming ourChar is a moving piece
+    ourChar = toupper(ourChar);
+    if(ourChar == opponentChar)
+        return TIE;
+    int winner;
+    switch(opponentChar){
         case SCISSORS:
-            // only rock can win scissors
-            winningPiece = ROCK;
+            if(ourChar == ROCK) winner = player;
+            else if(ourChar == PAPER) winner = opponent;
+            else winner = NONE;
             break;
         case ROCK:
-            // only paper wins rock
-            winningPiece = PAPER;
+            if(ourChar == PAPER) winner = player;
+            else if(ourChar == SCISSORS) winner = opponent;
+            else winner = NONE;
             break;
         case PAPER:
-            // only scissors wins paper
-            winningPiece = SCISSORS;
+            if(ourChar == SCISSORS) winner = player;
+            else if(ourChar == ROCK) winner = opponent;
+            else winner = NONE;
+            break;
+        case MOVING_PIECE:
+            // we don't know who wins
+            winner = NONE;
             break;
         default:
-            // not suppose to get hete
-            std::cout << "Unknown winner in fight for char: " << losingPiece << std::endl;
-            winningPiece = MOVING_PIECE;
+            winner = NONE;
             break;
     }
-    return winningPiece;
-
-}
+    return winner;
+};

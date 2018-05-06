@@ -62,8 +62,10 @@ public:
     int getPlayer()const{ return player; }
 
     // Setters
-    void setSrcPosition(Position& pos){src = pos;}
-    void setDstPosition(Position& pos){dst = pos; }
+    void setSrcPosition(const Position& pos){src.setXposition(pos.getX()); src.setYposition(pos.getY());}
+    void setSrcPosition(int x,int y) { src.setXposition(x); src.setYposition(y);}
+    void setDstPosition(const Position& pos){dst.setXposition(pos.getX()); dst.setYposition(pos.getY());}
+    void setDstPosition(int x,int y) { dst.setXposition(x); dst.setYposition(y);}
     void setPlayer(int curPlayer){player = curPlayer;}
     // For tests and debugging
     void printMove() const;
