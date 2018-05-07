@@ -28,6 +28,8 @@
 #define BOMB     'B'
 #define JOKER    'J'
 #define FLAG     'F'
+#define UNKNOWN_PIECE 'X'
+#define MOVING_PIECE 'M'
 #define NUM_OF_DIFF_PIECES (6)
 #define BOARD1	"..//player1.rps_board"
 #define BOARD2	"..//player2.rps_board"
@@ -46,7 +48,9 @@ enum GameMessage {ILLEGAL_LINE_FORMAT,
 				  ILLEGAL_MOVE,
 				  VALID_MOVE,
 	              FILE_PLAYER,
-				  AUTO_PLAYER};
+				  AUTO_PLAYER,
+				  MOVING_VECTOR,
+				  NON_MOVING_VECTOR};
 
 enum Reason {	FLAG_CAPTURED,
 				ALL_MOVING_PIECES_EATEN,
@@ -55,5 +59,9 @@ enum Reason {	FLAG_CAPTURED,
 				BAD_POSITIONING,
 				BOTH_PLAYERS_BAD_POSITIONING,
 				BAD_MOVE};
+
+enum MoveDirection{
+	UP, DOWN, LEFT, RIGHT
+};
 
 #endif /* DEFINITIONS_H_ */

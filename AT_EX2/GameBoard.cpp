@@ -132,7 +132,7 @@ void GameBoard::increasePieceNum(int player, char piece, int num){
     else secondPlayerPieces.incrementPieceNum(piece, num);
 }
 
-void GameBoard::updateAfterLoseFight(int player, Position& pos){
+void GameBoard::updateAfterLoseFight(int player, const Position& pos){
     char charToRemove = getPieceAtPosition(player, pos);
     setPieceAtPosition(player,(char)0, pos);
     increasePieceNum(player,charToRemove,-1);
@@ -202,7 +202,7 @@ int GameBoard::getJokerMovingPiece(int player) const{
     else return secondPlayerPieces.getNumOfMovingJoker();
 }
 
-int GameBoard::checkMove(GameMove& move){
+int GameBoard::checkMove(GameMove& move) const{
     char charToMove;
     // (1) boundary tests
     // test src boundary
@@ -380,4 +380,11 @@ int GameBoard::execJokerChange(GameJokerChanged& jokerInfo){
     // Execute joker change
     updateJoker(jokerInfo);
     return SUCCESS;
+}
+
+int GameBoard::getPlayerPieceCount(int player)const{
+    if(player == FIRST_PLAYER)
+        return firstPlayerPieces.getPieceCount();
+    else return secondPlayerPieces.getPieceCount();
+
 }

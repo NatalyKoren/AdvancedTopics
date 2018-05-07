@@ -72,3 +72,14 @@ Passed test for file-vs-file:
 Test 2
 Test 3
 Test 4
+Test 5
+
+This week:
+[L] run file tests from ex1
+[L] auto generate initial board - need to update game field and generate vector of piece positions.
+[V] notifyOnInitialBoard
+[V] notifyOnOpponentMove
+[V] notifyFightResult
+[N] scoringFunction
+
+
