@@ -7,13 +7,17 @@
 
 #include "PlayerAlgorithm.h"
 #include "GameBoard.h"
+#include "InterfacePiecePosition.h"
 #include <algorithm>
+#include <stdlib.h>
+#include <memory>
 
 class AutoPlayerAlgorithm : public PlayerAlgorithm {
     int player;
     GameBoard game;
     int opponent;
     int opponentPieceCount;
+    int pieceCount[NUM_OF_DIFF_PIECES]; //counts how many pieces of each type we have: RPSBJF
     // contains positions of the opponent player with UNKNOWN_PIECE.
     std::vector<unique_ptr<Position>> nonMovingPositions;
     // contains moving pieces of player.

@@ -96,7 +96,7 @@ int GameManager::updateInitialPositions(){
 	std::vector<unique_ptr<PiecePosition>> secondPlayerPositions;
 	bool firstPlayerBadPositioningFile = false;
 	bool secondPlayerBadPositioningFile = false;
-	int reason = SUCCESS;
+//	int reason = SUCCESS;
 	// get players positions on boards
 	firstPlayerAlgorithm->getInitialPositions(FIRST_PLAYER, firstPlayerPositions);
 	secondPlayerAlgorithm->getInitialPositions(SECOND_PLAYER, secondPlayerPositions);
