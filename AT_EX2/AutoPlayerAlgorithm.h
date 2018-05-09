@@ -69,7 +69,7 @@ public:
      * @param moveToCheck - move to be scored
      * @return scoring value for move
      */
-    float scoreMoveOnBoard(GameMove& moveToCheck);
+    float scoreMoveOnBoard(const GameMove& moveToCheck);
     /**
      * Return the winner of the fight if we can know it from opponentChar
      * assuming ourChar is a moving piece
@@ -84,8 +84,15 @@ public:
      * @param vectorToComare
      * @return
      */
-    int calculateMinDistance(const Point& fromPos, std::vector<unique_ptr<Position>>& vectorToComare) const;
+    int calculateMinDistance(const Point& fromPos, std::vector<unique_ptr<Position>>& vectorToCompare) const;
+    /***
+     * Update moving vector move destination position after move.
+     * @param move - move to be updated on vector
+     */
+    void updateMovingPiecesVector(const GameMove& move);
 
+    // For debugging
+    void compareListToBoard();
 };
 
 

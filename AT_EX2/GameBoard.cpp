@@ -31,8 +31,8 @@ bool GameBoard::isFight(int playerToCheck, Position& pos) const{
 
 bool GameBoard::checkAndRunFight(int player, Position &dstPos, GameFightInfo& fightInfo) {
     int opponent = getOpponent(player);
-    char opponentPiece = getPieceAtPosition(opponent,dstPos);
-    char currentPlayerPiece = getPieceAtPosition(player,dstPos);
+    char opponentPiece = toupper(getPieceAtPosition(opponent,dstPos));
+    char currentPlayerPiece = toupper(getPieceAtPosition(player,dstPos));
     int winner;
     if(isFight(opponent, dstPos)){
         //Fight

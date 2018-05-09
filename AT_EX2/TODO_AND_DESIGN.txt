@@ -74,7 +74,7 @@ Test 3
 Test 4
 Test 5
 
-This week:
+prev week:
 [V] run file tests from ex1
 [V] auto generate initial board - need to update game field and generate vector of piece positions.
 [V] notifyOnInitialBoard
@@ -82,13 +82,14 @@ This week:
 [V] notifyFightResult
 [V] scoringFunction
 
-Last week:
-[N] change ducumentation of game board
-[] documentation
+Current week:
+[N] change documentation of game board
+[N & L] documentation & code arrangement - document the code and make it more sexy.
 [] Run tests
+    [] Run Moab tests of ex1 with expected output
 [] test on nova
-[] impove auto player
+[] improve auto player
     [] improve scoring function
     [] make him change joker?
-    [] change to minimax?
+    [] change to minimax algorithm?
 

@@ -29,6 +29,7 @@ int main(int argc, char *argv[]){
         return ERROR;
     }
     srand(time(0));
+    //srand(1);
     GameManager game(firstPlayer,secondPlayer);
     int result = game.startAndRunGame();
     if(result == ERROR)

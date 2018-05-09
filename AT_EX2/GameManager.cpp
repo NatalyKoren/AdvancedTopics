@@ -191,7 +191,11 @@ void GameManager::playGame(){
 		playerMove = getMoveFromPlayer(currentPlayer);
 
 		// reach EOF in player
-		if(playerMove == NULL) break;
+		if(playerMove == nullptr){
+			game.setWinner(game.getOpponent(currentPlayer));
+			game.setReason(BAD_MOVE);
+			break;
+		}
 
 		// update move data
 		currentMove.updateMoveFields(*(playerMove));
@@ -217,7 +221,7 @@ void GameManager::playGame(){
 
 		// getJoker change
 		jokerChange = getJokerChangeFromPlayer(currentPlayer);
-		if(jokerChange != NULL){
+		if(jokerChange != nullptr){
 			// there was a joker change in this move
 			currentJokerChange.setPlayer(currentPlayer);
 			currentJokerChange.setJokerPosition(jokerChange->getJokerChangePosition());
@@ -236,8 +240,6 @@ void GameManager::playGame(){
 		// replace player
 		currentPlayer = game.getOpponent(currentPlayer);
 	}
-	//TODO REMOVE THIS
-	currentMove.printMove(&std::cout);
 	// if the winner is none - check again for moving pieces.
 	if(game.getWinner() == NONE)
 		game.checkVictory(FIRST_PLAYER, true);
