@@ -2,10 +2,10 @@
 // Created by DELL on 29/04/2018.
 //
 
+
 #include "AutoPlayerAlgorithm.h"
 
 void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
-
 	int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
 	int x, y;
 	char jokerRep = char(0);
@@ -21,13 +21,24 @@ void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 			if (pieceCount[i] == JOKER) {
 				jokerRep = BOMB;
 			}
+			pos_taken[x][y] = 1;
 			Position curPos(x, y);
 			InterfacePiecePosition curPiece(curPos, pieces[i], jokerRep);
 			vectorToFill.push_back(std::make_unique<InterfacePiecePosition>(curPiece));
 			// updating the autoplayer's board:
 			game.setPieceAtPosition(player, pieces[i], curPos);
+            if(pieces[i] == PAPER || pieces[i] == ROCK || pieces[i] == SCISSORS)
+                playerMovingPositions.push_back(std::make_unique<Position>(x,y));
+
+
+
 		}
 	}
+	// TODO delete this
+	autoFilePlayer << "Board: " << std::endl;
+	game.printBoard(autoFilePlayer);
+	autoFilePlayer << "End Board" << std::endl;
+
 }
 
 void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights){
@@ -53,15 +64,17 @@ void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector
 void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
 	const Position moveFrom = move.getFrom();
 	const Position moveTo = move.getTo();
+    char prevChar = game.getPieceAtPosition(opponent, moveFrom);
 	// remove piece from source position
 	game.setPieceAtPosition(opponent, (char)0, moveFrom);
 	// set piece at destination position to be moving piece
-	game.setPieceAtPosition(opponent, MOVING_PIECE,moveTo);
+    if(prevChar == UNKNOWN_PIECE)
+        prevChar = MOVING_PIECE;
+	game.setPieceAtPosition(opponent, prevChar,moveTo);
 	removePieceFromVector(NON_MOVING_VECTOR, move.getFrom());
 }
 
 void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
-//	char loseChar, opponentPiece;
 	int winner = fightInfo.getWinner();
 	const Position fightPos = fightInfo.getPosition();
 
@@ -102,7 +115,12 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
 
 unique_ptr<Move> AutoPlayerAlgorithm::getMove(){
 	GameMove move(player);
+    char prevChar;
 	getBestMoveForPlayer(move);
+	move.printMove(&autoFilePlayer);
+    prevChar  = game.getPieceAtPosition(player, move.getFrom());
+    game.setPieceAtPosition(player, char(0), move.getFrom());
+    game.setPieceAtPosition(player, prevChar, move.getTo());
 	return std::make_unique<GameMove>(player, move.getFrom(), move.getTo());
 }
 
@@ -112,16 +130,18 @@ unique_ptr<JokerChange> AutoPlayerAlgorithm::getJokerChange(){
 
 void AutoPlayerAlgorithm::removePieceFromVector(int vectorType, const Position& posToRemove){
 	if(vectorType == NON_MOVING_VECTOR){
-		std::remove_if(nonMovingPositions.begin(), nonMovingPositions.end(),
+		auto newEndIterator = std::remove_if(nonMovingPositions.begin(), nonMovingPositions.end(),
 				[posToRemove](const std::unique_ptr<Position>& pos){
 			return (posToRemove.getX() == pos->getX()) && (posToRemove.getY() == pos->getY());
 		});
+		nonMovingPositions.erase(newEndIterator, nonMovingPositions.end());
 	}
 	else{
-		std::remove_if(playerMovingPositions.begin(), playerMovingPositions.end(),
+		auto newEndIterator = std::remove_if(playerMovingPositions.begin(), playerMovingPositions.end(),
 				[posToRemove](const std::unique_ptr<Position>& pos){
 			return (posToRemove.getX() == pos->getX()) && (posToRemove.getY() == pos->getY());
 		});
+		playerMovingPositions.erase(newEndIterator, playerMovingPositions.end());
 	}
 }
 
@@ -132,18 +152,21 @@ void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move){
 	int opponentPiecesScore = getOpponentPieceScore();
 	int playerPieceScore = game.getPlayerPieceCount(player)*10;
 	int piecesScore = playerPieceScore - opponentPiecesScore;
-	float minDist = -std::numeric_limits<float>::infinity(); // negative infinity
+	float minDist = std::numeric_limits<float>::infinity(); // infinity
 	int xPos,yPos,currentScore;
 	GameMove moveToCheck(player);
 
 	for(const unique_ptr<Position>& piecePos: playerMovingPositions){
 		// set move source position
-		move.setSrcPosition(*(piecePos));
+        //std::cout << "moo" << piecePos->getX() << "," << piecePos->getY() << std::endl;
+		moveToCheck.setSrcPosition(*(piecePos));
 		// check every direction for position
-		for(int moveDirection = UP; moveDirection > RIGHT; moveDirection++){
+
+		for(int moveDirection = UP; moveDirection <= RIGHT; moveDirection++){
 			// update move with current direction
+
 			updateMoveWithDirection(moveToCheck,moveDirection);
-			if(game.checkMove(moveToCheck) == VALID_MOVE){
+			if(game.checkMove(moveToCheck, false) == VALID_MOVE){
 				// this is a valid move, need to check for scoring
 				currentScore = scoreMoveOnBoard(moveToCheck);
 				if(currentScore < minDist){
@@ -208,10 +231,9 @@ float AutoPlayerAlgorithm::scoreMoveOnBoard(GameMove& moveToCheck){
 			// todo can improve this by adding this score to the distance calculation
 			return 2;
 		}
-		// TODO: now need to calculate distances from non moving pieces
-
 	}
-	return 0.0;
+
+	return calculateMinDistance(moveToCheck.getTo(), nonMovingPositions);
 }
 
 
@@ -271,4 +293,16 @@ int AutoPlayerAlgorithm::getWinnerOfFight(char ourChar, char opponentChar) const
 		break;
 	}
 	return winner;
+}
+
+
+int AutoPlayerAlgorithm::calculateMinDistance(const Point& fromPos, std::vector<unique_ptr<Position>>& vectorToComare) const{
+    float minDis = std::numeric_limits<float>::infinity();
+	float dist;
+    for(unique_ptr<Position>& pieceToCheck: vectorToComare){
+        dist = abs(pieceToCheck->getX() - fromPos.getX()) + abs(pieceToCheck->getY() - fromPos.getY());
+        if(dist < minDis)
+            minDis = dist;
+    }
+    return minDis;
 }

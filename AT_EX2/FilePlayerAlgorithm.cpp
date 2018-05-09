@@ -85,14 +85,18 @@ std::string FilePlayerAlgorithm::getMovesLine() {
 
 void FilePlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) {
 	// File Player does not support this method
+	ignore(b);
+	ignore(fights);
 }
 
 void FilePlayerAlgorithm::notifyOnOpponentMove(const Move& move){
 	// File Player does not support this method
+	ignore(move);
 }
 
 void FilePlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
 	// File Player does not support this method
+	ignore(fightInfo);
 }
 
 unique_ptr<Move> FilePlayerAlgorithm::getMove(){

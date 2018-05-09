@@ -12,6 +12,9 @@
 #include "Move.h"
 #include "GameJokerChanged.h"
 #include "Position.h"
+#include <fstream>
+
+
 extern void printPoint(const Point& p);
 class GameMove : public Move{
     int player;
@@ -68,7 +71,7 @@ public:
     void setDstPosition(int x,int y) { dst.setXposition(x); dst.setYposition(y);}
     void setPlayer(int curPlayer){player = curPlayer;}
     // For tests and debugging
-    void printMove() const;
+    void printMove(std::ostream* ostream) const;
 
     // only for unit test!!
     bool parseLine(std::string line);

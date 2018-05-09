@@ -271,42 +271,42 @@ int testValidMove(){
     GameBoard board;
     if(move.parseLine("1 2 1 3 \n") == ILLEGAL_LINE_FORMAT)
         return 1;
-    if(board.checkMove(move) == VALID_LINE_FORMAT)
+    if(board.checkMove(move,true) == VALID_LINE_FORMAT)
         return 2;
     board.addPieceToGame(SECOND_PLAYER, ROCK, Position(1,0));
-    if(board.checkMove(move) == VALID_MOVE)
+    if(board.checkMove(move,true) == VALID_MOVE)
         return 3;
     if(move.parseLine("9 8 9 9 \n") == ILLEGAL_LINE_FORMAT)
         return 4;
     board.addPieceToGame(FIRST_PLAYER, ROCK, Position(7,8));
-    if(board.checkMove(move) != VALID_MOVE)
+    if(board.checkMove(move,true) != VALID_MOVE)
         return 5;
     // try to move to occupied position
     board.addPieceToGame(FIRST_PLAYER, ROCK, Position(8,8));
-    if(board.checkMove(move) == VALID_MOVE)
+    if(board.checkMove(move,true) == VALID_MOVE)
         return 6;
     if(move.parseLine("1 1 1 2 \n") == ILLEGAL_LINE_FORMAT)
         return 7;
     // try to move a non moving piece
     board.addPieceToGame(FIRST_PLAYER, BOMB, Position(0,0));
-    if(board.checkMove(move) == VALID_MOVE)
+    if(board.checkMove(move,true) == VALID_MOVE)
         return 8;
     if(move.parseLine("2 2 2 3 \n") == ILLEGAL_LINE_FORMAT)
         return 9;
     // try to move a non moving piece
     board.addPieceToGame(FIRST_PLAYER, FLAG, Position(1,1));
-    if(board.checkMove(move) == VALID_MOVE)
+    if(board.checkMove(move, true) == VALID_MOVE)
         return 10;
     board.addPieceToGame(FIRST_PLAYER, SCISSORS, Position(5,5));
     board.addPieceToGame(FIRST_PLAYER, 's', Position(3,3));
     if(move.parseLine("6 6 6 7 J: 4 4 R\n") == ILLEGAL_LINE_FORMAT)
         return 11;
-    if(board.checkMove(move) != VALID_MOVE)
+    if(board.checkMove(move, true) != VALID_MOVE)
         return 12;
     if(move.parseLine("2 2 3 4 \n") != VALID_LINE_FORMAT)
         return 13;
     board.addPieceToGame(FIRST_PLAYER, 'S', Position(2,2));
-    if(board.checkMove(move) == VALID_MOVE)
+    if(board.checkMove(move, true) == VALID_MOVE)
         return 14;
 
     return 0;

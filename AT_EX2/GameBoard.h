@@ -141,7 +141,7 @@ public:
      * @param move - the move to be tested.
      * @return ILLEGAL_MOVE is the move is not a valid move and VALID_MOVE otherwise.
      */
-    int checkMove(GameMove& move) const;
+    int checkMove(GameMove& move, bool printToConsole) const;
 
     /***
      * The function assumes that dstPos contains player piece. It check is dstPos also contains the opponent piece.

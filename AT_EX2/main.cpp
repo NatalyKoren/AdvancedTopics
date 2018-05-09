@@ -28,6 +28,7 @@ int main(int argc, char *argv[]){
         std::cout<< "ERROR: Unknown command line arguments format" << std::endl;
         return ERROR;
     }
+    srand(time(0));
     GameManager game(firstPlayer,secondPlayer);
     int result = game.startAndRunGame();
     if(result == ERROR)

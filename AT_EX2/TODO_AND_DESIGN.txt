@@ -75,11 +75,20 @@ Test 4
 Test 5
 
 This week:
-[L] run file tests from ex1
-[L] auto generate initial board - need to update game field and generate vector of piece positions.
+[V] run file tests from ex1
+[V] auto generate initial board - need to update game field and generate vector of piece positions.
 [V] notifyOnInitialBoard
 [V] notifyOnOpponentMove
 [V] notifyFightResult
-[N] scoringFunction
+[V] scoringFunction
 
+Last week:
+[N] change ducumentation of game board
+[] documentation
+[] Run tests
+[] test on nova
+[] impove auto player
+    [] improve scoring function
+    [] make him change joker?
+    [] change to minimax?
 

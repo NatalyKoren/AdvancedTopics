@@ -3,7 +3,7 @@ COMP = g++
 OBJS = main.o AutoPlayerAlgorithm.o FilePlayerAlgorithm.o GameBoard.o GameJokerChanged.o GameManager.o GameMove.o PlayerPieces.o
 #The executabel filename DON'T CHANGE
 EXEC = ex2
-CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -pedantic-errors -DNDEBUG
+CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
 
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) -o $@

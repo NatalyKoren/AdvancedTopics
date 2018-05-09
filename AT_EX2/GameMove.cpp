@@ -4,10 +4,10 @@
 
 #include "GameMove.h"
 
-void GameMove::printMove() const{
-    std::cout << "Source position: " << src.getX() << "," << src.getY()  << std::endl;
-    std::cout << "Destination position: " << dst.getX() << "," << dst.getY()  << std::endl;
-    std::cout << "Player: " << player << std::endl;
+void GameMove::printMove(std::ostream* ostream) const{
+    *ostream << "Source position: " << src.getX() << "," << src.getY()  << std::endl;
+    *ostream << "Destination position: " << dst.getX() << "," << dst.getY()  << std::endl;
+    *ostream << "Player: " << player << std::endl;
 
 }
 

@@ -134,6 +134,8 @@ int GameManager::updateInitialPositions(){
 
 int GameManager::updatePositionsOnBoard(int player, std::vector<unique_ptr<PiecePosition>>& vectorToUpdate){
 	char pieceType;
+	if(vectorToUpdate.empty())
+		return ERROR;
 	for(unique_ptr<PiecePosition>& pieceInfo: vectorToUpdate){
 		pieceType = pieceInfo->getPiece();
 		if(checkInitialPositions(pieceInfo, player) == ERROR){
@@ -179,7 +181,7 @@ void GameManager::playGame(){
 	unique_ptr<Move> playerMove;
 	unique_ptr<JokerChange> jokerChange;
 	while(1){
-		if(movesCounter >= 100){
+		if(movesCounter > 100){
 			// there is a 100 moves without a fight - game ends with a tie
 			game.setWinner(TIE);
 			game.setReason(TIE_GAME_OVER);
@@ -226,13 +228,16 @@ void GameManager::playGame(){
 		// notify the other player
 		opponent = game.getOpponent(currentPlayer);
 		notifyToPlayerAfterOpponentsMove(opponent, currentMove);
-		notifyToPlayerOnFightResults(opponent, currentFight);
 
-
+        if(currentFight.getIsFight()){
+            notifyToPlayerOnFightResults(opponent, currentFight);
+        }
 
 		// replace player
 		currentPlayer = game.getOpponent(currentPlayer);
 	}
+	//TODO REMOVE THIS
+	currentMove.printMove(&std::cout);
 	// if the winner is none - check again for moving pieces.
 	if(game.getWinner() == NONE)
 		game.checkVictory(FIRST_PLAYER, true);

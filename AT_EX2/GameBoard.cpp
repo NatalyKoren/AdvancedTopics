@@ -52,7 +52,6 @@ bool GameBoard::checkAndRunFight(int player, Position &dstPos, GameFightInfo& fi
         fightInfo.setIsFight(true);
         fightInfo.setPosition(dstPos);
         fightInfo.setWinner(winner);
-        // TODO: the meaning is the winner opponent? or the player's opponent?
         fightInfo.setPlayerPiece(player, currentPlayerPiece);
         fightInfo.setPlayerPiece(opponent, opponentPiece);
         return true;
@@ -202,52 +201,64 @@ int GameBoard::getJokerMovingPiece(int player) const{
     else return secondPlayerPieces.getNumOfMovingJoker();
 }
 
-int GameBoard::checkMove(GameMove& move) const{
+int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
     char charToMove;
     // (1) boundary tests
     // test src boundary
     if(move.positionBoundaryTest(move.getFrom()) == INDEX_OUT_OF_BOUND){
-        std::cout << "Illegal source position. Player: " << move.getPlayer() << " insert out of bound source position: ";
-        printPoint(move.getFrom());
-        std::cout << std::endl;
+        if(printToConsole){
+            std::cout << "Illegal source position. Player: " << move.getPlayer() << " insert out of bound source position: ";
+            printPoint(move.getFrom());
+            std::cout << std::endl;
+        }
         return INDEX_OUT_OF_BOUND;
     }
     // test dst boundary
     if(move.positionBoundaryTest(move.getTo()) == INDEX_OUT_OF_BOUND){
-        std::cout << "Illegal destination position. Player: " << move.getPlayer() << " insert out of bound source position: ";
-       printPoint(move.getTo());
-        std::cout << std::endl;
+        if(printToConsole){
+            std::cout << "Illegal destination position. Player: " << move.getPlayer() << " insert out of bound source position: ";
+            printPoint(move.getTo());
+            std::cout << std::endl;
+        }
         return INDEX_OUT_OF_BOUND;
     }
     // boundary is valid
     // (2) moving to position contain same player piece
     if(!(isEmpty(move.getPlayer(), move.getTo()))){
-        std::cout << "Illegal move. Player: " << move.getPlayer() << " try to move to destination position occupied by him. Destination position: ";
-        printPoint(move.getTo());
-        std::cout << std::endl;
+        if(printToConsole){
+            std::cout << "Illegal move. Player: " << move.getPlayer() << " try to move to destination position occupied by him. Destination position: ";
+            printPoint(move.getTo());
+            std::cout << std::endl;
+        }
         return ILLEGAL_MOVE;
     }
     if(move.testForValidMovementOfBoard() == ILLEGAL_MOVE){
-        std::cout << "Illegal movement on board. Player: " << move.getPlayer() << " try to move from: ";
-        printPoint(move.getFrom());
-        std::cout << " to: ";
-        printPoint(move.getTo());
-        std::cout << std::endl;
+        if(printToConsole){
+            std::cout << "Illegal movement on board. Player: " << move.getPlayer() << " try to move from: ";
+            printPoint(move.getFrom());
+            std::cout << " to: ";
+            printPoint(move.getTo());
+            std::cout << std::endl;
+        }
         return ILLEGAL_MOVE;
     }
     // (3) try to move non moving piece
     charToMove = getPieceAtPosition(move.getPlayer(), move.getFrom());
     if(charToMove == (char)0){
-        std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
-        printPoint(move.getFrom());
-        std::cout << " does not contain a player piece." << std::endl;
+        if(printToConsole){
+            std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
+            printPoint(move.getFrom());
+            std::cout << " does not contain a player piece." << std::endl;
+        }
         return ILLEGAL_MOVE;
     }
 
     if(toupper(charToMove) == BOMB || charToMove == FLAG ){
-        std::cout << "Illegal source position for Player " << move.getPlayer() << ". Position ";
-        printPoint(move.getFrom());
-        std::cout << " contains non moving piece." << std::endl;
+        if(printToConsole){
+            std::cout << "Illegal source position for Player " << move.getPlayer() << ". Position ";
+            printPoint(move.getFrom());
+            std::cout << " contains non moving piece." << std::endl;
+        }
         return ILLEGAL_MOVE;
     }
     // Seems OK ...
@@ -356,7 +367,8 @@ int GameBoard::execMove(GameMove &move, GameFightInfo& fightInfo) {
     int opponentPlayer = getOpponent(currentPlayer);
 
     // check if move is a valid move
-    if(checkMove(move) != VALID_MOVE){
+    // true because execMove is callled only from the game manager
+    if(checkMove(move, true) != VALID_MOVE){
         std::cout << "Bad move for player " << currentPlayer << std::endl;
         winner = opponentPlayer;
         reason = BAD_MOVE;

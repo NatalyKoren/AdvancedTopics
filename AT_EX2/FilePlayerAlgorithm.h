@@ -60,7 +60,7 @@ public:
 	 */
     // should parse a file? or inside the constructor or in getInitialPositions
     FilePlayerAlgorithm(int playerNum);
-    // In case of an error in positioning file: put (char)0 in 'piece' field of InterfacePiecePosition class.
+	template<class T> void ignore(const T&) { }
     virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill);
     // don't need implementation for file player - Does not important
     virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights);
