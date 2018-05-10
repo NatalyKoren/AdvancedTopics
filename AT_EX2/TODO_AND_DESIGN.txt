@@ -92,4 +92,5 @@ Current week:
     [] improve scoring function
     [] make him change joker?
     [] change to minimax algorithm?
+[] GetMove() should return 1-based index :( I also think that getX() returns the row and not the column.
 

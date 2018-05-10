@@ -61,13 +61,13 @@ public:
     // should parse a file? or inside the constructor or in getInitialPositions
     FilePlayerAlgorithm(int playerNum);
 	template<class T> void ignore(const T&) { }
-    virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill);
+    virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;
     // don't need implementation for file player - Does not important
-    virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights);
-    virtual void notifyOnOpponentMove(const Move& move); // called only on opponents move
-    virtual void notifyFightResult(const FightInfo& fightInfo); // called only if there was a fight
-    virtual unique_ptr<Move> getMove();
-    virtual unique_ptr<JokerChange> getJokerChange(); // nullptr if no change is requested
+    virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) override;
+    virtual void notifyOnOpponentMove(const Move& move) override; // called only on opponents move
+    virtual void notifyFightResult(const FightInfo& fightInfo) override; // called only if there was a fight
+    virtual unique_ptr<Move> getMove() override;
+    virtual unique_ptr<JokerChange> getJokerChange() override; // nullptr if no change is requested
 };
 
 
