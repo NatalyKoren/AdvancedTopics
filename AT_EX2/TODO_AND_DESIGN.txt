@@ -92,5 +92,6 @@ Current week:
     [] improve scoring function
     [] make him change joker?
     [] change to minimax algorithm?
-[] GetMove() should return 1-based index :( I also think that getX() returns the row and not the column.
-
+[] GetMove() should return 1-based index :(. I also think that getX() returns the row and not the column not sure what it should be.
+[] It is preferable that gameManager would not be familiar with playerAlgorithm implementation.
+    Amir claims that the best implementation is empty constructor and setters for setting the players algorithm performed by the main.
