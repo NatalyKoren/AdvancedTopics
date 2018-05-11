@@ -5,8 +5,8 @@
 #include "GameMove.h"
 
 void GameMove::printMove(std::ostream* ostream) const{
-    *ostream << "Source position: " << src.getX() << "," << src.getY()  << std::endl;
-    *ostream << "Destination position: " << dst.getX() << "," << dst.getY()  << std::endl;
+    *ostream << "Source position: " << src.getX()+1 << "," << src.getY()+1 << std::endl;
+    *ostream << "Destination position: " << dst.getX()+1 << "," << dst.getY()+1 << std::endl;
     *ostream << "Player: " << player << std::endl;
 
 }

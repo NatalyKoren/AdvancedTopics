@@ -144,12 +144,12 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 		}
 	}
 
-	// Update move data
-	Position srcPos(fromX-1, fromY-1);
-	Position dstPos(toX-1, toY-1);
+	// Update move data: positions are 1-based and not 0-based!
+	Position srcPos(fromX, fromY);
+	Position dstPos(toX, toY);
 	GameMove curMove(player, srcPos, dstPos);
 
-	Position jokerPos(jokerX-1, jokerY-1);
+	Position jokerPos(jokerX, jokerY);
 	jokerChanged.setIsJokerChanged(isJokerCurChange);
 	jokerChanged.setJokerPosition(jokerPos);
 	jokerChanged.setNewJokerRep(newJokerRep);

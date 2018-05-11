@@ -3,5 +3,9 @@
 .settings/
 Debug/
 *.gch
-../RemotesystemFiles/
-../.metadata/
+.metadata/
+Default/
+AutoPlayerAlgorithmUnitTest
+player1*
+player2*
+rps*

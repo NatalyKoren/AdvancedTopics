@@ -197,6 +197,10 @@ void GameManager::playGame(){
 			break;
 		}
 
+		// move is not null - changing from 1-based to 0-based
+		playerMove.setSrcPosition(move.getFrom().getX()-1, move.getFrom().getY()-1);
+		playerMove.setDstPosition(move.getTo().getX()-1, move.getTo().getY()-1);
+		
 		// update move data
 		currentMove.updateMoveFields(*(playerMove));
 		currentMove.setPlayer(currentPlayer);
@@ -264,6 +268,7 @@ unique_ptr<Move> GameManager::getMoveFromPlayer(int player) const{
 		return firstPlayerAlgorithm->getMove();
 	else return secondPlayerAlgorithm->getMove();
 }
+
 
 void GameManager::notifyToPlayerAfterOpponentsMove(int playerToNotify, const Move& move) const{
 	if(playerToNotify == FIRST_PLAYER)

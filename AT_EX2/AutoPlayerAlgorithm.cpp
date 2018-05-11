@@ -123,6 +123,10 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove(){
     game.setPieceAtPosition(player, prevChar, move.getTo());
     // update moving pieces vector
     updateMovingPiecesVector(move);
+
+	// updating the move to be 1-based instead of 0-based for the game manager
+	move.setSrcPosition(move.getFrom().getX()+1, move.getFrom().getY()+1);
+	move.setDstPosition(move.getTo().getX()+1, move.getTo().getY()+1);
     return std::make_unique<GameMove>(player, move.getFrom(), move.getTo());
 }
 
