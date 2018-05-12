@@ -1,0 +1,157 @@
+Board: 
+  P     SB
+P       P 
+          
+          
+       JR 
+      P   
+      R B 
+P         
+     F    
+     J    
+End Board
+-----------------------
+Board:
+ xP  x  SB
+P      xP 
+ x        
+  x       
+ x x  xJR 
+     xP   
+      R   
+Px        
+     F    
+     J    
+Move:
+Source position: 5,6
+Destination position: 4,6
+Player: 1
+-----------------------
+Board:
+     x  SB
+P      xP 
+ x        
+  x       
+ x x   JR 
+     x    
+      R   
+Px        
+     F    
+     J    
+Move:
+Source position: 1,8
+Destination position: 1,7
+Player: 1
+-----------------------
+Board:
+     x  SB
+P         
+ x        
+  x       
+ x x   JR 
+     x    
+      R   
+          
+     F    
+     J    
+Move:
+Source position: 6,6
+Destination position: 5,6
+Player: 1
+-----------------------
+Board:
+     x  SB
+Pm        
+          
+  x       
+ x x   JR 
+     xR   
+          
+          
+     F    
+     J    
+Move:
+Source position: 5,6
+Destination position: 5,5
+Player: 1
+-----------------------
+Board:
+     x  SB
+          
+          
+  x       
+ x x   JR 
+     R    
+          
+          
+     F    
+     J    
+Move:
+Source position: 5,5
+Destination position: 4,5
+Player: 1
+-----------------------
+Board:
+     x  SB
+          
+          
+  x       
+ x  mR JR 
+          
+          
+          
+     F    
+     J    
+Move:
+Source position: 4,5
+Destination position: 4,4
+Player: 1
+-----------------------
+Board:
+     x  SB
+          
+          
+          
+ xm    JR 
+          
+          
+          
+     F    
+     J    
+Move:
+Source position: 0,8
+Destination position: 0,7
+Player: 1
+-----------------------
+Board:
+     x S B
+          
+          
+          
+ x m   JR 
+          
+          
+          
+     F    
+     J    
+Move:
+Source position: 0,7
+Destination position: 0,6
+Player: 1
+-----------------------
+Board:
+     xS  B
+          
+          
+          
+ x  m  JR 
+          
+          
+          
+     F    
+     J    
+Move:
+Source position: 0,6
+Destination position: 0,5
+Player: 1
+-----------------------

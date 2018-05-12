@@ -1,157 +1,77 @@
 Board: 
-  P     SB
-P       P 
+    P     
+         B
+  P   P J 
+    P S   
+     R  R 
+       P  
+    J     
+      F   
           
-          
-       JR 
-      P   
-      R B 
-P         
-     F    
-     J    
+ B        
 End Board
 -----------------------
 Board:
- xP  x  SB
-P      xP 
- x        
-  x       
- x x  xJR 
-     xP   
-      R   
-Px        
-     F    
-     J    
-Move:
-Source position: 5,6
-Destination position: 4,6
-Player: 1
------------------------
-Board:
-     x  SB
-P      xP 
- x        
-  x       
- x x   JR 
-     x    
-      R   
-Px        
-     F    
-     J    
-Move:
-Source position: 1,8
-Destination position: 1,7
-Player: 1
------------------------
-Board:
-     x  SB
-P         
- x        
-  x       
- x x   JR 
-     x    
-      R   
-          
-     F    
-     J    
-Move:
-Source position: 6,6
-Destination position: 5,6
-Player: 1
------------------------
-Board:
-     x  SB
-Pm        
-          
-  x       
- x x   JR 
-     xR   
-          
-          
-     F    
-     J    
-Move:
-Source position: 5,6
-Destination position: 5,5
-Player: 1
------------------------
-Board:
-     x  SB
-          
-          
-  x       
- x x   JR 
+    P     
+         B
+x P   P J 
+ x  P S  x
      R    
+    x  P  
+   xJ     
+x xx  Fxx 
           
-          
-     F    
-     J    
+ B        
 Move:
-Source position: 5,5
-Destination position: 4,5
+Source position: 5,6
+Destination position: 6,6
 Player: 1
 -----------------------
 Board:
-     x  SB
+    P     
+         B
+x P   P J 
+ x  P S  x
+    m     
+     R P  
+   xJ     
+x xx  Fxx 
           
-          
-  x       
- x  mR JR 
-          
-          
-          
-     F    
-     J    
+ B        
 Move:
-Source position: 4,5
-Destination position: 4,4
+Source position: 6,8
+Destination position: 7,8
 Player: 1
 -----------------------
 Board:
-     x  SB
+    P     
+         B
+x P   P J 
+ x    S  x
           
+     R    
+   xJ  P  
+x xx  Fxx 
           
-          
- xm    JR 
-          
-          
-          
-     F    
-     J    
+ B        
 Move:
-Source position: 0,8
-Destination position: 0,7
+Source position: 7,8
+Destination position: 8,8
 Player: 1
 -----------------------
 Board:
-     x S B
+    P     
+         B
+x P   P J 
+ x    S  x
           
+     R    
+   xJ     
+x xx  Fm  
           
-          
- x m   JR 
-          
-          
-          
-     F    
-     J    
+ B        
 Move:
-Source position: 0,7
-Destination position: 0,6
-Player: 1
------------------------
-Board:
-     xS  B
-          
-          
-          
- x  m  JR 
-          
-          
-          
-     F    
-     J    
-Move:
-Source position: 0,6
-Destination position: 0,5
+Source position: 3,3
+Destination position: 4,3
 Player: 1
 -----------------------

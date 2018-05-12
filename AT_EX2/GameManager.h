@@ -19,11 +19,19 @@ class GameManager{
     std::unique_ptr<PlayerAlgorithm> secondPlayerAlgorithm;
     int pieceCount[NUM_OF_DIFF_PIECES];
 public:
-    // --- Constructor ---
+    // --- Constructors ---
+    GameManager(): game(), currentPlayer(FIRST_PLAYER) {initializePieceCount();}
+
     GameManager(int firstPlayerType,int secondPlayerType);
 
 	//Initialises the field pieceCount according to the number of each piece provided in Definitions.h
 	void initializePieceCount();
+
+	/*
+	 * setters for the player algorithms
+	 */
+	void setFirstPlayerAlgorithm(std::unique_ptr<PlayerAlgorithm> firstAlgo) {firstPlayerAlgorithm = std::move(firstAlgo);}
+	void setSecondPlayerAlgorithm(std::unique_ptr<PlayerAlgorithm> secondAlgo) {secondPlayerAlgorithm = std::move(secondAlgo);}
 
 	// verifies that the number of each piece is legal
 	// @return value: SUCCESS if ok, ERROR otherwise

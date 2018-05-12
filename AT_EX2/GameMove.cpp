@@ -34,10 +34,10 @@ int GameMove::positionBoundaryTest(const Point& pos) const{
 void GameMove::updateMoveFields(Move& move){
     Position srcPos(move.getFrom());
     Position toPos(move.getTo());
-    src.setXposition(srcPos.getX());
-    src.setYposition(srcPos.getY());
-    dst.setXposition(toPos.getX());
-    dst.setYposition(toPos.getY());
+    src.setXposition(srcPos.getX()-1);
+    src.setYposition(srcPos.getY()-1);
+    dst.setXposition(toPos.getX()-1);
+    dst.setYposition(toPos.getY()-1);
 }
 
 int GameMove::testForValidMovementOfBoard(){
@@ -60,9 +60,9 @@ int GameMove::testForValidMovementOfBoard(){
 void printPoint(const Point& p) { std::cout << "(" << p.getY()+1 << "," << p.getX()+1 << ")";}
 
 // only for unit testss!!!1
-
+/*
 bool GameMove::parseLine(std::string line){
-    /*
+
     // try to get Joker Line
     int fromX,fromY,toX,toY, jokerX,jokerY;
     int dummyInt;
@@ -112,6 +112,6 @@ bool GameMove::parseLine(std::string line){
     jokerInfo.setNewJokerRep(tolower(newJokerRep));
     jokerInfo.setJokerPosition(Position(jokerY-1, jokerX-1));
 
- */
     return VALID_LINE_FORMAT;
 }
+ */

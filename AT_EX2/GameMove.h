@@ -29,7 +29,7 @@ public:
     // Copy from move interface
     GameMove(int movePlayer, Move& move):player(movePlayer),src(move.getFrom()), dst(move.getTo()) { }
     /***
-     * Update fields data with move info.
+     * Update fields data with move info. Changing them from 1-based to 0-based
      * @param moveData - move to be updated
      */
 
@@ -73,9 +73,10 @@ public:
     // For tests and debugging
     void printMove(std::ostream* ostream) const;
 
+    /*
     // only for unit test!!
     bool parseLine(std::string line);
-
+     */
 
 };
 

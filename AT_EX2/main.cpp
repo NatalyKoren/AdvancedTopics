@@ -30,8 +30,21 @@ int main(int argc, char *argv[]){
     }
     srand(time(0));
     //srand(1);
-    GameManager game(firstPlayer,secondPlayer);
-    int result = game.startAndRunGame();
+//    GameManager game(firstPlayer, secondPlayer);
+
+    GameManager game;
+	if(firstPlayer == FILE_PLAYER)
+		game.setFirstPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(FIRST_PLAYER));
+	else
+		game.setFirstPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(FIRST_PLAYER));
+
+	if(secondPlayer == FILE_PLAYER)
+		game.setSecondPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(SECOND_PLAYER));
+	else
+		game.setSecondPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(SECOND_PLAYER));
+
+	int result = game.startAndRunGame();
+
     if(result == ERROR)
         std::cout<< "Game ended with errors." << std::endl;
 

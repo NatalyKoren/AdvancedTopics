@@ -29,7 +29,7 @@ public:
     AutoPlayerAlgorithm(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
                                        opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),
                                         autoFilePlayer(){
-        std::string fileName = "../AutoPlayerFile_" + std::to_string(player) + ".txt";
+        std::string fileName = "AutoPlayerFile_" + std::to_string(player) + ".txt";
         autoFilePlayer.open(fileName.c_str());
     }
     // --- Interface functions ---

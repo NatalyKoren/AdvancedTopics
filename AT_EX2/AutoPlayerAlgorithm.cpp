@@ -155,11 +155,12 @@ void AutoPlayerAlgorithm::removePieceFromVector(int vectorType, const Position& 
 
 void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move){
     // should update move with best move.
-    int opponentPiecesScore = getOpponentPieceScore();
-    int playerPieceScore = game.getPlayerPieceCount(player)*10;
-    int piecesScore = playerPieceScore - opponentPiecesScore;
+//    int opponentPiecesScore = getOpponentPieceScore();
+//    int playerPieceScore = game.getPlayerPieceCount(player)*10;
+//    int piecesScore = playerPieceScore - opponentPiecesScore;
     float minDist = std::numeric_limits<float>::infinity(); // infinity
-    int xPos,yPos,currentScore;
+//    int xPos,yPos;
+    int currentScore;
     GameMove moveToCheck(player);
 
     autoFilePlayer << "Board:" << std::endl;

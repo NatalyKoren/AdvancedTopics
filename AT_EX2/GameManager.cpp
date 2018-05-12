@@ -4,7 +4,6 @@
 
 #include "GameManager.h"
 
-
 GameManager::GameManager(int firstPlayerType, int secondPlayerType):game(),currentPlayer(FIRST_PLAYER){
 	/*
     firstPlayerAlgorithm = (firstPlayerType == FILE_PLAYER)?
@@ -91,7 +90,6 @@ int GameManager::checkInitialPositions(std::unique_ptr<PiecePosition>& pieceInfo
 }
 
 int GameManager::updateInitialPositions(){
-	// TODO: Check what about line number error and reason for error - need to see EX1 implementation for this.
 	std::vector<unique_ptr<PiecePosition>> firstPlayerPositions;
 	std::vector<unique_ptr<PiecePosition>> secondPlayerPositions;
 	bool firstPlayerBadPositioningFile = false;
@@ -197,9 +195,9 @@ void GameManager::playGame(){
 			break;
 		}
 
-		// move is not null - changing from 1-based to 0-based
-		playerMove.setSrcPosition(move.getFrom().getX()-1, move.getFrom().getY()-1);
-		playerMove.setDstPosition(move.getTo().getX()-1, move.getTo().getY()-1);
+//		// move is not null - changing from 1-based to 0-based
+//		playerMove->setSrcPosition(move.getFrom().getX()-1, move.getFrom().getY()-1);
+//		playerMove->setDstPosition(move.getTo().getX()-1, move.getTo().getY()-1);
 		
 		// update move data
 		currentMove.updateMoveFields(*(playerMove));
@@ -208,6 +206,7 @@ void GameManager::playGame(){
 		// execute move
 		if(game.execMove(currentMove, currentFight) == ERROR){
 			// This is invalid move - the board winner is updated.
+			//TODO: where is the validity check?
 			break;
 		}
 		// if we got here the move is a valid move
@@ -230,7 +229,13 @@ void GameManager::playGame(){
 			currentJokerChange.setPlayer(currentPlayer);
 			currentJokerChange.setJokerPosition(jokerChange->getJokerChangePosition());
 			currentJokerChange.setNewJokerRep(jokerChange->getJokerNewRep());
-			if(game.execJokerChange(currentJokerChange));
+			//check if the joker change is illegal
+			if(game.execJokerChange(currentJokerChange) == ERROR) {
+				std::cout << "Illegal joker change for player " << currentPlayer << std::endl;
+				game.setWinner(game.getOpponent(currentPlayer));
+				game.setReason(BAD_MOVE);
+				break;
+			}
 		}
 
 		// notify the other player

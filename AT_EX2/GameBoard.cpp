@@ -266,7 +266,7 @@ int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
 }
 
 int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
-    char newJokerChar;
+//    char newJokerChar;
     int player = jokerInfo.getPlayer();
     Position jokerPos(jokerInfo.getJokerChangePosition());
     // joker position is empty
@@ -286,7 +286,7 @@ int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
 
     // test if joker new char is a valid char: S,R,P,B
     if(!jokerInfo.isJokerValidChar()){
-        std::cout << "Joker new representation for player" << player << " is invalid: " << toupper(newJokerChar) << std::endl;
+        std::cout << "Joker new representation for player" << player << " is invalid." << std::endl;
         return ILLEGAL_MOVE;
     }
 
