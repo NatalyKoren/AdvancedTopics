@@ -106,12 +106,15 @@ Current week:
 Documentation:
 [] AutoPlayer
 [] FilePlayer
-[] GameBoard
-[] GameFightInfo
-[] GameJokerChange
-[] GameMove
-[] PlayerPieces
+[] GameBoard: long functions: checkVictory
+[V] GameFightInfo
+[V] GameJokerChange
+[V] GameMove
+[V] PlayerPieces
+[V] Position
 [] GameManager
+[V] InterfacePiecePosition
+[V] PiecePosition
 
 1-Based: :( !!!!
 [V] Move
@@ -119,3 +122,4 @@ Documentation:
 [V] PiecePosition
 [V] Board
 [V] JokerChanged
+

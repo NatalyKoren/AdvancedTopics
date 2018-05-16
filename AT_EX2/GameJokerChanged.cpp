@@ -10,3 +10,9 @@ bool GameJokerChanged::isJokerValidChar() const{
         return true;
     else return false;
 }
+
+void GameJokerChanged::printJokerInfo() const{
+    std::cout << "Need to Update Joker? : " << isJokerChanged << std::endl;
+    std::cout << "Joker position: " << jokerPos.getX() << "," << jokerPos.getY()  << std::endl;
+    std::cout << "Joker new char: " << newJokerChar << std::endl;
+}

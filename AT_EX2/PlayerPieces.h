@@ -7,6 +7,10 @@
 
 #include "Definitions.h"
 #include <ctype.h>
+
+/***
+ * Class PlayerPieces: Represents the amount of a player's pieces in the game.
+ */
 class PlayerPieces{
     int scissors;
     int rock;
@@ -17,9 +21,7 @@ class PlayerPieces{
     int numOfMovingJokers;
 
 public:
-    /***
-     * The class represents the amount of a player's pieces in the game.
-     */
+    // --- Constructor ---
     PlayerPieces();
     // --- Setters
     void setScissorsNum(int num){ scissors = num; }
@@ -50,7 +52,7 @@ public:
     void incrementPieceNum(char piece, int num);
     /***
      * increment the amount of joker moving pieces.
-     * Usually using when the joker chnages its representation (with num = 1 or -1)
+     * Usually using when the joker changes its representation (with num = 1 or -1)
      * @param num - the amount of pieces we will add to joker amount of moving pieces.
      */
     void incrementJokerMovingPieces(int num) { numOfMovingJokers+=num; }

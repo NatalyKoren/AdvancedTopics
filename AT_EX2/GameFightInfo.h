@@ -18,11 +18,13 @@ class GameFightInfo: public FightInfo {
 	bool isFight;
 
 public:
-	GameFightInfo(const Point& p, char firstPlayer, char secondPlayer, int win):
+	// --- Constructors ---
+    GameFightInfo(const Point& p, char firstPlayer, char secondPlayer, int win):
             position(p),firstPlayerPiece(firstPlayer),secondPlayerPiece(secondPlayer),winner(win),isFight(true) {}
-	GameFightInfo(): position(-1,-1),firstPlayerPiece((char)0),secondPlayerPiece((char)0),winner(TIE),isFight(false) { }
 
-    // --- inteface functions ---
+    GameFightInfo(): position(-1,-1),firstPlayerPiece(EMPTY_CHAR),secondPlayerPiece(EMPTY_CHAR),winner(TIE),isFight(false) { }
+
+    // --- interface functions ---
 	virtual const Point& getPosition() const {return position;}
     // R, P, S, B or F (but NOT J)
     virtual char getPiece(int player) const{
@@ -42,7 +44,6 @@ public:
     void setIsFight(bool newVal){ isFight = newVal;}
 
     // --- Getters ---
-    bool getIsFight() { return isFight;}
-
+    bool getIsFight()const { return isFight;}
 };
 #endif /* OURFIGHTINFO_H_ */

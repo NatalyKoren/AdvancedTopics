@@ -11,7 +11,7 @@ class InterfacePiecePosition : public PiecePosition {
 	char jokerRep;
 
 public:
-	InterfacePiecePosition(Point& point, char newPiece, char newJokerRep):
+	InterfacePiecePosition(const Point& point, char newPiece, char newJokerRep):
 		pos(point),piece(newPiece), jokerRep(newJokerRep){}
 	virtual const Point& getPosition() const {return pos;}
 	virtual char getPiece() const {return piece;} // R, P, S, B, J or F

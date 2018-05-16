@@ -44,10 +44,10 @@ void PlayerPieces::updateJokerMovingCount(char previousPiece, char newPiece){
         // the joker got new representation
         previousPiece = toupper(previousPiece);
         newPiece = toupper(newPiece);
-        if(newPiece == BOMB && previousPiece != (char) 0)
+        if(newPiece == BOMB && previousPiece != EMPTY_CHAR)
             // the joker changed from moving piece to non moving piece
             incrementJokerMovingPieces(-1);
-        if(newPiece != BOMB && (previousPiece == BOMB || previousPiece == (char) 0 ))
+        if(newPiece != BOMB && (previousPiece == BOMB || previousPiece == EMPTY_CHAR))
             // the joker changed from non moving piece to moving piece
             incrementJokerMovingPieces(1);
     }

@@ -7,7 +7,9 @@
 #include "Definitions.h"
 #include "Position.h"
 #include "JokerChange.h"
-
+/***
+ * class GameJokerChanged: a class for managing the joker changes within a move.
+ */
 class GameJokerChanged : public JokerChange{
     int player;
     bool isJokerChanged;
@@ -16,18 +18,17 @@ class GameJokerChanged : public JokerChange{
 
 public:
     // --- constructors ---
-    // todo: this is not a good constructor!!! consider deleting it
-    GameJokerChanged(): player(FIRST_PLAYER),isJokerChanged(false),jokerPos(-1,-1),newJokerChar((char)0) { }
-    // if we pass all the parameters the joker have been changed
+    GameJokerChanged(): player(FIRST_PLAYER),isJokerChanged(false),jokerPos(-1,-1),newJokerChar(EMPTY_CHAR) { }
 
-    GameJokerChanged(int currPlayer, bool isJokernewRep, int x, int y,char c):
-            player(currPlayer),isJokerChanged(isJokernewRep),jokerPos(x,y),newJokerChar(c) { }
-    // empty ctor
-    GameJokerChanged(int curPlayer): player(curPlayer),isJokerChanged(false),jokerPos(-1,-1),newJokerChar((char)0) { }
+    GameJokerChanged(int currPlayer, bool isJokerNewRep, int x, int y,char c):
+            player(currPlayer),isJokerChanged(isJokerNewRep),jokerPos(x,y),newJokerChar(c) { }
 
-    // --- inteface functions ---
+    GameJokerChanged(int curPlayer): player(curPlayer),isJokerChanged(false),jokerPos(-1,-1),newJokerChar(EMPTY_CHAR) { }
+
+    // --- interface functions ---
     virtual const Point& getJokerChangePosition() const {return jokerPos;}
     virtual char getJokerNewRep() const {return newJokerChar;} // R, P, S or B (but NOT J and NOT F)nd NOT F)
+
     // --- getters ---
     bool getIsJokerChanged() const {return isJokerChanged;}
     int getPlayer() const { return player; }
@@ -38,19 +39,16 @@ public:
     void setJokerPosition(const Point& pos){ jokerPos.setXposition(pos.getX()), jokerPos.setYposition(pos.getY());}
     void setJokerPosition(int x, int y) {jokerPos.setXposition(x); jokerPos.setYposition(y); }
     void setPlayer(int newPlayer) { player = newPlayer; }
+
     /***
-    * Test is new joker representation is a valid representation for joker.
+    * Test if new joker representation is a valid representation for joker.
     * @return true if newJokerChar is a valid joker representation and false otherwise.
     * valid representation is: BOMB, SCISSORS, ROCK, PAPER.
- */
+    */
     bool isJokerValidChar() const;
-    // --- Print info ---
-    void printJokerInfo() const{
-        std::cout << "Need to Update Joker? : " << isJokerChanged << std::endl;
-        std::cout << "Joker position: " << jokerPos.getX() << "," << jokerPos.getY()  << std::endl;
-        std::cout << "Joker new char: " << newJokerChar << std::endl;
-    }
 
+    // --- Print info ---
+    void printJokerInfo() const;
 };
 
 #endif //AT_EX2_GAMEJOKERCHANGED_H
