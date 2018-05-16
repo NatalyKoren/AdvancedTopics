@@ -1,4 +1,4 @@
-COMP = g++
+COMP = g++-5.3.0
 #put all your object files here
 OBJS = main.o AutoPlayerAlgorithm.o FilePlayerAlgorithm.o GameBoard.o GameJokerChanged.o GameManager.o GameMove.o PlayerPieces.o
 #The executabel filename DON'T CHANGE

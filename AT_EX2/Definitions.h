@@ -28,6 +28,7 @@
 #define BOMB     'B'
 #define JOKER    'J'
 #define FLAG     'F'
+#define EMPTY_CHAR ((char)0)
 #define UNKNOWN_PIECE 'X'
 #define MOVING_PIECE 'M'
 #define NUM_OF_DIFF_PIECES (6)

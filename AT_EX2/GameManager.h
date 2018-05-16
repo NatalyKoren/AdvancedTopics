@@ -8,8 +8,6 @@
 #include "GameBoard.h"
 #include "PlayerAlgorithm.h"
 #include "Definitions.h"
-#include "FilePlayerAlgorithm.h"
-#include "AutoPlayerAlgorithm.h"
 #include "PlayerPieces.h"
 
 class GameManager{
@@ -21,8 +19,6 @@ class GameManager{
 public:
     // --- Constructors ---
     GameManager(): game(), currentPlayer(FIRST_PLAYER) {initializePieceCount();}
-
-    GameManager(int firstPlayerType,int secondPlayerType);
 
 	//Initialises the field pieceCount according to the number of each piece provided in Definitions.h
 	void initializePieceCount();
@@ -46,7 +42,7 @@ public:
 	/*
 	 * validates all the positions in the vector
 	 */
-	int checkInitialPositions(std::unique_ptr<PiecePosition>& pieceInfo, int player);
+	int checkInitialPosition(const Point& posToCheck, char pieceType, int player);
 
     /**
      * calls getInitialPositions of both players.

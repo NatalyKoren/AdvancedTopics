@@ -4,26 +4,6 @@
 
 #include "GameManager.h"
 
-GameManager::GameManager(int firstPlayerType, int secondPlayerType):game(),currentPlayer(FIRST_PLAYER){
-	/*
-    firstPlayerAlgorithm = (firstPlayerType == FILE_PLAYER)?
-                           std::make_unique<FilePlayerAlgorithm>():std::make_unique<AutoPlayerAlgorithm>();
-
-    secondPlayerAlgorithm = (secondPlayerType == FILE_PLAYER)?
-                           std::make_unique<FilePlayerAlgorithm>():std::make_unique<AutoPlayerAlgorithm>();
-	 */
-	if(firstPlayerType == FILE_PLAYER)
-		firstPlayerAlgorithm = std::make_unique<FilePlayerAlgorithm>(FIRST_PLAYER);
-	else
-		firstPlayerAlgorithm = std::make_unique<AutoPlayerAlgorithm>(FIRST_PLAYER);
-
-	if(secondPlayerType == FILE_PLAYER)
-		secondPlayerAlgorithm = std::make_unique<FilePlayerAlgorithm>(SECOND_PLAYER);
-	else
-		secondPlayerAlgorithm = std::make_unique<AutoPlayerAlgorithm>(SECOND_PLAYER);
-	initializePieceCount();
-
-}
 
 void GameManager::initializePieceCount() {
 	pieceCount[0] = R;
@@ -74,8 +54,7 @@ int GameManager::checkAndUpdatePieceChar (const char& piece) {
 }
 
 
-int GameManager::checkInitialPositions(std::unique_ptr<PiecePosition>& pieceInfo, int player) {
-	const char pieceType = pieceInfo->getPiece();
+int GameManager::checkInitialPosition(const Point& posToCheck, char pieceType, int player) {
 
 	// check that the piece type is correct
 	if(checkAndUpdatePieceChar(pieceType) == ERROR){
@@ -83,7 +62,7 @@ int GameManager::checkInitialPositions(std::unique_ptr<PiecePosition>& pieceInfo
 	}
 
 	// check for double positioning
-	if (game.getPieceAtPosition(player, pieceInfo->getPosition()) != char(0)) {
+	if (game.getPieceAtPosition(player, posToCheck) != char(0)) {
 		return ERROR;
 	}
 	return SUCCESS;
@@ -94,7 +73,7 @@ int GameManager::updateInitialPositions(){
 	std::vector<unique_ptr<PiecePosition>> secondPlayerPositions;
 	bool firstPlayerBadPositioningFile = false;
 	bool secondPlayerBadPositioningFile = false;
-//	int reason = SUCCESS;
+
 	// get players positions on boards
 	firstPlayerAlgorithm->getInitialPositions(FIRST_PLAYER, firstPlayerPositions);
 	secondPlayerAlgorithm->getInitialPositions(SECOND_PLAYER, secondPlayerPositions);
@@ -132,17 +111,20 @@ int GameManager::updateInitialPositions(){
 
 int GameManager::updatePositionsOnBoard(int player, std::vector<unique_ptr<PiecePosition>>& vectorToUpdate){
 	char pieceType;
+	Position posToCheck(0,0);
 	if(vectorToUpdate.empty())
 		return ERROR;
 	for(unique_ptr<PiecePosition>& pieceInfo: vectorToUpdate){
 		pieceType = pieceInfo->getPiece();
-		if(checkInitialPositions(pieceInfo, player) == ERROR){
+		posToCheck.setXposition(pieceInfo->getPosition().getX()-1);
+		posToCheck.setYposition(pieceInfo->getPosition().getY()-1);
+		if(checkInitialPosition(posToCheck,pieceType, player) == ERROR){
 			return ERROR;
 		}
 		// need to set lower case character in case of a joker
 		if(pieceType == JOKER)
 			pieceType = tolower(pieceInfo->getJokerRep());
-		game.addPieceToGame(player,pieceType,pieceInfo->getPosition());
+		game.addPieceToGame(player,pieceType,posToCheck);
 	}
 	// check that there is a valid num of each piece and there is a flag
 	if (checkPieces() == ERROR) {
@@ -153,6 +135,7 @@ int GameManager::updatePositionsOnBoard(int player, std::vector<unique_ptr<Piece
 
 int GameManager::performAllFightAfterInitBoards(std::vector<unique_ptr<FightInfo>>& fights){
 	Position pos (0,0);
+    int fightXPos, fightYPos;
 	GameFightInfo fightInfo;
 	for (int i = 0; i < N; i++) {
 		for(int j = 0; j < M; j++) {
@@ -161,10 +144,12 @@ int GameManager::performAllFightAfterInitBoards(std::vector<unique_ptr<FightInfo
 			if(!game.isEmpty(FIRST_PLAYER,pos))
 				game.checkAndRunFight(FIRST_PLAYER, pos,fightInfo);
 			// if there was a fight need to add this fight to fights
-			if(fightInfo.getIsFight())
-				fights.push_back(std::make_unique<GameFightInfo>(fightInfo.getPosition(), fightInfo.getPiece(FIRST_PLAYER),
+			if(fightInfo.getIsFight()){
+                fightXPos = fightInfo.getPosition().getX()+1;
+                fightYPos = fightInfo.getPosition().getY()+1;
+                fights.push_back(std::make_unique<GameFightInfo>(Position(fightXPos,fightYPos), fightInfo.getPiece(FIRST_PLAYER),
 						fightInfo.getPiece(SECOND_PLAYER),fightInfo.getWinner()));
-
+            }
 		}
 	}
 	return game.checkVictory(currentPlayer, true);
@@ -173,12 +158,15 @@ int GameManager::performAllFightAfterInitBoards(std::vector<unique_ptr<FightInfo
 void GameManager::playGame(){
 	int movesCounter = 0;
 	int opponent = SECOND_PLAYER;
+    int fightXPos, fightYPos;
 	GameMove currentMove(currentPlayer);
 	GameFightInfo currentFight;
 	GameJokerChanged currentJokerChange;
 	unique_ptr<Move> playerMove;
 	unique_ptr<JokerChange> jokerChange;
-	while(1){
+	bool firstPlayerHasMoves = true;
+	bool secondPlayerHasMoves = true;
+	while(firstPlayerHasMoves || secondPlayerHasMoves){
 		if(movesCounter > 100){
 			// there is a 100 moves without a fight - game ends with a tie
 			game.setWinner(TIE);
@@ -190,15 +178,16 @@ void GameManager::playGame(){
 
 		// reach EOF in player
 		if(playerMove == nullptr){
-			game.setWinner(game.getOpponent(currentPlayer));
+			/*game.setWinner(game.getOpponent(currentPlayer));
 			game.setReason(BAD_MOVE);
-			break;
+			break;*/
+			if(currentPlayer == FIRST_PLAYER)
+				firstPlayerHasMoves = false;
+			else secondPlayerHasMoves = false;
+			currentPlayer = game.getOpponent(currentPlayer);
+			continue;
 		}
 
-//		// move is not null - changing from 1-based to 0-based
-//		playerMove->setSrcPosition(move.getFrom().getX()-1, move.getFrom().getY()-1);
-//		playerMove->setDstPosition(move.getTo().getX()-1, move.getTo().getY()-1);
-		
 		// update move data
 		currentMove.updateMoveFields(*(playerMove));
 		currentMove.setPlayer(currentPlayer);
@@ -212,6 +201,9 @@ void GameManager::playGame(){
 		// if we got here the move is a valid move
 		if(currentFight.getIsFight()){
 			// need to notify to the current player
+            fightXPos = currentFight.getPosition().getX();
+            fightYPos = currentFight.getPosition().getY();
+            currentFight.setPosition(fightXPos+1, fightYPos+1);
 			notifyToPlayerOnFightResults(currentPlayer, currentFight);
 			movesCounter = 0;
 		}
@@ -227,7 +219,8 @@ void GameManager::playGame(){
 		if(jokerChange != nullptr){
 			// there was a joker change in this move
 			currentJokerChange.setPlayer(currentPlayer);
-			currentJokerChange.setJokerPosition(jokerChange->getJokerChangePosition());
+			currentJokerChange.setJokerPosition(jokerChange->getJokerChangePosition().getX()-1,
+			jokerChange->getJokerChangePosition().getY() -1);
 			currentJokerChange.setNewJokerRep(jokerChange->getJokerNewRep());
 			//check if the joker change is illegal
 			if(game.execJokerChange(currentJokerChange) == ERROR) {
@@ -240,7 +233,7 @@ void GameManager::playGame(){
 
 		// notify the other player
 		opponent = game.getOpponent(currentPlayer);
-		notifyToPlayerAfterOpponentsMove(opponent, currentMove);
+		notifyToPlayerAfterOpponentsMove(opponent, *playerMove);
 
         if(currentFight.getIsFight()){
             notifyToPlayerOnFightResults(opponent, currentFight);

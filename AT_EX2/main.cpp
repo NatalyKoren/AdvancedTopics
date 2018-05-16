@@ -1,47 +1,37 @@
 #include <iostream>
-//#include "GameBoardUnitTest.h"
 #include "GameManager.h"
+#include "FilePlayerAlgorithm.h"
+#include "AutoPlayerAlgorithm.h"
+
 int main(int argc, char *argv[]){
     if(argc < 2){
         std::cout<< "USAGE: Command line arguments" << std::endl;
         return ERROR;
     }
-    int firstPlayer, secondPlayer;
+    GameManager game;
     char *format = argv[1];
     if(strcmp(format, "auto-vs-file")==0){
-        firstPlayer = AUTO_PLAYER;
-        secondPlayer = FILE_PLAYER;
+        game.setFirstPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(FIRST_PLAYER));
+        game.setSecondPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(SECOND_PLAYER));
     }
     else if(strcmp(format, "file-vs-auto")==0){
-        firstPlayer = FILE_PLAYER;
-        secondPlayer = AUTO_PLAYER;
+        game.setFirstPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(FIRST_PLAYER));
+        game.setSecondPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(SECOND_PLAYER));
     }
     else if(strcmp(format, "auto-vs-auto")==0){
-        firstPlayer = AUTO_PLAYER;
-        secondPlayer = AUTO_PLAYER;
+        game.setFirstPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(FIRST_PLAYER));
+        game.setSecondPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(SECOND_PLAYER));
     }
     else if(strcmp(format, "file-vs-file")==0){
-        firstPlayer = FILE_PLAYER;
-        secondPlayer = FILE_PLAYER;
+        game.setFirstPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(FIRST_PLAYER));
+        game.setSecondPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(SECOND_PLAYER));
     }
     else{
         std::cout<< "ERROR: Unknown command line arguments format" << std::endl;
         return ERROR;
     }
+    // For Auto Player initial board
     srand(time(0));
-    //srand(1);
-//    GameManager game(firstPlayer, secondPlayer);
-
-    GameManager game;
-	if(firstPlayer == FILE_PLAYER)
-		game.setFirstPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(FIRST_PLAYER));
-	else
-		game.setFirstPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(FIRST_PLAYER));
-
-	if(secondPlayer == FILE_PLAYER)
-		game.setSecondPlayerAlgorithm(std::make_unique<FilePlayerAlgorithm>(SECOND_PLAYER));
-	else
-		game.setSecondPlayerAlgorithm(std::make_unique<AutoPlayerAlgorithm>(SECOND_PLAYER));
 
 	int result = game.startAndRunGame();
 

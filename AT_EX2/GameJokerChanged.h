@@ -36,6 +36,7 @@ public:
     void setNewJokerRep(char c){ newJokerChar = c;}
     void setIsJokerChanged(bool newVal){ isJokerChanged = newVal;}
     void setJokerPosition(const Point& pos){ jokerPos.setXposition(pos.getX()), jokerPos.setYposition(pos.getY());}
+    void setJokerPosition(int x, int y) {jokerPos.setXposition(x); jokerPos.setYposition(y); }
     void setPlayer(int newPlayer) { player = newPlayer; }
     /***
     * Test is new joker representation is a valid representation for joker.

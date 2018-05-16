@@ -18,20 +18,23 @@ class AutoPlayerAlgorithm : public PlayerAlgorithm {
     GameBoard game;
     int opponent;
     int opponentPieceCount;
-    int pieceCount[NUM_OF_DIFF_PIECES]; //counts how many pieces of each type we have: RPSBJF
+    //counts how many pieces of each type we have: R,P,S,B,J,F
+    int pieceCount[NUM_OF_DIFF_PIECES];
     // contains positions of the opponent player with UNKNOWN_PIECE.
     std::vector<unique_ptr<Position>> nonMovingPositions;
     // contains moving pieces of player.
     std::vector<unique_ptr<Position>> playerMovingPositions;
-    // for debuging
+    // for debugging
     std::ofstream autoFilePlayer;
 public:
+    // --- Constructor ---
     AutoPlayerAlgorithm(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
                                        opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),
                                         autoFilePlayer(){
         std::string fileName = "AutoPlayerFile_" + std::to_string(player) + ".txt";
         autoFilePlayer.open(fileName.c_str());
     }
+
     // --- Interface functions ---
     virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;
     virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) override;
@@ -41,15 +44,8 @@ public:
     virtual unique_ptr<JokerChange> getJokerChange() override; // nullptr if no change is requested
 
     /***
-     * Calculates opponent pieces score.
-     * Non - Moving pieces get more points then moving pieces.
-     * @return score for the opponent pieces
-     */
-
-    int getOpponentPieceScore() const;
-    /***
      * Calculate the best next move for player
-     * @param move - move will be updated at the end of the function with the best move.
+     * @param move - move will be updated at the end of the function with the best move for the player.
      */
     void getBestMoveForPlayer(GameMove& move);
     /***
@@ -66,33 +62,31 @@ public:
     void updateMoveWithDirection(GameMove& moveToCheck, int moveDirection) const;
     /***
      * Return the scoring for moveToCheck
-     * @param moveToCheck - move to be scored
-     * @return scoring value for move
+     * @param moveToCheck - the move to be scored
+     * @return scoring value for moveToCheck
      */
     float scoreMoveOnBoard(const GameMove& moveToCheck);
     /**
-     * Return the winner of the fight if we can know it from opponentChar
-     * assuming ourChar is a moving piece
+     * Return the winner of the fight if we can know it from opponentChar.
+     * Assuming ourChar is a moving piece
      * @param ourChar
      * @param opponentChar
-     * @return
+     * @return the winner of the fight - current player, opponent player, TIE or NONE.
      */
     int getWinnerOfFight(char ourChar, char opponentChar) const;
     /***
-     * Calculate the minimun distance between pos to every argument at verctorToCompare vector.
-     * @param fromPos - position for the minimun
-     * @param vectorToComare
-     * @return
+     * Calculate the minimum distance between fromPos from all the arguments at verctorToCompare vector.
+     * @param fromPos - position for calculating the distance.
+     * @param vectorToCompare - vector to calculate minimum distance from.
+     * @return the minimum distance between fromPos to vectorToCompare
      */
-    int calculateMinDistance(const Point& fromPos, std::vector<unique_ptr<Position>>& vectorToCompare) const;
+    int calculateMinDistance(const Point& fromPos, const std::vector<unique_ptr<Position>>& vectorToCompare) const;
     /***
-     * Update moving vector move destination position after move.
+     * Update moving vector of player after performing a move. Replace the move source position inside the
+     * vector to move destination position.
      * @param move - move to be updated on vector
      */
     void updateMovingPiecesVector(const GameMove& move);
-
-    // For debugging
-    void compareListToBoard();
 };
 
 

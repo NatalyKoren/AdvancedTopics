@@ -147,8 +147,7 @@ int GameBoard::checkVictory(int curPlayer, bool initStage){
         curPlayerMovingNum = secondPlayerPieces.getMovePiecesNum();
         opponentMovingNum = firstPlayerPieces.getMovePiecesNum();
     }
-    //	int firstPlayerMovinNum = firstPlayerPieces.getMovePiecesNum();
-    //	int secondPlayerMovinNum = secondPlayerPieces.getMovePiecesNum();
+
     if(firstPlayerPieces.getFlagNum() == 0) {
         if(secondPlayerPieces.getFlagNum() == 0) {
             winner = TIE;
@@ -293,40 +292,11 @@ int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
 
     return VALID_MOVE;
 }
-/*
-int GameBoard::execMove(std::string line, GameMove& move) {
-    int currentPlayer = move.getPlayer();
-    int opponentPlayer = getOpponent(currentPlayer);
-    // Parse line format
-    if(move.parseLine(line) != VALID_LINE_FORMAT){
-        std::cout << "Current line is not at the right format: <" << line << ">" << std::endl;
-        winner = opponentPlayer;
-        reason = BAD_MOVE;
-        return ERROR;
-    }
-    // check if move is a valid move
-    if(checkMove(move) != VALID_MOVE){
-        std::cout << "Bad move for player " << currentPlayer << std::endl;
-        winner = opponentPlayer;
-        reason = BAD_MOVE;
-        return ERROR;
-    }
-    updateBoardAfterMove(move);
-    if (updateJoker(move) == ERROR) {
-        //std::cout << "Bad move for player " << currentPlayer << ": illegal attempt to change Joker" << std::endl;
-        reason = BAD_MOVE;
-        return ERROR;
-
-    }
-    return SUCCESS;
-
-}*/
-
 
 
 int GameBoard::printBoard(std::ofstream& output) const{
-    for (int x = 0; x < N; x++) {
-        for (int y = 0; y < M; y++) {
+    for (int y = 0; y < M; y++) {
+        for (int x = 0; x < N; x++)  {
             Position pos (x,y);
             if (isEmpty(FIRST_PLAYER, pos)) {
                 if (isEmpty(SECOND_PLAYER, pos)) {
@@ -355,9 +325,10 @@ int GameBoard::printBoard(std::ofstream& output) const{
 }
 
 int GameBoard::getPlayer(const Point& pos) const{
-    if(!isEmpty(FIRST_PLAYER,pos))
+    const Position posToCheck(pos.getX()-1, pos.getY()-1);
+    if(!isEmpty(FIRST_PLAYER,posToCheck))
         return FIRST_PLAYER;
-    if(!isEmpty(SECOND_PLAYER,pos))
+    if(!isEmpty(SECOND_PLAYER,posToCheck))
         return SECOND_PLAYER;
     return TIE;
 }

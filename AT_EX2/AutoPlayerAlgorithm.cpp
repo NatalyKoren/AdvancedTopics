@@ -12,42 +12,51 @@ void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
     char pieces[] = {ROCK, PAPER, SCISSORS, BOMB, JOKER, FLAG};
     for (int i = 0; i < NUM_OF_DIFF_PIECES; i++) {
         for (int j = 0; j < pieceCount[i]; j++) {
-            x = rand() % N;
-            y = rand() % M;
+            x = rand() % M;
+            y = rand() % N;
             while (pos_taken[x][y] != 0) {
-                x = rand() % N;
-                y = rand() % M;
+                x = rand() % M;
+                y = rand() % N;
             }
             if (pieceCount[i] == JOKER) {
                 jokerRep = BOMB;
             }
             pos_taken[x][y] = 1;
             Position curPos(x, y);
+            // update piece on board
+            if(pieces[i] ==JOKER)
+                game.addPieceToGame(player, tolower(pieces[i]), curPos);
+            else
+                game.addPieceToGame(player, pieces[i], curPos);
+
+            curPos.setXposition(x+1);
+            curPos.setYposition(y+1);
             InterfacePiecePosition curPiece(curPos, pieces[i], jokerRep);
             vectorToFill.push_back(std::make_unique<InterfacePiecePosition>(curPiece));
-            // updating the autoplayer's board:
-            game.setPieceAtPosition(player, pieces[i], curPos);
+
+            // updating the auto player's board
             if(pieces[i] == PAPER || pieces[i] == ROCK || pieces[i] == SCISSORS)
                 playerMovingPositions.push_back(std::make_unique<Position>(x,y));
         }
     }
-    // TODO delete this
     autoFilePlayer << "Board: " << std::endl;
     game.printBoard(autoFilePlayer);
     autoFilePlayer << "End Board" << std::endl;
     autoFilePlayer << "-----------------------" << std::endl;
-
-
 }
 
 void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights){
     Position pos(0,0);
     // update opponent pieces on board
-    for(int i=0; i<N; i++){
-        for(int j=0; j<M; j++){
-            pos.setXposition(i);
-            pos.setYposition(j);
+    for(int i=0; i<M; i++){
+        for(int j=0; j<N; j++){
+            // Function getPlayer is an interface function, thus need to get point 1-based.
+            pos.setXposition(i+1);
+            pos.setYposition(j+1);
             if(b.getPlayer(pos) == opponent){
+                // new setPosition get 0-based
+                pos.setXposition(i);
+                pos.setYposition(j);
                 game.setPieceAtPosition(opponent,UNKNOWN_PIECE,pos);
                 opponentPieceCount++;
                 nonMovingPositions.push_back(std::make_unique<Position>(pos.getX(),pos.getY()));
@@ -61,8 +70,9 @@ void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector
 }
 
 void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
-    const Position moveFrom = move.getFrom();
-    const Position moveTo = move.getTo();
+    const Position moveFrom(move.getFrom().getX()-1, move.getFrom().getY()-1);
+    const Position moveTo(move.getTo().getX()-1, move.getTo().getY()-1);
+
     char prevChar = game.getPieceAtPosition(opponent, moveFrom);
     // remove piece from source position
     game.setPieceAtPosition(opponent, (char)0, moveFrom);
@@ -75,7 +85,9 @@ void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
 
 void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
     int winner = fightInfo.getWinner();
-    const Position fightPos = fightInfo.getPosition();
+    Position fightPos = fightInfo.getPosition();
+    fightPos.setXposition(fightPos.getX()-1);
+    fightPos.setYposition(fightPos.getY()-1);
 
     // current player wins the fight
     // need to update opponents board
@@ -108,7 +120,6 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
         // should never get here
         std::cout << "Unknown winner in Fight Info." <<std::endl;
     }
-
 }
 
 unique_ptr<Move> AutoPlayerAlgorithm::getMove(){
@@ -155,16 +166,14 @@ void AutoPlayerAlgorithm::removePieceFromVector(int vectorType, const Position& 
 
 void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move){
     // should update move with best move.
-//    int opponentPiecesScore = getOpponentPieceScore();
-//    int playerPieceScore = game.getPlayerPieceCount(player)*10;
-//    int piecesScore = playerPieceScore - opponentPiecesScore;
-    float minDist = std::numeric_limits<float>::infinity(); // infinity
-//    int xPos,yPos;
     int currentScore;
     GameMove moveToCheck(player);
+    float minDist = std::numeric_limits<float>::infinity(); // infinity
 
+    // print to debug file
     autoFilePlayer << "Board:" << std::endl;
     game.printBoard(autoFilePlayer);
+    // For every moving position
     for(const unique_ptr<Position>& piecePos: playerMovingPositions){
         // set move source position
         moveToCheck.setSrcPosition(*(piecePos));
@@ -212,6 +221,7 @@ float AutoPlayerAlgorithm::scoreMoveOnBoard(const GameMove& moveToCheck){
     // first check for a fight
     int opponentChar = game.getPieceAtPosition(opponent, moveToCheck.getTo());
     int ourChar = game.getPieceAtPosition(player, moveToCheck.getFrom());
+    ourChar = toupper(ourChar);
     int winner;
     if(opponentChar == UNKNOWN_PIECE){
         // we want to go there - it maybe a flag!
@@ -230,20 +240,11 @@ float AutoPlayerAlgorithm::scoreMoveOnBoard(const GameMove& moveToCheck){
         }
         else{
             // we don't know who wins
-            // todo can improve this by adding this score to the distance calculation
-            return 2;
+            return 10;
         }
     }
-
     return calculateMinDistance(moveToCheck.getTo(), nonMovingPositions);
 }
-
-
-int AutoPlayerAlgorithm::getOpponentPieceScore() const{
-    int nonMovingCount = nonMovingPositions.size();
-    return nonMovingCount*10 + (opponentPieceCount - nonMovingCount)*5;
-}
-
 
 
 int AutoPlayerAlgorithm::getWinnerOfFight(char ourChar, char opponentChar) const{
@@ -280,10 +281,10 @@ int AutoPlayerAlgorithm::getWinnerOfFight(char ourChar, char opponentChar) const
 }
 
 
-int AutoPlayerAlgorithm::calculateMinDistance(const Point& fromPos, std::vector<unique_ptr<Position>>& vectorToComare) const{
+int AutoPlayerAlgorithm::calculateMinDistance(const Point& fromPos, const std::vector<unique_ptr<Position>>& vectorToComare) const{
     float minDis = std::numeric_limits<float>::infinity();
     float dist;
-    for(unique_ptr<Position>& pieceToCheck: vectorToComare){
+    for(const unique_ptr<Position>& pieceToCheck: vectorToComare){
         dist = abs(pieceToCheck->getX() - fromPos.getX()) + abs(pieceToCheck->getY() - fromPos.getY());
         if(dist < minDis)
             minDis = dist;
@@ -304,12 +305,3 @@ void AutoPlayerAlgorithm::updateMovingPiecesVector(const GameMove& move){
 
 }
 
-void AutoPlayerAlgorithm::compareListToBoard(){
-    for(unique_ptr<Position>& piecePos: playerMovingPositions){
-        if(game.getPieceAtPosition(player, *piecePos) == char(0)){
-            std::cout << "Mismatch between board and vector" << std::endl;
-            printPoint(*piecePos);
-
-        }
-    }
-}

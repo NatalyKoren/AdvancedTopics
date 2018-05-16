@@ -30,7 +30,7 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 	char jokerRep;
 	char garbage;
 	// check format:
-	int scanned = sscanf(line, " %c %i %i %c %c", &piece, &y, &x, &jokerRep, &garbage);
+	int scanned = sscanf(line, " %c %i %i %c %c", &piece, &x, &y, &jokerRep, &garbage);
 	//std::cout << "line: " << curLine << " piece: " << piece << " x: " << x << " y: " << y << std::endl;
 	if ((piece == 'J' && scanned != 4) || (piece != 'J' && scanned != 3)) {
 		std::cout << "Error in board file: wrong format " << std::endl;
@@ -42,7 +42,7 @@ unique_ptr<InterfacePiecePosition> FilePlayerAlgorithm::parseBoardLine (const ch
 		x = -1;
 		y = -1;
 	}
-	Position pos(x-1, y-1);
+	Position pos(x, y);
 	InterfacePiecePosition piecePos(pos, piece, jokerRep);
 	return std::make_unique<InterfacePiecePosition>(piecePos);
 }
@@ -110,15 +110,16 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 
     if(line.empty()){
         // EOF reached - return illegal move
-        fromX = -1;
-        fromY = -1;
+        //fromX = -1;
+        //fromY = -1;
+        return nullptr;
     }
 
 	// try to get Joker Line
     else if(sscanf(curLine, "%d %d %d %d J: %d %d %c",
-			&fromY, &fromX,&toY, &toX, &jokerY, &jokerX, &newJokerRep) != 7) {
+			&fromX, &fromY,&toX, &toY, &jokerX, &jokerY, &newJokerRep) != 7) {
 		// try to get a regular line
-		if(sscanf(curLine, "%d %d %d %d", &fromY, &fromX,&toY, &toX) != 4) {
+		if(sscanf(curLine, "%d %d %d %d", &fromX, &fromY,&toX, &toY) != 4) {
 			// wrong format - return an illegal move
 			fromY = 0;
 			fromX = 0;

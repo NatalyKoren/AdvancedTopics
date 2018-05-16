@@ -16,8 +16,8 @@
 #include "Board.h"
 
 class GameBoard : public Board{
-    char firstPlayerBoard[N][M];
-    char secondPlayerBoard[N][M];
+    char firstPlayerBoard[M][N];
+    char secondPlayerBoard[M][N];
     PlayerPieces firstPlayerPieces;
     PlayerPieces secondPlayerPieces;
     int winner;

@@ -75,6 +75,11 @@ Test 4
 Test 5
 Test 6
 
+Diffs in Tests:
+Test7 - it is OK -due to the change in joker
+Test 13 - it is a positioning mistake so the boards are not relevant for the diff the tests
+test 16- the moves player 2 contains an empty line - I removed the line and thus the results is different by 1 row.
+
 prev week:
 [V] run file tests from ex1
 [V] auto generate initial board - need to update game field and generate vector of piece positions.
@@ -86,14 +91,31 @@ prev week:
 Current week:
 [N] change documentation of game board
 [N & L] documentation & code arrangement - document the code and make it more sexy.
-[] Run tests
-    [] Run Moab tests of ex1 with expected output
-[] test on nova
+[V] Run tests
+    [V] Run Moab tests of ex1 with expected output
+[V] test on nova
 [] improve auto player
     [] improve scoring function
     [] make him change joker?
     [] change to minimax algorithm?
-[] GetMove() should return 1-based index :(. I also think that getX() returns the row and not the column not sure what it should be.
-[] It is preferable that gameManager would not be familiar with playerAlgorithm implementation.
+[V] GetMove() should return 1-based index :(. I also think that getX() returns the row and not the column not sure what it should be.
+[V] It is preferable that gameManager would not be familiar with playerAlgorithm implementation.
     Amir claims that the best implementation is empty constructor and setters for setting 
     the players algorithm performed by the main.
+
+Documentation:
+[] AutoPlayer
+[] FilePlayer
+[] GameBoard
+[] GameFightInfo
+[] GameJokerChange
+[] GameMove
+[] PlayerPieces
+[] GameManager
+
+1-Based: :( !!!!
+[V] Move
+[V] fightInfo
+[V] PiecePosition
+[V] Board
+[V] JokerChanged

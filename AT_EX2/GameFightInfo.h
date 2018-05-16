@@ -32,7 +32,8 @@ public:
 	virtual int getWinner() const {return winner;} // 0 - both lost / tie, 1 - player 1 won, 2 - player 2 won
 
     // --- Setters ---
-    void setPosition(const Position& p){ position.setXposition(p.getX()), position.setYposition(p.getY());}
+    void setPosition(const Position& p){ position.setXposition(p.getX()); position.setYposition(p.getY());}
+    void setPosition(int x, int y) {position.setXposition(x); position.setYposition(y);}
     void setPlayerPiece(int player, char piece){
         if(player==FIRST_PLAYER) firstPlayerPiece = piece;
         else secondPlayerPiece = piece;
