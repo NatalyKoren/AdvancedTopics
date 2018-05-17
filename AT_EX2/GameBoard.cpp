@@ -24,8 +24,8 @@ bool GameBoard::isFight(int playerToCheck, Position& pos) const{
     int x = pos.getX();
     int y = pos.getY();
     if(playerToCheck == FIRST_PLAYER)
-        return (firstPlayerBoard[x][y] != (char) 0);
-    else return (secondPlayerBoard[x][y] != (char) 0);
+        return (firstPlayerBoard[x][y] != EMPTY_CHAR);
+    else return (secondPlayerBoard[x][y] != EMPTY_CHAR);
 }
 
 
@@ -75,9 +75,8 @@ void GameBoard::updateBoardAfterMove(GameMove& move, GameFightInfo& fightInfo){
     if (!checkAndRunFight(player, dstPos,fightInfo)) {
         setPieceAtPosition(player,charToUpdate, dstPos);
     }
-    // set source position to zero
-    setPieceAtPosition(player,0, srcPos);
-
+    // set source position to empty char
+    setPieceAtPosition(player,EMPTY_CHAR, srcPos);
 }
 
 void GameBoard::updateJoker(const GameJokerChanged& jokerInfo) {
@@ -122,10 +121,9 @@ int GameBoard::fight(Position& pos) const{
             else return SECOND_PLAYER;
         default:
             return NONE;
-
     }
-
 }
+
 void GameBoard::increasePieceNum(int player, char piece, int num){
     if(player == FIRST_PLAYER) firstPlayerPieces.incrementPieceNum(piece, num);
     else secondPlayerPieces.incrementPieceNum(piece, num);
@@ -133,21 +131,22 @@ void GameBoard::increasePieceNum(int player, char piece, int num){
 
 void GameBoard::updateAfterLoseFight(int player, const Position& pos){
     char charToRemove = getPieceAtPosition(player, pos);
-    setPieceAtPosition(player,(char)0, pos);
+    setPieceAtPosition(player,EMPTY_CHAR, pos);
     increasePieceNum(player,charToRemove,-1);
 }
 
 int GameBoard::checkVictory(int curPlayer, bool initStage){
-    int curPlayerMovingNum = 0;
-    int opponentMovingNum = 0;
-    if (curPlayer == FIRST_PLAYER) {
+    int curPlayerMovingNum;
+    int opponentMovingNum;
+    if(curPlayer == FIRST_PLAYER) {
         curPlayerMovingNum = firstPlayerPieces.getMovePiecesNum();
         opponentMovingNum = secondPlayerPieces.getMovePiecesNum();
-    } else {
+    }
+    else{
         curPlayerMovingNum = secondPlayerPieces.getMovePiecesNum();
         opponentMovingNum = firstPlayerPieces.getMovePiecesNum();
     }
-
+    // Flags check
     if(firstPlayerPieces.getFlagNum() == 0) {
         if(secondPlayerPieces.getFlagNum() == 0) {
             winner = TIE;
@@ -164,7 +163,7 @@ int GameBoard::checkVictory(int curPlayer, bool initStage){
         winner = FIRST_PLAYER;
         reason = FLAG_CAPTURED;
     }
-        // flags number of both players is not 0.
+     // flags number of both players is not 0.
     else if (opponentMovingNum == 0) {
         winner = curPlayer;
         reason = ALL_MOVING_PIECES_EATEN;
@@ -192,12 +191,6 @@ void GameBoard::addPieceToGame(int player, char piece, const Point& pos){
 }
 bool GameBoard::isEmpty(int player, const Point& pos) const{
     return (getPieceAtPosition(player,pos) == (char) 0);
-}
-
-int GameBoard::getJokerMovingPiece(int player) const{
-    if(player== FIRST_PLAYER)
-        return firstPlayerPieces.getNumOfMovingJoker();
-    else return secondPlayerPieces.getNumOfMovingJoker();
 }
 
 int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
@@ -241,9 +234,9 @@ int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
         }
         return ILLEGAL_MOVE;
     }
-    // (3) try to move non moving piece
+
     charToMove = getPieceAtPosition(move.getPlayer(), move.getFrom());
-    if(charToMove == (char)0){
+    if(charToMove == EMPTY_CHAR){
         if(printToConsole){
             std::cout << "Illegal source position for Player: " << move.getPlayer() << ". Position ";
             printPoint(move.getFrom());
@@ -251,7 +244,7 @@ int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
         }
         return ILLEGAL_MOVE;
     }
-
+    // (3) try to move non moving piece
     if(toupper(charToMove) == BOMB || charToMove == FLAG ){
         if(printToConsole){
             std::cout << "Illegal source position for Player " << move.getPlayer() << ". Position ";
@@ -265,7 +258,6 @@ int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
 }
 
 int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
-//    char newJokerChar;
     int player = jokerInfo.getPlayer();
     Position jokerPos(jokerInfo.getJokerChangePosition());
     // joker position is empty
@@ -282,14 +274,11 @@ int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
         std::cout << std::endl;
         return ILLEGAL_MOVE;
     }
-
     // test if joker new char is a valid char: S,R,P,B
     if(!jokerInfo.isJokerValidChar()){
         std::cout << "Joker new representation for player" << player << " is invalid." << std::endl;
         return ILLEGAL_MOVE;
     }
-
-
     return VALID_MOVE;
 }
 
@@ -338,7 +327,7 @@ int GameBoard::execMove(GameMove &move, GameFightInfo& fightInfo) {
     int opponentPlayer = getOpponent(currentPlayer);
 
     // check if move is a valid move
-    // true because execMove is callled only from the game manager
+    // true because execMove is callled only from the game manager, thus we want to print reason to cout.
     if(checkMove(move, true) != VALID_MOVE){
         std::cout << "Bad move for player " << currentPlayer << std::endl;
         winner = opponentPlayer;
@@ -346,7 +335,6 @@ int GameBoard::execMove(GameMove &move, GameFightInfo& fightInfo) {
         return ERROR;
     }
     updateBoardAfterMove(move, fightInfo);
-
     return SUCCESS;
 }
 

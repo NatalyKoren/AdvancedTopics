@@ -8,7 +8,7 @@
 void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
     int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
     int x, y;
-    char jokerRep = char(0);
+    char jokerRep = EMPTY_CHAR;
     char pieces[] = {ROCK, PAPER, SCISSORS, BOMB, JOKER, FLAG};
     for (int i = 0; i < NUM_OF_DIFF_PIECES; i++) {
         for (int j = 0; j < pieceCount[i]; j++) {
@@ -75,7 +75,7 @@ void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
 
     char prevChar = game.getPieceAtPosition(opponent, moveFrom);
     // remove piece from source position
-    game.setPieceAtPosition(opponent, (char)0, moveFrom);
+    game.setPieceAtPosition(opponent, EMPTY_CHAR, moveFrom);
     // set piece at destination position to be moving piece
     if(prevChar == UNKNOWN_PIECE)
         prevChar = MOVING_PIECE;
@@ -130,7 +130,7 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove(){
     move.printMove(&autoFilePlayer);
     autoFilePlayer << "-----------------------" << std::endl;
     prevChar  = game.getPieceAtPosition(player, move.getFrom());
-    game.setPieceAtPosition(player, char(0), move.getFrom());
+    game.setPieceAtPosition(player, EMPTY_CHAR, move.getFrom());
     game.setPieceAtPosition(player, prevChar, move.getTo());
     // update moving pieces vector
     updateMovingPiecesVector(move);
@@ -227,7 +227,7 @@ float AutoPlayerAlgorithm::scoreMoveOnBoard(const GameMove& moveToCheck){
         // we want to go there - it maybe a flag!
         return -10;
     }
-    else if(opponentChar != (char)0){
+    else if(opponentChar != EMPTY_CHAR){
         // it is some moving piece
         winner = getWinnerOfFight(ourChar, opponentChar);
         if(winner == player){

@@ -89,7 +89,7 @@ prev week:
 [V] scoringFunction
 
 Current week:
-[N] change documentation of game board
+[V] change documentation of game board
 [N & L] documentation & code arrangement - document the code and make it more sexy.
 [V] Run tests
     [V] Run Moab tests of ex1 with expected output
@@ -104,15 +104,22 @@ Current week:
     the players algorithm performed by the main.
 
 Documentation:
-[] AutoPlayer
-[] FilePlayer
-[] GameBoard: long functions: checkVictory
+[V] AutoPlayer
+[V] FilePlayer
+    long functions:
+    [] GetMove
+[V] GameBoard:
+    long functions:
+    [] checkVictory
+    [] checkMove
 [V] GameFightInfo
 [V] GameJokerChange
 [V] GameMove
 [V] PlayerPieces
 [V] Position
-[] GameManager
+[V] GameManager
+    long functions:
+    [] updateInitialPositions
 [V] InterfacePiecePosition
 [V] PiecePosition
 

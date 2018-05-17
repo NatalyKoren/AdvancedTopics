@@ -19,7 +19,6 @@ int GameManager::checkPieces() {
 	for (int i = 0; i < pieceCountSize; i++) {
 		if (pieceCount[i] < 0) {
 			std::cout << "Board file format error: too many pieces of same type." << std::endl;
-			//std::cout << "Index: " << i << " Count: " << pieceCount[i] << std::endl;
 			return ERROR;
 		}
 
@@ -55,12 +54,10 @@ int GameManager::checkAndUpdatePieceChar (const char& piece) {
 
 
 int GameManager::checkInitialPosition(const Point& posToCheck, char pieceType, int player) {
-
 	// check that the piece type is correct
 	if(checkAndUpdatePieceChar(pieceType) == ERROR){
 		return ERROR;
 	}
-
 	// check for double positioning
 	if (game.getPieceAtPosition(player, posToCheck) != char(0)) {
 		return ERROR;
@@ -137,8 +134,8 @@ int GameManager::performAllFightAfterInitBoards(std::vector<unique_ptr<FightInfo
 	Position pos (0,0);
     int fightXPos, fightYPos;
 	GameFightInfo fightInfo;
-	for (int i = 0; i < N; i++) {
-		for(int j = 0; j < M; j++) {
+	for (int i = 0; i < M; i++) {
+		for(int j = 0; j < N; j++) {
 			pos.setXposition(i);
 			pos.setYposition(j);
 			if(!game.isEmpty(FIRST_PLAYER,pos))
@@ -275,7 +272,7 @@ void GameManager::notifyToPlayerAfterOpponentsMove(int playerToNotify, const Mov
 
 }
 
-int GameManager::writeToOutput() {
+int GameManager::writeToOutput() const{
 	std::ofstream output(OUTPUT, std::ofstream::trunc);
 	int winner = game.getWinner();
 

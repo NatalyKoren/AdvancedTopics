@@ -69,8 +69,8 @@ public:
     /**
      * Return the winner of the fight if we can know it from opponentChar.
      * Assuming ourChar is a moving piece
-     * @param ourChar
-     * @param opponentChar
+     * @param ourChar - player char to check
+     * @param opponentChar - to opponent char that is known to auto player.
      * @return the winner of the fight - current player, opponent player, TIE or NONE.
      */
     int getWinnerOfFight(char ourChar, char opponentChar) const;
