@@ -111,7 +111,7 @@ Documentation:
 [V] GameBoard:
     long functions:
     [] checkVictory
-    [] checkMove
+    [V] checkMove
 [V] GameFightInfo
 [V] GameJokerChange
 [V] GameMove

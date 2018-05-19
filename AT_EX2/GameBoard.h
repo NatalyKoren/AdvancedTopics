@@ -167,6 +167,13 @@ public:
      * @return ILLEGAL_MOVE if the move is not a valid move and VALID_MOVE otherwise.
      */
     int checkMove(GameMove& move, bool printToConsole) const;
+    /***
+     * Check that move indexes are withing boundaries.
+     * @param move - move to check.
+     * @param printToConsole - if true print error message to cout on errors.
+     * @return INDEX_OUT_OF_BOUND if indexes are not within boundaries. VALID_MOVE otherwise.
+     */
+    int checkMoveBoundaries(GameMove& move, bool printToConsole) const;
 
     /***
      * The function assumes that dstPos contains player piece.

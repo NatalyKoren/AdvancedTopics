@@ -28,6 +28,9 @@ public:
 	// --- Constructor ---
 	FilePlayerAlgorithm(int playerNum);
 
+    // --- Destructor ---
+    ~FilePlayerAlgorithm() { if(movesFile.is_open()) movesFile.close(); }
+
 	//-----------Board file parsing methods--------------
 	/***
 	 * verifies that the position specified is within index

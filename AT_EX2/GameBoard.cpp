@@ -196,24 +196,8 @@ bool GameBoard::isEmpty(int player, const Point& pos) const{
 int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
     char charToMove;
     // (1) boundary tests
-    // test src boundary
-    if(move.positionBoundaryTest(move.getFrom()) == INDEX_OUT_OF_BOUND){
-        if(printToConsole){
-            std::cout << "Illegal source position. Player: " << move.getPlayer() << " insert out of bound source position: ";
-            printPoint(move.getFrom());
-            std::cout << std::endl;
-        }
+    if(checkMoveBoundaries(move,printToConsole) == INDEX_OUT_OF_BOUND)
         return INDEX_OUT_OF_BOUND;
-    }
-    // test dst boundary
-    if(move.positionBoundaryTest(move.getTo()) == INDEX_OUT_OF_BOUND){
-        if(printToConsole){
-            std::cout << "Illegal destination position. Player: " << move.getPlayer() << " insert out of bound source position: ";
-            printPoint(move.getTo());
-            std::cout << std::endl;
-        }
-        return INDEX_OUT_OF_BOUND;
-    }
     // boundary is valid
     // (2) moving to position contain same player piece
     if(!(isEmpty(move.getPlayer(), move.getTo()))){
@@ -234,7 +218,7 @@ int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
         }
         return ILLEGAL_MOVE;
     }
-
+    // (3) source position is empty
     charToMove = getPieceAtPosition(move.getPlayer(), move.getFrom());
     if(charToMove == EMPTY_CHAR){
         if(printToConsole){
@@ -244,7 +228,7 @@ int GameBoard::checkMove(GameMove& move, bool printToConsole) const{
         }
         return ILLEGAL_MOVE;
     }
-    // (3) try to move non moving piece
+    // (4) try to move non moving piece
     if(toupper(charToMove) == BOMB || charToMove == FLAG ){
         if(printToConsole){
             std::cout << "Illegal source position for Player " << move.getPlayer() << ". Position ";
@@ -358,4 +342,27 @@ int GameBoard::getPlayerPieceCount(int player)const{
         return firstPlayerPieces.getPieceCount();
     else return secondPlayerPieces.getPieceCount();
 
+}
+
+int GameBoard::checkMoveBoundaries(GameMove& move, bool printToConsole) const{
+    // test src boundary
+    if(move.positionBoundaryTest(move.getFrom()) == INDEX_OUT_OF_BOUND){
+        if(printToConsole){
+            std::cout << "Illegal source position. Player: " << move.getPlayer() << " insert out of bound source position: ";
+            printPoint(move.getFrom());
+            std::cout << std::endl;
+        }
+        return INDEX_OUT_OF_BOUND;
+    }
+    // test dst boundary
+    if(move.positionBoundaryTest(move.getTo()) == INDEX_OUT_OF_BOUND){
+        if(printToConsole){
+            std::cout << "Illegal destination position. Player: " << move.getPlayer() << " insert out of bound source position: ";
+            printPoint(move.getTo());
+            std::cout << std::endl;
+        }
+        return INDEX_OUT_OF_BOUND;
+    }
+    // boundary is valid
+    return VALID_MOVE;
 }

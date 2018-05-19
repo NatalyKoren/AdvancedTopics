@@ -64,6 +64,7 @@ void FilePlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 	}
 	if (!boardFile.is_open()) {
 		std::cout << "Unable to open player " << player <<"'s board file: " << std::strerror(errno) << std::endl;
+		return;
 	}
 	std::string line;
 	int res = SUCCESS;
@@ -94,9 +95,8 @@ unique_ptr<Move> FilePlayerAlgorithm::getMove(){
 
     if(line.empty()){
         // EOF reached - return illegal move
-        //fromX = -1;
-        //fromY = -1;
-        return nullptr;
+        fromX = -1;
+        fromY = -1;
     }
 
 	// try to get Joker Line

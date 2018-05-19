@@ -35,6 +35,8 @@ public:
         autoFilePlayer.open(fileName.c_str());
     }
 
+    //--- Destructor ---
+    ~AutoPlayerAlgorithm() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}
     // --- Interface functions ---
     virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;
     virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) override;

@@ -161,9 +161,7 @@ void GameManager::playGame(){
 	GameJokerChanged currentJokerChange;
 	unique_ptr<Move> playerMove;
 	unique_ptr<JokerChange> jokerChange;
-	bool firstPlayerHasMoves = true;
-	bool secondPlayerHasMoves = true;
-	while(firstPlayerHasMoves || secondPlayerHasMoves){
+	while(1){
 		if(movesCounter > 100){
 			// there is a 100 moves without a fight - game ends with a tie
 			game.setWinner(TIE);
@@ -173,16 +171,10 @@ void GameManager::playGame(){
 		// get current player move
 		playerMove = getMoveFromPlayer(currentPlayer);
 
-		// reach EOF in player
 		if(playerMove == nullptr){
-			/*game.setWinner(game.getOpponent(currentPlayer));
+			game.setWinner(game.getOpponent(currentPlayer));
 			game.setReason(BAD_MOVE);
-			break;*/
-			if(currentPlayer == FIRST_PLAYER)
-				firstPlayerHasMoves = false;
-			else secondPlayerHasMoves = false;
-			currentPlayer = game.getOpponent(currentPlayer);
-			continue;
+			break;
 		}
 
 		// update move data
@@ -192,7 +184,6 @@ void GameManager::playGame(){
 		// execute move
 		if(game.execMove(currentMove, currentFight) == ERROR){
 			// This is invalid move - the board winner is updated.
-			//TODO: where is the validity check?
 			break;
 		}
 		// if we got here the move is a valid move
@@ -314,9 +305,6 @@ int GameManager::writeToOutput() const{
 }
 
 int GameManager::printReasonToOutputFile(std::ofstream& output, int reason, int winner) const{
-	int line = -1;
-	int firstPlayerLine = -1;
-	int secondPlayerLine = -1;
 	// print reason to file
 	switch(reason) {
 	case FLAG_CAPTURED:
@@ -326,19 +314,19 @@ int GameManager::printReasonToOutputFile(std::ofstream& output, int reason, int 
 		output << "Reason: All moving PIECEs of the opponent are eaten" << std::endl;
 		break;
 	case TIE_GAME_OVER:
-		output << "Reason: A tie - both Moves input files done without a winner" << std::endl;
+		output << "Reason: A tie - both Moves input done without a winner" << std::endl;
 		break;
 	case TIE_BOTH_FLAGS_CAPTURED:
 		output << "Reason: A tie - all flags are eaten by both players in the position files" << std::endl;
 		break;
 	case BAD_POSITIONING:
-		output << "Reason: Bad Positioning input file for player " << game.getOpponent(winner) << " - line " << line << std::endl;
+		output << "Reason: Bad Positioning input for player " << game.getOpponent(winner) << std::endl;
 		break;
 	case BOTH_PLAYERS_BAD_POSITIONING:
-		output << "Reason: Bad Positioning input file for both players - player 1: line " << firstPlayerLine << ", player 2: line " << secondPlayerLine << std::endl;
+		output << "Reason: Bad Positioning input for both players" << std::endl;
 		break;
 	case BAD_MOVE:
-		output << "Reason: Bad Moves input file for player " << game.getOpponent(winner) << " - line " << line << std::endl;
+		output << "Reason: Bad Moves input for player " << game.getOpponent(winner)  << std::endl;
 		break;
 	default:
 		std::cout << "Error in REASON" << std::endl;
