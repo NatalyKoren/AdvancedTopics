@@ -18,7 +18,7 @@ void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
                 x = rand() % M;
                 y = rand() % N;
             }
-            if (pieceCount[i] == JOKER) {
+            if (pieces[i] == JOKER) {
                 jokerRep = BOMB;
             }
             pos_taken[x][y] = 1;
@@ -93,7 +93,7 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
     // need to update opponents board
     if(winner == player){
         // delete the char from opponents board
-        game.setPieceAtPosition(opponent, (char)0, fightPos);
+        game.setPieceAtPosition(opponent, EMPTY_CHAR, fightPos);
         // remove piece from vector
         removePieceFromVector(NON_MOVING_VECTOR,fightPos);
         opponentPieceCount--;
@@ -112,7 +112,7 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
         game.updateAfterLoseFight(player,fightPos);
         removePieceFromVector(MOVING_VECTOR, fightPos);
         // delete the char from opponents board
-        game.setPieceAtPosition(opponent, (char)0, fightPos);
+        game.setPieceAtPosition(opponent, EMPTY_CHAR, fightPos);
         opponentPieceCount--;
         removePieceFromVector(NON_MOVING_VECTOR, fightPos);
     }
