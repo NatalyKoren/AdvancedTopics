@@ -7,19 +7,25 @@
 
 #include <map>
 #include <iostream>
+#include <mutex>
+#include <thread>
 #include "PlayerAlgorithm.h"
 #include "GameManager.h"
 #include "AlgorithmRegistration.h"
+
 
 class TournamentManager {
     static TournamentManager theTournamentManager;
     std::map<std::string, std::function<std::unique_ptr<PlayerAlgorithm>()>> idToFactory;
     // for saving game results
-    std::map<std::string, std::function<std::unique_ptr<PlayerAlgorithm>()>> idToScore;
+    std::map<std::string, int> idToScore;
     // Threads num
     int threadsNum;
+    // Number of register players
     int playersNum;
     std::string folderPath;
+    // lock for updating score
+    std::mutex scoreMutex;
     // private ctor
     TournamentManager():idToFactory(), idToScore(), threadsNum(0), playersNum(0), folderPath() {}
 public:
@@ -53,6 +59,17 @@ public:
      */
     int printTournamentResults();
 
+    /***
+     * Each thread will run this function.
+     * After every game, the thread will update the score according to the winner.
+     * @param numOfGames - number of games to perform between the two players.
+     * @param firstPlayerID - first player id
+     * @param secondPlayerID - second player id
+     * @return ERROR if an ERROR occurred. SUCCESS otherwise.
+     */
+    int runGameBetweenTwoPlayers(int numOfGames, std::string firstPlayerID, std::string secondPlayerID);
+
+    // Todo remove this
     void run()const {
         for(auto& pair : idToFactory) {
             const auto& id = pair.first;
