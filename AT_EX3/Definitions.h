@@ -42,6 +42,11 @@
 #define SUCCESS (0)
 #define MISSING_INPUT_FILE (-1)
 
+#define DEFAULT_THREADS_NUM (4)
+#define GAMES_COUNT (30)
+#define WINNING_POINTS (3)
+#define TIE_POINTS (1)
+
 enum GameMessage {ILLEGAL_LINE_FORMAT,
 				  VALID_LINE_FORMAT,
 				  INDEX_OUT_OF_BOUND,

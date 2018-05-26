@@ -115,8 +115,8 @@ public:
     void notifyToPlayerAfterOpponentsMove(int playerToNotify, const Move& move) const;
 
     /***
-     * Run the entire game from the beginning.
-     * @return ERROR in case of writing to output file has failed. SUCCESS otherwise.
+     * Run the entire game from the beginning. Does not write to output file.
+     * @return The winner of the game.
      */
     int startAndRunGame();
 

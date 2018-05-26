@@ -12,8 +12,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <memory>
+#include "AlgorithmRegistration.h"
 
-class AutoPlayerAlgorithm : public PlayerAlgorithm {
+
+class RSPPlayer_307941401 : public PlayerAlgorithm {
     int player;
     GameBoard game;
     int opponent;
@@ -28,15 +30,10 @@ class AutoPlayerAlgorithm : public PlayerAlgorithm {
     std::ofstream autoFilePlayer;
 public:
     // --- Constructor ---
-    AutoPlayerAlgorithm(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
-                                       opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),
-                                        autoFilePlayer(){
-        std::string fileName = "AutoPlayerFile_" + std::to_string(player) + ".txt";
-        autoFilePlayer.open(fileName.c_str());
-    }
+    RSPPlayer_307941401(int playerNum);
 
     //--- Destructor ---
-    ~AutoPlayerAlgorithm() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}
+    ~RSPPlayer_307941401() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}
     // --- Interface functions ---
     virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;
     virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) override;

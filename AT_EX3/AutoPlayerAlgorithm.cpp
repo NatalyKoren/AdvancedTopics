@@ -5,7 +5,19 @@
 
 #include "AutoPlayerAlgorithm.h"
 
-void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
+bool printToFile = true;
+
+RSPPlayer_307941401::RSPPlayer_307941401(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
+                                                        opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),
+                                                        autoFilePlayer(){
+    if(printToFile){
+        std::string fileName = "AutoPlayerFile_" + std::to_string(player) + ".txt";
+        autoFilePlayer.open(fileName.c_str());
+
+    }
+}
+
+void RSPPlayer_307941401::getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
     int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
     int x, y;
     char jokerRep = EMPTY_CHAR;
@@ -39,13 +51,15 @@ void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
                 playerMovingPositions.push_back(std::make_unique<Position>(x,y));
         }
     }
-    autoFilePlayer << "Board: " << std::endl;
-    game.printBoard(autoFilePlayer);
-    autoFilePlayer << "End Board" << std::endl;
-    autoFilePlayer << "-----------------------" << std::endl;
+    if(printToFile){
+        autoFilePlayer << "Board: " << std::endl;
+        game.printBoard(autoFilePlayer);
+        autoFilePlayer << "End Board" << std::endl;
+        autoFilePlayer << "-----------------------" << std::endl;
+    }
 }
 
-void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights){
+void RSPPlayer_307941401::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights){
     Position pos(0,0);
     // update opponent pieces on board
     for(int i=0; i<M; i++){
@@ -69,7 +83,7 @@ void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board& b, const std::vector
     }
 }
 
-void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
+void RSPPlayer_307941401::notifyOnOpponentMove(const Move& move){
     const Position moveFrom(move.getFrom().getX()-1, move.getFrom().getY()-1);
     const Position moveTo(move.getTo().getX()-1, move.getTo().getY()-1);
 
@@ -83,7 +97,7 @@ void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move& move){
     removePieceFromVector(NON_MOVING_VECTOR, moveFrom);
 }
 
-void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
+void RSPPlayer_307941401::notifyFightResult(const FightInfo& fightInfo){
     int winner = fightInfo.getWinner();
     Position fightPos = fightInfo.getPosition();
     fightPos.setXposition(fightPos.getX()-1);
@@ -122,30 +136,32 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo& fightInfo){
     }
 }
 
-unique_ptr<Move> AutoPlayerAlgorithm::getMove(){
+unique_ptr<Move> RSPPlayer_307941401::getMove(){
     GameMove move(player);
     char prevChar;
     getBestMoveForPlayer(move);
-    autoFilePlayer << "Move:" << std::endl;
-    move.printMove(&autoFilePlayer);
-    autoFilePlayer << "-----------------------" << std::endl;
+    if(printToFile){
+        autoFilePlayer << "Move:" << std::endl;
+        move.printMove(&autoFilePlayer);
+        autoFilePlayer << "-----------------------" << std::endl;
+    }
     prevChar  = game.getPieceAtPosition(player, move.getFrom());
     game.setPieceAtPosition(player, EMPTY_CHAR, move.getFrom());
     game.setPieceAtPosition(player, prevChar, move.getTo());
     // update moving pieces vector
     updateMovingPiecesVector(move);
 
-	// updating the move to be 1-based instead of 0-based for the game manager
-	move.setSrcPosition(move.getFrom().getX()+1, move.getFrom().getY()+1);
-	move.setDstPosition(move.getTo().getX()+1, move.getTo().getY()+1);
+    // updating the move to be 1-based instead of 0-based for the game manager
+    move.setSrcPosition(move.getFrom().getX()+1, move.getFrom().getY()+1);
+    move.setDstPosition(move.getTo().getX()+1, move.getTo().getY()+1);
     return std::make_unique<GameMove>(player, move.getFrom(), move.getTo());
 }
 
-unique_ptr<JokerChange> AutoPlayerAlgorithm::getJokerChange(){
+unique_ptr<JokerChange> RSPPlayer_307941401::getJokerChange(){
     return nullptr;
 }
 
-void AutoPlayerAlgorithm::removePieceFromVector(int vectorType, const Position& posToRemove){
+void RSPPlayer_307941401::removePieceFromVector(int vectorType, const Position& posToRemove){
     if(vectorType == NON_MOVING_VECTOR){
         auto newEndIterator = std::remove_if(nonMovingPositions.begin(), nonMovingPositions.end(),
                                              [posToRemove](const std::unique_ptr<Position>& pos){
@@ -164,15 +180,17 @@ void AutoPlayerAlgorithm::removePieceFromVector(int vectorType, const Position& 
 
 
 
-void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move){
+void RSPPlayer_307941401::getBestMoveForPlayer(GameMove& move){
     // should update move with best move.
     int currentScore;
     GameMove moveToCheck(player);
     float minDist = std::numeric_limits<float>::infinity(); // infinity
 
     // print to debug file
-    autoFilePlayer << "Board:" << std::endl;
-    game.printBoard(autoFilePlayer);
+    if(printToFile){
+        autoFilePlayer << "Board:" << std::endl;
+        game.printBoard(autoFilePlayer);
+    }
     // For every moving position
     for(const unique_ptr<Position>& piecePos: playerMovingPositions){
         // set move source position
@@ -194,7 +212,7 @@ void AutoPlayerAlgorithm::getBestMoveForPlayer(GameMove& move){
         }
     }
 }
-void AutoPlayerAlgorithm::updateMoveWithDirection(GameMove& moveToCheck, int moveDirection) const{
+void RSPPlayer_307941401::updateMoveWithDirection(GameMove& moveToCheck, int moveDirection) const{
     int xPos = moveToCheck.getFrom().getX();
     int yPos = moveToCheck.getFrom().getY();
     switch(moveDirection){
@@ -217,7 +235,7 @@ void AutoPlayerAlgorithm::updateMoveWithDirection(GameMove& moveToCheck, int mov
     moveToCheck.setDstPosition(xPos,yPos);
 }
 
-float AutoPlayerAlgorithm::scoreMoveOnBoard(const GameMove& moveToCheck){
+float RSPPlayer_307941401::scoreMoveOnBoard(const GameMove& moveToCheck){
     // first check for a fight
     int opponentChar = game.getPieceAtPosition(opponent, moveToCheck.getTo());
     int ourChar = game.getPieceAtPosition(player, moveToCheck.getFrom());
@@ -247,7 +265,7 @@ float AutoPlayerAlgorithm::scoreMoveOnBoard(const GameMove& moveToCheck){
 }
 
 
-int AutoPlayerAlgorithm::getWinnerOfFight(char ourChar, char opponentChar) const{
+int RSPPlayer_307941401::getWinnerOfFight(char ourChar, char opponentChar) const{
     // assuming ourChar is a moving piece
     ourChar = toupper(ourChar);
     if(ourChar == opponentChar)
@@ -281,7 +299,7 @@ int AutoPlayerAlgorithm::getWinnerOfFight(char ourChar, char opponentChar) const
 }
 
 
-int AutoPlayerAlgorithm::calculateMinDistance(const Point& fromPos, const std::vector<unique_ptr<Position>>& vectorToComare) const{
+int RSPPlayer_307941401::calculateMinDistance(const Point& fromPos, const std::vector<unique_ptr<Position>>& vectorToComare) const{
     float minDis = std::numeric_limits<float>::infinity();
     float dist;
     for(const unique_ptr<Position>& pieceToCheck: vectorToComare){
@@ -292,7 +310,7 @@ int AutoPlayerAlgorithm::calculateMinDistance(const Point& fromPos, const std::v
     return minDis;
 }
 
-void AutoPlayerAlgorithm::updateMovingPiecesVector(const GameMove& move){
+void RSPPlayer_307941401::updateMovingPiecesVector(const GameMove& move){
     const Position srcPos = move.getFrom();
     const Position dstPos = move.getTo();
     for(unique_ptr<Position>& piecePos: playerMovingPositions){

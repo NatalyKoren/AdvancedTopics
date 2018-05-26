@@ -345,12 +345,12 @@ int GameManager::startAndRunGame(){
 	// update initial positions
 	std::vector<unique_ptr<FightInfo>> fights;
 	if(updateInitialPositions() == ERROR)
-		return writeToOutput();
+		return game.getWinner();
 	// perform all fights
 	int firstStageWinner = performAllFightAfterInitBoards(fights);
 	// there is a winner
 	if(firstStageWinner != NONE)
-		return writeToOutput();
+		return game.getWinner();
 	// notify on initial board
 	firstPlayerAlgorithm->notifyOnInitialBoard(game,fights);
 	secondPlayerAlgorithm->notifyOnInitialBoard(game,fights);
@@ -358,5 +358,5 @@ int GameManager::startAndRunGame(){
 	// we can start the game now...
 	playGame();
 	// the game ends...
-	return writeToOutput();
+	return game.getWinner();
 }

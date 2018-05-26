@@ -1,7 +1,7 @@
 #ifndef __ALGORITHM_REGISTRATION_H_
 #define __ALGORITHM_REGISTRATION_H_
 
-#include <functional> # for std::function: pointer for a function/objectFunction (implements operatore())/lambda etc. Callback function
+#include <functional>
 #include <memory>
 
 #include "PlayerAlgorithm.h"
