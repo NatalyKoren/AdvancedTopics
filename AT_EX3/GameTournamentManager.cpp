@@ -11,7 +11,9 @@ AlgorithmRegistration::AlgorithmRegistration(std::string id, std::function<std::
 }
 
 void TournamentManager::registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod) {
-    // TODO: should warn if id is already registered
+    if(idToFactory.find(id) != idToFactory.end()){
+        std::cout << "id " << id << " already register! Overriding factory method." << std::endl;
+    }
     idToFactory[id] = factoryMethod;
     idToScore[id] = 0;
 }
@@ -40,4 +42,26 @@ int TournamentManager::runGameBetweenTwoPlayers(int numOfGames, std::string firs
     }
     return SUCCESS;
 
+}
+
+int TournamentManager::printTournamentResults(std::ostream* ostream) const{
+    std::map<int, std::string, std::greater<int>> sortedMap;
+    int score;
+    std::string id;
+    // insert values to new map
+    for(auto& pair : idToScore) {
+        score = pair.second;
+        id = pair.first;
+        sortedMap[score] = id;
+    }
+
+    // now sortedMap is a descending order map.
+    for(auto& pair : sortedMap) {
+        score = pair.first;
+        id = pair.second;
+        *ostream << id << " " << score << std::endl;
+        if(ostream->bad())
+            return ERROR;
+    }
+    return SUCCESS;
 }

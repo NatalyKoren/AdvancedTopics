@@ -9,6 +9,7 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <algorithm>
 #include "PlayerAlgorithm.h"
 #include "GameManager.h"
 #include "AlgorithmRegistration.h"
@@ -54,10 +55,11 @@ public:
     int runTournament();
 
     /**
-     * Print the tournament results.
+     * Print the tournament results to stream.
+     * @param ostream - stream to print results.
      * @return ERROR in case an ERROR occurred. SUCCESS otherwise.
      */
-    int printTournamentResults();
+    int printTournamentResults(std::ostream* ostream) const;
 
     /***
      * Each thread will run this function.
@@ -78,7 +80,11 @@ public:
             factoryMethod();
         }
     }
+
+
+
 };
+
 
 
 
