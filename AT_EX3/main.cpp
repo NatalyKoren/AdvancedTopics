@@ -1,6 +1,5 @@
 #include <iostream>
 #include "GameManager.h"
-#include "FilePlayerAlgorithm.h"
 #include "AutoPlayerAlgorithm.h"
 #include "GameTournamentManager.h"
 
