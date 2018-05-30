@@ -74,22 +74,21 @@ int TournamentManager::loadDynamicFilesForGames() {
 		// TODO: handle error
 		return 0;
 	}
-	// load the symbol
-	typedef PlayerAlgorithm* create_t();
-	typedef void destroy_t(PlayerAlgorithm*);
-
-	create_t* create_algo = (create_t*)dlsym(algorithm, "create");
-	destroy_t* destroy = (destroy_t*)dlsym(algorithm,"destroy");
-	 if (!create_algo) {
-		 std::cout << "The error is %s" << dlerror();
-	 }
-	 if (!destroy) {
-		 std::cout << "The error is %s" << dlerror();
-	 }
-	 PlayerAlgorithm* algo = create_algo();
-	 // TODO: call player algo methods?
-	 destroy(algo);
-	 return 1;
+//	// load the symbol
+//	typedef PlayerAlgorithm* create_t();
+//	typedef void destroy_t(PlayerAlgorithm*);
+//
+//	create_t* create_algo = (create_t*)dlsym(algorithm, "register_me_307941401");
+//	//destroy_t* destroy = (destroy_t*)dlsym(algorithm,"destroy");
+//	 if (!create_algo) {
+//		 std::cout << "The error is %s" << dlerror();
+//	 }
+////	 if (!destroy) {
+////		 std::cout << "The error is %s" << dlerror();
+////	 }
+//	 PlayerAlgorithm* algo = create_algo();
+//	 destroy(algo);
+//	 return 1;
 	/*
 	// for when we have many so files: http://en.cppreference.com/w/cpp/filesystem/directory_iterator
 	for(auto& file: std::filesystem::directory_iterator(filderPath)) {

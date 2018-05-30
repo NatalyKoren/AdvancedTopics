@@ -4,6 +4,7 @@ OBJS = main.o AutoPlayerAlgorithm.o FilePlayerAlgorithm.o GameBoard.o GameJokerC
 #The executabel filename DON'T CHANGE
 EXEC = ex2
 CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
+CPP_SO_FLAGS = -shared -o libAutoPlayerAlgorithm.o -fPIC AutoPlayerAlgorithm.cpp
 
 $(EXEC): $(OBJS)
 	$(COMP) $(OBJS) -o $@
@@ -20,7 +21,9 @@ PlayerPieces.o: PlayerPieces.cpp PlayerPieces.h Definitions.h
 FilePlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h FilePlayerAlgorithm.h FilePlayerAlgorithm.cpp GameMove.h GameMove.cpp InterfacePiecePosition.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 AutoPlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h GameMove.h GameMove.cpp InterfacePiecePosition.h
-	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
+	$(COMP) $(CPP_COMP_FLAG -fPIC) -c $*.cpp
+AutoPlayerAlgorithm.so: AutoPlayerAlgorithm.o
+	$(COMP) $(CPP_SO_FLAGS)
 GameManager.o: GameManager.cpp GameManager.h GameBoard.h PlayerAlgorithm.h FilePlayerAlgorithm.h AutoPlayerAlgorithm.cpp AutoPlayerAlgorithm.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 clean:
