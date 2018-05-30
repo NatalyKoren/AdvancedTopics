@@ -1,13 +1,17 @@
 COMP = g++-5.3.0
 #put all your object files here
-OBJS = main.o AutoPlayerAlgorithm.o FilePlayerAlgorithm.o GameBoard.o GameJokerChanged.o GameManager.o GameMove.o PlayerPieces.o
+OBJS = main.o AutoPlayerAlgorithm.o GameBoard.o GameJokerChanged.o GameManager.o GameMove.o PlayerPieces.o GameTournamentManager.o
 #The executabel filename DON'T CHANGE
-EXEC = ex2
-CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG
-CPP_SO_FLAGS = -shared -o libAutoPlayerAlgorithm.o -fPIC AutoPlayerAlgorithm.cpp
+EXEC = ex3
+CPP_COMP_FLAG = -std=c++14 -Wall -Wextra -Werror -pedantic-errors -DNDEBUG -fPIC
+#CPP_SO_FLAGS = AutoPlayerAlgorithm.o  -shared -o libAutoPlayerAlgorithm.so
+CPP_SO_FLAGS = -shared -o
+LDFLAGS = -ldl
+all: ex3 libAutoPlayerAlgorithm.so 
+
 
 $(EXEC): $(OBJS)
-	$(COMP) $(OBJS) -o $@
+	$(COMP) $(OBJS) -rdynamic -o $@ -ldl
 #a rule for building a simple c++ source file
 #use g++ -MM main.cpp to see dependencies
 main.o: main.cpp
@@ -18,13 +22,14 @@ GameMove.o: GameMove.cpp GameMove.h Move.h Point.h Position.h Definitions.h Game
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 PlayerPieces.o: PlayerPieces.cpp PlayerPieces.h Definitions.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-FilePlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h FilePlayerAlgorithm.h FilePlayerAlgorithm.cpp GameMove.h GameMove.cpp InterfacePiecePosition.h
+AutoPlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h GameMove.h GameMove.cpp InterfacePiecePosition.h AlgorithmRegistration.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-AutoPlayerAlgorithm.o: Definitions.h PlayerAlgorithm.h GameMove.h GameMove.cpp InterfacePiecePosition.h
-	$(COMP) $(CPP_COMP_FLAG -fPIC) -c $*.cpp
-AutoPlayerAlgorithm.so: AutoPlayerAlgorithm.o
-	$(COMP) $(CPP_SO_FLAGS)
-GameManager.o: GameManager.cpp GameManager.h GameBoard.h PlayerAlgorithm.h FilePlayerAlgorithm.h AutoPlayerAlgorithm.cpp AutoPlayerAlgorithm.h
+libAutoPlayerAlgorithm.so: AutoPlayerAlgorithm.o
+	$(COMP) $(CPP_SO_FLAGS) $*.o
+GameManager.o: GameManager.cpp GameManager.h GameBoard.h PlayerAlgorithm.h AutoPlayerAlgorithm.cpp AutoPlayerAlgorithm.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
+GameTournamentManager.o: GameTournamentManager.cpp GameTournamentManager.h PlayerAlgorithm.h GameManager.h AlgorithmRegistration.h
+	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
+
 clean:
 	rm -f $(OBJS) $(EXEC)

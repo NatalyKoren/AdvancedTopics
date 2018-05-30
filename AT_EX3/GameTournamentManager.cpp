@@ -30,6 +30,7 @@ int TournamentManager::runGameBetweenTwoPlayers(std::string firstPlayerID, std::
     winner = game.startAndRunGame();
     // --- LOCK ---
     std::lock_guard<std::mutex> guard(scoreMutex);
+    // TODO REMOVE THIS
     std::cout << "run game between " << firstPlayerID << " and " << secondPlayerID << " " << updateSecondPlayer <<std::endl;
     if(winner == FIRST_PLAYER)
         idToScore[firstPlayerID]+= WINNING_POINTS;
@@ -104,6 +105,7 @@ int TournamentManager::loadDynamicFilesForGames() {
 void TournamentManager::runGamesInsideThread(int seedNum){
     std::string firstPlayer;
     std::string  secondPlayer;
+    // For random numbers
     std::default_random_engine generator(seedNum*10);
     std::uniform_int_distribution<int> distribution(0,idToGameCount.size());
     while(idToGameCount.size() > 1){
@@ -127,28 +129,30 @@ void TournamentManager::runGamesInsideThread(int seedNum){
 
         // --- Unlock
         GameCountMutex.unlock();
-
+        // run game between players
         runGameBetweenTwoPlayers(firstPlayer,secondPlayer,true);
     }
 }
 
-std::string& TournamentManager::getPlayerId(int randNum){
+const std::string& TournamentManager::getPlayerId(int randNum){
     std::map<std::string,int>::iterator randomIter = idToGameCount.begin();
+    if(randNum > idToGameCount.size())
+        return randomIter->first;
     std::advance(randomIter, randNum);
-    randomIter->first;
+    return randomIter->first;
 }
 
 int TournamentManager::runTournament(){
     std::vector<std::thread> threads;
     std::string leftPlayer;
     std::map<std::string,int>::iterator mapIter;
-
+    // define and run threads
     for (int i = 0; i < threadsNum; i++) {
         threads.push_back(std::thread(runGamesInsideThread,this, i));
     }
+    // Join all threads
     for (auto& th : threads)
         th.join();
-
     // handle leftover algorithms
     if(idToGameCount.size() > 0){
         // assuming idToGameCount.size() == 1
@@ -175,7 +179,17 @@ int TournamentManager::addToMap(){
     registerAlgorithm("123", []{return std::make_unique<RSPPlayer_307941401>();} );
     registerAlgorithm("456", []{return std::make_unique<RSPPlayer_307941401>();} );
     registerAlgorithm("789", []{return std::make_unique<RSPPlayer_307941401>();} );
-    registerAlgorithm("789", []{return std::make_unique<RSPPlayer_307941401>();} );
+    registerAlgorithm("222", []{return std::make_unique<RSPPlayer_307941401>();} );
     registerAlgorithm("111", []{return std::make_unique<RSPPlayer_307941401>();} );
     registerAlgorithm("112", []{return std::make_unique<RSPPlayer_307941401>();} );
+}
+
+void TournamentManager::startAll(){
+    // load files
+    loadDynamicFilesForGames();
+    // run tournament
+    runTournament();
+    // print results
+    printTournamentResults(&std::cout);
+    // Done
 }

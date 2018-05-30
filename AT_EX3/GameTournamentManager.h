@@ -18,7 +18,7 @@
 #include "PlayerAlgorithm.h"
 #include "GameManager.h"
 #include "AlgorithmRegistration.h"
-#include "AutoPlayerAlgorithm.h" // TODO REMOVE THIS
+#include "AutoPlayerAlgorithm.h" // TODO REMOVE THIS - for addToMap function
 
 class TournamentManager {
     static TournamentManager theTournamentManager;
@@ -44,13 +44,16 @@ public:
     static TournamentManager& getTournamentManager() {
         return theTournamentManager;
     }
+    /**
+     * Register algorithm to tournament.
+     * @param id - player id
+     * @param factoryMethod - instance method
+     */
     void registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod);
-    // for tests
-    void print(){std::cout <<"hii!" <<std::endl;}
 
+    // --- Setters ---
     void setThreadsNum(int num) { threadsNum = num; }
     void setDirectoryPath(std::string dirPath) { folderPath = dirPath;}
-
 
     /***
      * Open folderPath and load all dynamic files in it.
@@ -76,20 +79,27 @@ public:
      * After every game, the thread will update the score according to the winner.
      * @param firstPlayerID - first player id
      * @param secondPlayerID - second player id
+     * @param updateSecondPlayer - if true update second player score (for leftover games).
      * @return ERROR if an ERROR occurred. SUCCESS otherwise.
      */
     int runGameBetweenTwoPlayers(std::string firstPlayerID, std::string secondPlayerID, bool updateSecondPlayer);
-    std::string& getPlayerId(int randNum);
+    /***
+     * Return player id using randNum value
+     * @param randNum - random number between zero to idToGameCount.size
+     * @return playerId at randNum position on idToGameCount map
+     */
+    const std::string& getPlayerId(int randNum);
+    /***
+     * The main function for each thread. This will run games until no more games is left or
+     * only one player left with games.
+     * @param seedNum - the thread number. Used as seed for random numbers.
+     */
     void runGamesInsideThread(int seedNum);
-    // Todo remove this
-    void run()const {
-        for(auto& pair : idToFactory) {
-            const auto& id = pair.first;
-            std::cout << id << ": ";
-            const auto& factoryMethod = pair.second;
-            factoryMethod();
-        }
-    }
+    /***
+     * Run all tournament from the beginning: load files, run turnament and print results.
+     */
+    void startAll();
+
     // FOR TESTS ONLY
     int addToMap();
 };
