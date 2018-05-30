@@ -6,6 +6,8 @@
 #include "AutoPlayerAlgorithm.h"
 
 bool printToFile = true;
+// Registering the algorithm
+REGISTER_ALGORITHM(307941401)
 
 RSPPlayer_307941401::RSPPlayer_307941401(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
                                                         opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),

@@ -10,10 +10,13 @@
 #include <mutex>
 #include <thread>
 #include <algorithm>
+
+#include <dlfcn.h>
+#include <filesystem>
+
 #include "PlayerAlgorithm.h"
 #include "GameManager.h"
 #include "AlgorithmRegistration.h"
-
 
 class TournamentManager {
     static TournamentManager theTournamentManager;
@@ -29,6 +32,7 @@ class TournamentManager {
     std::mutex scoreMutex;
     // private ctor
     TournamentManager():idToFactory(), idToScore(), threadsNum(0), playersNum(0), folderPath() {}
+
 public:
     // Get instance of class
     static TournamentManager& getTournamentManager() {
@@ -80,12 +84,7 @@ public:
             factoryMethod();
         }
     }
-
-
-
 };
-
-
 
 
 
