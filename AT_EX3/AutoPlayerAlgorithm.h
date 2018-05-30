@@ -31,7 +31,9 @@ class RSPPlayer_307941401 : public PlayerAlgorithm {
 public:
     // --- Constructor ---
     RSPPlayer_307941401(int playerNum);
-    RSPPlayer_307941401() {  RSPPlayer_307941401(FIRST_PLAYER); }
+    RSPPlayer_307941401():player(FIRST_PLAYER), game(), opponent(game.getOpponent(FIRST_PLAYER)),
+    opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),
+    autoFilePlayer() {  RSPPlayer_307941401(FIRST_PLAYER); }
 
     //--- Destructor ---
     ~RSPPlayer_307941401() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}

@@ -10,19 +10,23 @@
 #include <mutex>
 #include <thread>
 #include <algorithm>
+#include <random>
 
-#include <dlfcn.h>
-#include <filesystem>
+//#include <dlfcn.h>
+//#include <filesystem>
 
 #include "PlayerAlgorithm.h"
 #include "GameManager.h"
 #include "AlgorithmRegistration.h"
+#include "AutoPlayerAlgorithm.h" // TODO REMOVE THIS
 
 class TournamentManager {
     static TournamentManager theTournamentManager;
     std::map<std::string, std::function<std::unique_ptr<PlayerAlgorithm>()>> idToFactory;
     // for saving game results
     std::map<std::string, int> idToScore;
+    // For running the games
+    std::map<std::string, int> idToGameCount;
     // Threads num
     int threadsNum;
     // Number of register players
@@ -30,6 +34,8 @@ class TournamentManager {
     std::string folderPath;
     // lock for updating score
     std::mutex scoreMutex;
+    // For game count map
+    std::mutex GameCountMutex;
     // private ctor
     TournamentManager():idToFactory(), idToScore(), threadsNum(0), playersNum(0), folderPath() {}
 
@@ -68,13 +74,13 @@ public:
     /***
      * Each thread will run this function.
      * After every game, the thread will update the score according to the winner.
-     * @param numOfGames - number of games to perform between the two players.
      * @param firstPlayerID - first player id
      * @param secondPlayerID - second player id
      * @return ERROR if an ERROR occurred. SUCCESS otherwise.
      */
-    int runGameBetweenTwoPlayers(int numOfGames, std::string firstPlayerID, std::string secondPlayerID);
-
+    int runGameBetweenTwoPlayers(std::string firstPlayerID, std::string secondPlayerID, bool updateSecondPlayer);
+    std::string& getPlayerId(int randNum);
+    void runGamesInsideThread(int seedNum);
     // Todo remove this
     void run()const {
         for(auto& pair : idToFactory) {
@@ -84,6 +90,8 @@ public:
             factoryMethod();
         }
     }
+    // FOR TESTS ONLY
+    int addToMap();
 };
 
 

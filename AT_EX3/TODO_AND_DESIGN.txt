@@ -9,3 +9,4 @@ Compile: (Not sure it is correct)
 g++ file1.o file2.o file3.o -shared -o libProject.so
 
 [] need to check where to put srand(time(0)); cannot be in main
+[] use atomic int?

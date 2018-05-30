@@ -2,6 +2,7 @@
 // Created by DELL on 26/05/2018.
 //
 
+#include <random>
 #include "GameTournamentManager.h"
 
 TournamentManager TournamentManager::theTournamentManager;
@@ -16,32 +17,29 @@ void TournamentManager::registerAlgorithm(std::string id, std::function<std::uni
 	}
 	idToFactory[id] = factoryMethod;
 	idToScore[id] = 0;
+    idToGameCount[id] = 0;
 }
 
-int TournamentManager::runGameBetweenTwoPlayers(int numOfGames, std::string firstPlayerID, std::string secondPlayerID){
+int TournamentManager::runGameBetweenTwoPlayers(std::string firstPlayerID, std::string secondPlayerID, bool updateSecondPlayer){
 	GameManager game;
 	game.setFirstPlayerAlgorithm(idToFactory[firstPlayerID]());
 	game.setSecondPlayerAlgorithm(idToFactory[secondPlayerID]());
 	int winner;
 
-	// run the games
-	for(int i=0; i<numOfGames; i++){
-		winner = game.startAndRunGame();
-		// --- LOCK ---
-		scoreMutex.lock();
-		if(winner == FIRST_PLAYER)
-			idToScore[firstPlayerID]+= WINNING_POINTS;
-		else if(winner == SECOND_PLAYER)
-			idToScore[secondPlayerID]+= WINNING_POINTS;
-		else{
-			idToScore[firstPlayerID]+= TIE_POINTS;
-			idToScore[secondPlayerID]+= TIE_POINTS;
-		}
-		// --- UNLOCK ---
-		scoreMutex.unlock();
-	}
+	// run the game
+    winner = game.startAndRunGame();
+    // --- LOCK ---
+    std::lock_guard<std::mutex> guard(scoreMutex);
+    std::cout << "run game between " << firstPlayerID << " and " << secondPlayerID << " " << updateSecondPlayer <<std::endl;
+    if(winner == FIRST_PLAYER)
+        idToScore[firstPlayerID]+= WINNING_POINTS;
+    else if(winner == SECOND_PLAYER && updateSecondPlayer)
+        idToScore[secondPlayerID]+= WINNING_POINTS;
+    else{
+        idToScore[firstPlayerID]+= TIE_POINTS;
+        if(updateSecondPlayer) idToScore[secondPlayerID]+= TIE_POINTS;
+    }
 	return SUCCESS;
-
 }
 
 int TournamentManager::printTournamentResults(std::ostream* ostream) const{
@@ -67,13 +65,14 @@ int TournamentManager::printTournamentResults(std::ostream* ostream) const{
 }
 
 int TournamentManager::loadDynamicFilesForGames() {
+	/*
 	void* algorithm = dlopen(folderPath.c_str(), RTLD_LAZY);
 
 	if (!algorithm) {
 		std::cout << "Cannot open library: " << dlerror();
 		// TODO: handle error
 		return 0;
-	}
+	}*/
 //	// load the symbol
 //	typedef PlayerAlgorithm* create_t();
 //	typedef void destroy_t(PlayerAlgorithm*);
@@ -98,6 +97,85 @@ int TournamentManager::loadDynamicFilesForGames() {
 
 	// TODO: need to delete factory methods before closing the lib
 	// close the library
-	dlclose(algorithm);
+	/*dlclose(algorithm);*/
+	return SUCCESS;
 }
 
+void TournamentManager::runGamesInsideThread(int seedNum){
+    std::string firstPlayer;
+    std::string  secondPlayer;
+    std::default_random_engine generator(seedNum*10);
+    std::uniform_int_distribution<int> distribution(0,idToGameCount.size());
+    while(idToGameCount.size() > 1){
+        firstPlayer = "";
+        secondPlayer = "";
+        while(firstPlayer.compare(secondPlayer) == 0){
+            firstPlayer = getPlayerId(distribution(generator)%idToGameCount.size());
+            secondPlayer = getPlayerId(distribution(generator)%idToGameCount.size());
+        }
+        // --- Lock
+        GameCountMutex.lock();
+
+        idToGameCount[firstPlayer]++;
+        idToGameCount[secondPlayer]++;
+
+        if(idToGameCount[firstPlayer] == GAMES_COUNT)
+            idToGameCount.erase(firstPlayer);
+
+        if(idToGameCount[secondPlayer] == GAMES_COUNT)
+            idToGameCount.erase(secondPlayer);
+
+        // --- Unlock
+        GameCountMutex.unlock();
+
+        runGameBetweenTwoPlayers(firstPlayer,secondPlayer,true);
+    }
+}
+
+std::string& TournamentManager::getPlayerId(int randNum){
+    std::map<std::string,int>::iterator randomIter = idToGameCount.begin();
+    std::advance(randomIter, randNum);
+    randomIter->first;
+}
+
+int TournamentManager::runTournament(){
+    std::vector<std::thread> threads;
+    std::string leftPlayer;
+    std::map<std::string,int>::iterator mapIter;
+
+    for (int i = 0; i < threadsNum; i++) {
+        threads.push_back(std::thread(runGamesInsideThread,this, i));
+    }
+    for (auto& th : threads)
+        th.join();
+
+    // handle leftover algorithms
+    if(idToGameCount.size() > 0){
+        // assuming idToGameCount.size() == 1
+        if(idToGameCount.size() != 1)
+            std::cout << "idToGameCount size is: " << idToGameCount.size() << std::endl; // TODO: remove this
+        leftPlayer = idToGameCount.begin()->first;
+        mapIter = idToScore.begin();
+        while(idToGameCount[leftPlayer] < GAMES_COUNT){
+            // do not play against yourself
+            if(leftPlayer.compare(mapIter->first) != 0){
+                runGameBetweenTwoPlayers(leftPlayer,mapIter->first,false);
+                idToGameCount[leftPlayer]++;
+            }
+            mapIter++;
+            // If we reached the end of the map - start over
+            if(mapIter == idToScore.end())
+                mapIter = idToScore.begin();
+        }
+    }
+}
+
+
+int TournamentManager::addToMap(){
+    registerAlgorithm("123", []{return std::make_unique<RSPPlayer_307941401>();} );
+    registerAlgorithm("456", []{return std::make_unique<RSPPlayer_307941401>();} );
+    registerAlgorithm("789", []{return std::make_unique<RSPPlayer_307941401>();} );
+    registerAlgorithm("789", []{return std::make_unique<RSPPlayer_307941401>();} );
+    registerAlgorithm("111", []{return std::make_unique<RSPPlayer_307941401>();} );
+    registerAlgorithm("112", []{return std::make_unique<RSPPlayer_307941401>();} );
+}

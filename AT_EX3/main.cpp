@@ -64,7 +64,12 @@ int main(int argc, char *argv[]){
 
     TournamentManager::getTournamentManager().setThreadsNum(numOfThreads);
     TournamentManager::getTournamentManager().setDirectoryPath(pathToFiles);
-    TournamentManager::getTournamentManager().loadDynamicFilesForGames();
+    //TournamentManager::getTournamentManager().loadDynamicFilesForGames();
+    // TODO REMOVE THIS
+    TournamentManager::getTournamentManager().addToMap();
+    std::cout << "Added to map" << std::endl;
+    TournamentManager::getTournamentManager().runTournament();
+    std::cout << "Run Tournament" << std::endl;
     TournamentManager::getTournamentManager().print();
     return 0;
 }

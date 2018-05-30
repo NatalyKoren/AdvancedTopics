@@ -5,13 +5,15 @@
 
 #include "AutoPlayerAlgorithm.h"
 
-bool printToFile = true;
+bool printToFile = false;
 // Registering the algorithm
 REGISTER_ALGORITHM(307941401)
 
 RSPPlayer_307941401::RSPPlayer_307941401(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
                                                         opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(), playerMovingPositions(),
                                                         autoFilePlayer(){
+
+    srand(time(0));
     if(printToFile){
         std::string fileName = "AutoPlayerFile_" + std::to_string(player) + ".txt";
         autoFilePlayer.open(fileName.c_str());
@@ -22,7 +24,7 @@ RSPPlayer_307941401::RSPPlayer_307941401(int playerNum):player(playerNum), game(
 void RSPPlayer_307941401::getInitialPositions(int playerNum, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
     // Set the correct player
     player = playerNum;
-    srand(time(0));
+    opponent = game.getOpponent(playerNum);
     int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
     int x, y;
     char jokerRep = EMPTY_CHAR;
