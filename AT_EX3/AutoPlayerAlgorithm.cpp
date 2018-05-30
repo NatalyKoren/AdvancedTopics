@@ -19,7 +19,10 @@ RSPPlayer_307941401::RSPPlayer_307941401(int playerNum):player(playerNum), game(
     }
 }
 
-void RSPPlayer_307941401::getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
+void RSPPlayer_307941401::getInitialPositions(int playerNum, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
+    // Set the correct player
+    player = playerNum;
+    srand(time(0));
     int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
     int x, y;
     char jokerRep = EMPTY_CHAR;

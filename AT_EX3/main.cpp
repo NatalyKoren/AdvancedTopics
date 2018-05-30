@@ -65,6 +65,7 @@ int main(int argc, char *argv[]){
 
     TournamentManager::getTournamentManager().setThreadsNum(numOfThreads);
     TournamentManager::getTournamentManager().setDirectoryPath(pathToFiles);
+    TournamentManager::getTournamentManager().loadDynamicFilesForGames();
     TournamentManager::getTournamentManager().print();
     return 0;
 }

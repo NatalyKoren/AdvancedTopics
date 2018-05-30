@@ -31,6 +31,7 @@ class RSPPlayer_307941401 : public PlayerAlgorithm {
 public:
     // --- Constructor ---
     RSPPlayer_307941401(int playerNum);
+    RSPPlayer_307941401() {  RSPPlayer_307941401(FIRST_PLAYER); }
 
     //--- Destructor ---
     ~RSPPlayer_307941401() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}
