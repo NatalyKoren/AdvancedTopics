@@ -7,9 +7,9 @@
 
 bool printToFile = false;
 // Registering the algorithm
-REGISTER_ALGORITHM(222222222)
+REGISTER_ALGORITHM(222222223)
 
-void RSPPlayer_222222222::init() {
+void RSPPlayer_222222223::init() {
 	srand(time(0));
 	if (printToFile) {
 		std::string fileName = "AutoPlayerFile_" + std::to_string(player)
@@ -17,14 +17,14 @@ void RSPPlayer_222222222::init() {
 		autoFilePlayer.open(fileName.c_str());
 	}
 }
-
-RSPPlayer_222222222::RSPPlayer_222222222(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
+extern "C"{
+RSPPlayer_222222223::RSPPlayer_222222223(int playerNum):player(playerNum), game(), opponent(game.getOpponent(playerNum)),
                                                         opponentPieceCount(0),pieceCount{R,P,S,B,J,F}, nonMovingPositions(),
                                                         playerMovingPositions(){
 	init();
 }
 
-void RSPPlayer_222222222::getInitialPositions(int playerNum, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
+void RSPPlayer_222222223::getInitialPositions(int playerNum, std::vector<unique_ptr<PiecePosition>>& vectorToFill){
     // Set the correct player
     player = playerNum;
     opponent = game.getOpponent(playerNum);
@@ -69,7 +69,7 @@ void RSPPlayer_222222222::getInitialPositions(int playerNum, std::vector<unique_
     }
 }
 
-void RSPPlayer_222222222::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights){
+void RSPPlayer_222222223::notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights){
     Position pos(0,0);
     // update opponent pieces on board
     for(int i=0; i<M; i++){
@@ -93,7 +93,7 @@ void RSPPlayer_222222222::notifyOnInitialBoard(const Board& b, const std::vector
     }
 }
 
-void RSPPlayer_222222222::notifyOnOpponentMove(const Move& move){
+void RSPPlayer_222222223::notifyOnOpponentMove(const Move& move){
     const Position moveFrom(move.getFrom().getX()-1, move.getFrom().getY()-1);
     const Position moveTo(move.getTo().getX()-1, move.getTo().getY()-1);
 
@@ -107,7 +107,7 @@ void RSPPlayer_222222222::notifyOnOpponentMove(const Move& move){
     removePieceFromVector(NON_MOVING_VECTOR, moveFrom);
 }
 
-void RSPPlayer_222222222::notifyFightResult(const FightInfo& fightInfo){
+void RSPPlayer_222222223::notifyFightResult(const FightInfo& fightInfo){
     int winner = fightInfo.getWinner();
     Position fightPos = fightInfo.getPosition();
     fightPos.setXposition(fightPos.getX()-1);
@@ -146,7 +146,7 @@ void RSPPlayer_222222222::notifyFightResult(const FightInfo& fightInfo){
     }
 }
 
-unique_ptr<Move> RSPPlayer_222222222::getMove(){
+unique_ptr<Move> RSPPlayer_222222223::getMove(){
     GameMove move(player);
     char prevChar;
     getBestMoveForPlayer(move);
@@ -167,11 +167,11 @@ unique_ptr<Move> RSPPlayer_222222222::getMove(){
     return std::make_unique<GameMove>(player, move.getFrom(), move.getTo());
 }
 
-unique_ptr<JokerChange> RSPPlayer_222222222::getJokerChange(){
+unique_ptr<JokerChange> RSPPlayer_222222223::getJokerChange(){
     return nullptr;
 }
-
-void RSPPlayer_222222222::removePieceFromVector(int vectorType, const Position& posToRemove){
+}
+void RSPPlayer_222222223::removePieceFromVector(int vectorType, const Position& posToRemove){
     if(vectorType == NON_MOVING_VECTOR){
         auto newEndIterator = std::remove_if(nonMovingPositions.begin(), nonMovingPositions.end(),
                                              [posToRemove](const std::unique_ptr<Position>& pos){
@@ -190,7 +190,7 @@ void RSPPlayer_222222222::removePieceFromVector(int vectorType, const Position& 
 
 
 
-void RSPPlayer_222222222::getBestMoveForPlayer(GameMove& move){
+void RSPPlayer_222222223::getBestMoveForPlayer(GameMove& move){
     // should update move with best move.
     int currentScore;
     GameMove moveToCheck(player);
@@ -222,7 +222,7 @@ void RSPPlayer_222222222::getBestMoveForPlayer(GameMove& move){
         }
     }
 }
-void RSPPlayer_222222222::updateMoveWithDirection(GameMove& moveToCheck, int moveDirection) const{
+void RSPPlayer_222222223::updateMoveWithDirection(GameMove& moveToCheck, int moveDirection) const{
     int xPos = moveToCheck.getFrom().getX();
     int yPos = moveToCheck.getFrom().getY();
     switch(moveDirection){
@@ -245,7 +245,7 @@ void RSPPlayer_222222222::updateMoveWithDirection(GameMove& moveToCheck, int mov
     moveToCheck.setDstPosition(xPos,yPos);
 }
 
-float RSPPlayer_222222222::scoreMoveOnBoard(const GameMove& moveToCheck){
+float RSPPlayer_222222223::scoreMoveOnBoard(const GameMove& moveToCheck){
     // first check for a fight
     int opponentChar = game.getPieceAtPosition(opponent, moveToCheck.getTo());
     int ourChar = game.getPieceAtPosition(player, moveToCheck.getFrom());
@@ -275,7 +275,7 @@ float RSPPlayer_222222222::scoreMoveOnBoard(const GameMove& moveToCheck){
 }
 
 
-int RSPPlayer_222222222::getWinnerOfFight(char ourChar, char opponentChar) const{
+int RSPPlayer_222222223::getWinnerOfFight(char ourChar, char opponentChar) const{
     // assuming ourChar is a moving piece
     ourChar = toupper(ourChar);
     if(ourChar == opponentChar)
@@ -309,7 +309,7 @@ int RSPPlayer_222222222::getWinnerOfFight(char ourChar, char opponentChar) const
 }
 
 
-int RSPPlayer_222222222::calculateMinDistance(const Point& fromPos, const std::vector<unique_ptr<Position>>& vectorToComare) const{
+int RSPPlayer_222222223::calculateMinDistance(const Point& fromPos, const std::vector<unique_ptr<Position>>& vectorToComare) const{
     float minDis = std::numeric_limits<float>::infinity();
     float dist;
     for(const unique_ptr<Position>& pieceToCheck: vectorToComare){
@@ -320,7 +320,7 @@ int RSPPlayer_222222222::calculateMinDistance(const Point& fromPos, const std::v
     return minDis;
 }
 
-void RSPPlayer_222222222::updateMovingPiecesVector(const GameMove& move){
+void RSPPlayer_222222223::updateMovingPiecesVector(const GameMove& move){
     const Position srcPos = move.getFrom();
     const Position dstPos = move.getTo();
     for(unique_ptr<Position>& piecePos: playerMovingPositions){

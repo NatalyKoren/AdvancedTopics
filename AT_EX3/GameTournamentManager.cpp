@@ -84,7 +84,7 @@ int TournamentManager::loadDynamicFilesForGames() {
 		std::cout << "Could not open the provided path: " << folderPath << std::endl;
 		return ERROR;
 	}
-
+    std::cout << "start loading files" << std::endl;
 	struct dirent* ep;
 	while ((ep = readdir(directory))) {
 		if (verifyFileName(ep->d_name) == SUCCESS) {
@@ -100,7 +100,7 @@ int TournamentManager::loadDynamicFilesForGames() {
 	}
 	// close the library
 	(void) closedir(directory);
-
+    std::cout << "done loading files" << std::endl;
 	// TODO: need to delete factory methods before closing the lib
 	return SUCCESS;
 }
@@ -151,8 +151,8 @@ int TournamentManager::runTournament(){
     std::map<std::string,int>::iterator mapIter;
     // define and run threads
     for (int i = 0; i < threadsNum; i++) {
-//        threads.push_back(std::thread(&TournamentManager::runGamesInsideThread, this, i));
-    	runGamesInsideThread(i);
+        threads.push_back(std::thread(&TournamentManager::runGamesInsideThread, this, i));
+//    	runGamesInsideThread(i);
     }
     // Join all threads
     for (auto& th : threads)
@@ -179,20 +179,26 @@ int TournamentManager::runTournament(){
     return SUCCESS;
 }
 
-/*
+
 void TournamentManager::addToMap(){
+    /*
     registerAlgorithm("123", []{return std::make_unique<RSPPlayer_222222222>();} );
     registerAlgorithm("456", []{return std::make_unique<RSPPlayer_222222222>();} );
     registerAlgorithm("789", []{return std::make_unique<RSPPlayer_222222222>();} );
     registerAlgorithm("222", []{return std::make_unique<RSPPlayer_222222222>();} );
     registerAlgorithm("111", []{return std::make_unique<RSPPlayer_222222222>();} );
     registerAlgorithm("112", []{return std::make_unique<RSPPlayer_222222222>();} );
+     */
 }
-*/
+
 
 void TournamentManager::startAll(){
     // load files
     loadDynamicFilesForGames();
+    if(idToFactory.size() <2){
+        std::cout << "There is not enough players for tournament!" << std::endl;
+        return;
+    }
     // run tournament
     runTournament();
     // print results

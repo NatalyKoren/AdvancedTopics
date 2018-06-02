@@ -35,13 +35,14 @@ int main(int argc, char *argv[]){
 
     TournamentManager::getTournamentManager().setThreadsNum(numOfThreads);
     TournamentManager::getTournamentManager().setDirectoryPath(pathToFiles);
-    TournamentManager::getTournamentManager().loadDynamicFilesForGames();
+//    TournamentManager::getTournamentManager().loadDynamicFilesForGames();
     // TODO REMOVE THIS
 //    std::cout << "adding to map" << std::endl; // DEBUG
 
-//    TournamentManager::getTournamentManager().addToMap();
+ //   TournamentManager::getTournamentManager().addToMap();
 //    std::cout << "Added to map" << std::endl;
-    TournamentManager::getTournamentManager().runTournament();
+//    TournamentManager::getTournamentManager().runTournament();
+    TournamentManager::getTournamentManager().startAll();
     std::cout << "Run Tournament" << std::endl;
     return 0;
 }
