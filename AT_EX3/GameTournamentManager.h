@@ -11,14 +11,17 @@
 #include <thread>
 #include <algorithm>
 #include <random>
+#include <string.h>
 
-//#include <dlfcn.h>
-//#include <filesystem>
+#include <dlfcn.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "PlayerAlgorithm.h"
 #include "GameManager.h"
 #include "AlgorithmRegistration.h"
-#include "AutoPlayerAlgorithm.h" // TODO REMOVE THIS - for addToMap function
+//#include "AutoPlayerAlgorithm.h" // TODO REMOVE THIS - for addToMap function
+
 
 class TournamentManager {
     static TournamentManager theTournamentManager;
@@ -37,7 +40,7 @@ class TournamentManager {
     // For game count map
     std::mutex GameCountMutex;
     // private ctor
-    TournamentManager():idToFactory(), idToScore(), threadsNum(0), playersNum(0), folderPath() {}
+    TournamentManager():idToFactory(), idToScore(), threadsNum(0), playersNum(0), folderPath(".") {}
 
 public:
     // Get instance of class
@@ -54,6 +57,12 @@ public:
     // --- Setters ---
     void setThreadsNum(int num) { threadsNum = num; }
     void setDirectoryPath(std::string dirPath) { folderPath = dirPath;}
+
+    /*
+     * Verifies that a file name is of an "RSPPlayer_<id>.so" pattern
+     * returns SUCCESS or ERROR accordingly
+     */
+    int verifyFileName(const char* filename);
 
     /***
      * Open folderPath and load all dynamic files in it.
@@ -101,7 +110,7 @@ public:
     void startAll();
 
     // FOR TESTS ONLY
-    int addToMap();
+    void addToMap();
 };
 
 

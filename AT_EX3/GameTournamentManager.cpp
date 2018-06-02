@@ -13,7 +13,7 @@ AlgorithmRegistration::AlgorithmRegistration(std::string id, std::function<std::
 
 void TournamentManager::registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod) {
 	if(idToFactory.find(id) != idToFactory.end()){
-		std::cout << "id " << id << " already register! Overriding factory method." << std::endl;
+		std::cout << "id " << id << " already registered! Overriding factory method." << std::endl;
 	}
 	idToFactory[id] = factoryMethod;
 	idToScore[id] = 0;
@@ -22,10 +22,10 @@ void TournamentManager::registerAlgorithm(std::string id, std::function<std::uni
 
 int TournamentManager::runGameBetweenTwoPlayers(std::string firstPlayerID, std::string secondPlayerID, bool updateSecondPlayer){
 	GameManager game;
+	// TODO: In the next line, idToFactory[firstPlayerID] is a nullptr - need to debug
 	game.setFirstPlayerAlgorithm(idToFactory[firstPlayerID]());
 	game.setSecondPlayerAlgorithm(idToFactory[secondPlayerID]());
 	int winner;
-
 	// run the game
     winner = game.startAndRunGame();
     // --- LOCK ---
@@ -65,40 +65,43 @@ int TournamentManager::printTournamentResults(std::ostream* ostream) const{
 	return SUCCESS;
 }
 
-int TournamentManager::loadDynamicFilesForGames() {
-	/*
-	void* algorithm = dlopen(folderPath.c_str(), RTLD_LAZY);
+int TournamentManager::verifyFileName(const char* fileName) {
+	std::string filename(fileName);
+	std::string start("RSPPlayer_");
+	std::string end(".so");
+	if (filename.length() != 22) return ERROR;
+	std::string fileStart(filename.substr(0, start.length()));
+	if (fileStart.compare(start) != 0) return ERROR;
 
-	if (!algorithm) {
-		std::cout << "Cannot open library: " << dlerror();
-		// TODO: handle error
-		return 0;
-	}*/
-//	// load the symbol
-//	typedef PlayerAlgorithm* create_t();
-//	typedef void destroy_t(PlayerAlgorithm*);
-//
-//	create_t* create_algo = (create_t*)dlsym(algorithm, "register_me_307941401");
-//	//destroy_t* destroy = (destroy_t*)dlsym(algorithm,"destroy");
-//	 if (!create_algo) {
-//		 std::cout << "The error is %s" << dlerror();
-//	 }
-////	 if (!destroy) {
-////		 std::cout << "The error is %s" << dlerror();
-////	 }
-//	 PlayerAlgorithm* algo = create_algo();
-//	 destroy(algo);
-//	 return 1;
-	/*
-	// for when we have many so files: http://en.cppreference.com/w/cpp/filesystem/directory_iterator
-	for(auto& file: std::filesystem::directory_iterator(filderPath)) {
-		std::cout << file << std::endl;
+	std::string fileEnd(filename.substr(start.length()+9, 22));
+	if (fileEnd.compare(end) != 0) return ERROR;
+	return SUCCESS;
+}
+
+int TournamentManager::loadDynamicFilesForGames() {
+	DIR* directory = opendir(folderPath.c_str());
+	if (directory == NULL) {
+		std::cout << "Could not open the provided path: " << folderPath << std::endl;
+		return ERROR;
 	}
-	*/
+
+	struct dirent* ep;
+	while ((ep = readdir(directory))) {
+		if (verifyFileName(ep->d_name) == SUCCESS) {
+			std::cout << ep->d_name << std::endl;
+			std::string fullPath(folderPath + std::string("/") + std::string(ep->d_name));
+			void* algorithm = dlopen(fullPath.c_str(), RTLD_LAZY);
+			if (!algorithm) {
+				std::cout << "Cannot open library: " << dlerror() << std::endl;
+				return ERROR;
+			}
+//			dlclose(algorithm);
+		}
+	}
+	// close the library
+	(void) closedir(directory);
 
 	// TODO: need to delete factory methods before closing the lib
-	// close the library
-	/*dlclose(algorithm);*/
 	return SUCCESS;
 }
 
@@ -136,7 +139,7 @@ void TournamentManager::runGamesInsideThread(int seedNum){
 
 const std::string& TournamentManager::getPlayerId(int randNum){
     std::map<std::string,int>::iterator randomIter = idToGameCount.begin();
-    if(randNum > idToGameCount.size())
+    if((unsigned int)randNum > idToGameCount.size())
         return randomIter->first;
     std::advance(randomIter, randNum);
     return randomIter->first;
@@ -148,7 +151,8 @@ int TournamentManager::runTournament(){
     std::map<std::string,int>::iterator mapIter;
     // define and run threads
     for (int i = 0; i < threadsNum; i++) {
-        threads.push_back(std::thread(runGamesInsideThread,this, i));
+//        threads.push_back(std::thread(&TournamentManager::runGamesInsideThread, this, i));
+    	runGamesInsideThread(i);
     }
     // Join all threads
     for (auto& th : threads)
@@ -172,17 +176,19 @@ int TournamentManager::runTournament(){
                 mapIter = idToScore.begin();
         }
     }
+    return SUCCESS;
 }
 
-
-int TournamentManager::addToMap(){
-    registerAlgorithm("123", []{return std::make_unique<RSPPlayer_307941401>();} );
-    registerAlgorithm("456", []{return std::make_unique<RSPPlayer_307941401>();} );
-    registerAlgorithm("789", []{return std::make_unique<RSPPlayer_307941401>();} );
-    registerAlgorithm("222", []{return std::make_unique<RSPPlayer_307941401>();} );
-    registerAlgorithm("111", []{return std::make_unique<RSPPlayer_307941401>();} );
-    registerAlgorithm("112", []{return std::make_unique<RSPPlayer_307941401>();} );
+/*
+void TournamentManager::addToMap(){
+    registerAlgorithm("123", []{return std::make_unique<RSPPlayer_222222222>();} );
+    registerAlgorithm("456", []{return std::make_unique<RSPPlayer_222222222>();} );
+    registerAlgorithm("789", []{return std::make_unique<RSPPlayer_222222222>();} );
+    registerAlgorithm("222", []{return std::make_unique<RSPPlayer_222222222>();} );
+    registerAlgorithm("111", []{return std::make_unique<RSPPlayer_222222222>();} );
+    registerAlgorithm("112", []{return std::make_unique<RSPPlayer_222222222>();} );
 }
+*/
 
 void TournamentManager::startAll(){
     // load files
