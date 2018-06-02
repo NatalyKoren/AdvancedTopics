@@ -1,7 +1,6 @@
 #include <iostream>
 #include <unistd.h>
 #include "GameManager.h"
-//#include "AutoPlayerAlgorithm.h"
 #include "GameTournamentManager.h"
 
 int main(int argc, char *argv[]){
@@ -31,18 +30,8 @@ int main(int argc, char *argv[]){
 
         }
     }
-    std::cout << "Got threads num and path" << std::endl; //DEBUG
-
     TournamentManager::getTournamentManager().setThreadsNum(numOfThreads);
     TournamentManager::getTournamentManager().setDirectoryPath(pathToFiles);
-//    TournamentManager::getTournamentManager().loadDynamicFilesForGames();
-    // TODO REMOVE THIS
-//    std::cout << "adding to map" << std::endl; // DEBUG
-
- //   TournamentManager::getTournamentManager().addToMap();
-//    std::cout << "Added to map" << std::endl;
-//    TournamentManager::getTournamentManager().runTournament();
     TournamentManager::getTournamentManager().startAll();
-    std::cout << "Run Tournament" << std::endl;
     return 0;
 }

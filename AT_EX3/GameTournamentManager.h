@@ -39,8 +39,11 @@ class TournamentManager {
     std::mutex scoreMutex;
     // For game count map
     std::mutex GameCountMutex;
+    // list for so files handle
+    std::vector<void *> soFilesHandle;
     // private ctor
     TournamentManager():idToFactory(), idToScore(), threadsNum(0), playersNum(0), folderPath(".") {}
+    ~TournamentManager();
 
 public:
     // Get instance of class

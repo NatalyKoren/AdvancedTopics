@@ -2,7 +2,7 @@
 // Created by DELL on 26/05/2018.
 //
 
-#include <random>
+
 #include "GameTournamentManager.h"
 
 TournamentManager TournamentManager::theTournamentManager;
@@ -20,9 +20,20 @@ void TournamentManager::registerAlgorithm(std::string id, std::function<std::uni
     idToGameCount[id] = 0;
 }
 
+TournamentManager::~TournamentManager(){
+    std::vector<void *>::iterator itr;
+    // Remove factory methods
+    for(auto& pair: idToFactory)
+        idToFactory[pair.first] = nullptr;
+
+    // close so file handle
+    for(itr=soFilesHandle.begin(); itr!=soFilesHandle.end(); itr++){
+        dlclose(*itr);
+    }
+}
+
 int TournamentManager::runGameBetweenTwoPlayers(std::string firstPlayerID, std::string secondPlayerID, bool updateSecondPlayer){
 	GameManager game;
-	// TODO: In the next line, idToFactory[firstPlayerID] is a nullptr - need to debug
 	game.setFirstPlayerAlgorithm(idToFactory[firstPlayerID]());
 	game.setSecondPlayerAlgorithm(idToFactory[secondPlayerID]());
 	int winner;
@@ -44,21 +55,23 @@ int TournamentManager::runGameBetweenTwoPlayers(std::string firstPlayerID, std::
 }
 
 int TournamentManager::printTournamentResults(std::ostream* ostream) const{
-	std::map<int, std::string, std::greater<int>> sortedMap;
+	std::map<int, std::vector<std::string>, std::greater<int>> sortedMap;
+    std::vector<std::string>::iterator itr;
 	int score;
 	std::string id;
 	// insert values to new map
 	for(auto& pair : idToScore) {
 		score = pair.second;
 		id = pair.first;
-		sortedMap[score] = id;
+		sortedMap[score].push_back(id);
 	}
 
 	// now sortedMap is a descending order map.
 	for(auto& pair : sortedMap) {
 		score = pair.first;
-		id = pair.second;
-		*ostream << id << " " << score << std::endl;
+        for(itr = pair.second.begin(); itr != pair.second.end(); itr++){
+            *ostream << *itr << " " << score << std::endl;
+        }
 		if(ostream->bad())
 			return ERROR;
 	}
@@ -79,39 +92,50 @@ int TournamentManager::verifyFileName(const char* fileName) {
 }
 
 int TournamentManager::loadDynamicFilesForGames() {
-	DIR* directory = opendir(folderPath.c_str());
+    void* algorithm;
+    DIR* directory = opendir(folderPath.c_str());
 	if (directory == NULL) {
 		std::cout << "Could not open the provided path: " << folderPath << std::endl;
 		return ERROR;
 	}
-    std::cout << "start loading files" << std::endl;
 	struct dirent* ep;
 	while ((ep = readdir(directory))) {
 		if (verifyFileName(ep->d_name) == SUCCESS) {
 			std::cout << ep->d_name << std::endl;
 			std::string fullPath(folderPath + std::string("/") + std::string(ep->d_name));
-			void* algorithm = dlopen(fullPath.c_str(), RTLD_LAZY);
+			algorithm = dlopen(fullPath.c_str(), RTLD_LAZY);
 			if (!algorithm) {
 				std::cout << "Cannot open library: " << dlerror() << std::endl;
 				return ERROR;
 			}
-//			dlclose(algorithm);
+            soFilesHandle.push_back(algorithm);
 		}
 	}
 	// close the library
 	(void) closedir(directory);
-    std::cout << "done loading files" << std::endl;
-	// TODO: need to delete factory methods before closing the lib
 	return SUCCESS;
 }
 
 void TournamentManager::runGamesInsideThread(int seedNum){
     std::string firstPlayer;
     std::string  secondPlayer;
+    std::cout << "Thread number " << seedNum << " is running." << std::endl;
     // For random numbers
     std::default_random_engine generator(seedNum*10);
     std::uniform_int_distribution<int> distribution(0,idToGameCount.size());
-    while(idToGameCount.size() > 1){
+    while(1){
+        // Check if there is enough players
+        // --- Lock
+        GameCountMutex.lock();
+        if(idToGameCount.size() <= 1){
+            // can not run more games - finished
+            // --- UNLOCK ---
+            GameCountMutex.unlock();
+            break;
+        }
+        // --- UNLOCK ---
+        GameCountMutex.unlock();
+        // Can run a game
         firstPlayer = "";
         secondPlayer = "";
         while(firstPlayer.compare(secondPlayer) == 0){
@@ -135,6 +159,7 @@ void TournamentManager::runGamesInsideThread(int seedNum){
         // run game between players
         runGameBetweenTwoPlayers(firstPlayer,secondPlayer,true);
     }
+    std::cout << "Thread number " << seedNum << " Finished." << std::endl;
 }
 
 const std::string& TournamentManager::getPlayerId(int randNum){
@@ -150,10 +175,11 @@ int TournamentManager::runTournament(){
     std::string leftPlayer;
     std::map<std::string,int>::iterator mapIter;
     // define and run threads
-    for (int i = 0; i < threadsNum; i++) {
+    for (int i = 0; i < threadsNum-1; i++) {
         threads.push_back(std::thread(&TournamentManager::runGamesInsideThread, this, i));
-//    	runGamesInsideThread(i);
     }
+    // main thread should also run
+    runGamesInsideThread(threadsNum-1);
     // Join all threads
     for (auto& th : threads)
         th.join();
@@ -195,8 +221,8 @@ void TournamentManager::addToMap(){
 void TournamentManager::startAll(){
     // load files
     loadDynamicFilesForGames();
-    if(idToFactory.size() <2){
-        std::cout << "There is not enough players for tournament!" << std::endl;
+    if(idToFactory.size() < 2){
+        std::cout << "USAGE: There is not enough players for tournament!" << std::endl;
         return;
     }
     // run tournament
