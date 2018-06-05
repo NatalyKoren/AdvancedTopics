@@ -4,6 +4,7 @@
 
 #include "GameManager.h"
 
+bool printErrorsToStd = false;
 
 void GameManager::initializePieceCount() {
 	pieceCount[0] = R;
@@ -18,14 +19,15 @@ int GameManager::checkPieces() {
 	int pieceCountSize = sizeof(pieceCount) / sizeof(pieceCount[0]);
 	for (int i = 0; i < pieceCountSize; i++) {
 		if (pieceCount[i] < 0) {
-			std::cout << "Board file format error: too many pieces of same type." << std::endl;
+			if(printErrorsToStd)
+				std::cout << "Board file format error: too many pieces of same type." << std::endl;
 			return ERROR;
 		}
-
 	}
 	// verify that there's a flag
 	if (pieceCount[pieceCountSize-1] > 0) {
-		std::cout << "Board file format error: flag not placed on board." << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Board file format error: flag not placed on board." << std::endl;
 		return ERROR;
 	}
 	return SUCCESS;
@@ -47,7 +49,8 @@ int GameManager::checkAndUpdatePieceChar (const char& piece) {
 	case FLAG: pieceCount[5]--;
 	return SUCCESS;
 	default:
-		std::cout << "Error in board file: undefined piece " << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Error in board file: undefined piece " << std::endl;
 		return ERROR;
 	}
 }
@@ -77,13 +80,15 @@ int GameManager::updateInitialPositions(){
 	// update boards with positioning lists
 	int updateResult = updatePositionsOnBoard(FIRST_PLAYER, firstPlayerPositions);
 	if(updateResult == ERROR){
-		std::cout << "Error in first player positioning stage" << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Error in first player positioning stage" << std::endl;
 		firstPlayerBadPositioningFile = true;
 	}
 	initializePieceCount();
 	updateResult = updatePositionsOnBoard(SECOND_PLAYER, secondPlayerPositions);
 	if(updateResult == ERROR){
-		std::cout << "Error in second player positioning stage" << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Error in second player positioning stage" << std::endl;
 		secondPlayerBadPositioningFile = true;
 	}
 	// check if some player failed in positioning file
@@ -268,7 +273,8 @@ int GameManager::writeToOutput() const{
 	int winner = game.getWinner();
 
 	if(!output.is_open()) {
-		std::cout << "Error: could not write to output file:" << std::strerror(errno) << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Error: could not write to output file:" << std::strerror(errno) << std::endl;
 		return ERROR;
 	}
 	if(winner == NONE) winner = TIE;
@@ -276,12 +282,14 @@ int GameManager::writeToOutput() const{
 	// check for error in writing to output file
 	//bad() function will check for badbit
 	if(output.bad()){
-		std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
 		return ERROR;
 	}
 	//print reason to output file
 	if(printReasonToOutputFile(output,game.getReason(),winner) == ERROR){
-		std::cout << "Failed writing reason to output file" << std::strerror(errno) << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Failed writing reason to output file" << std::strerror(errno) << std::endl;
 		output.close();
 		return ERROR;
 	}
@@ -290,7 +298,8 @@ int GameManager::writeToOutput() const{
 	// check for error in writing to output file
 	//bad() function will check for badbit
 	if(output.bad()){
-		std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
 		output.close();
 		return ERROR;
 	}
@@ -329,13 +338,15 @@ int GameManager::printReasonToOutputFile(std::ofstream& output, int reason, int 
 		output << "Reason: Bad Moves input for player " << game.getOpponent(winner)  << std::endl;
 		break;
 	default:
-		std::cout << "Error in REASON" << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Error in REASON" << std::endl;
 		return ERROR;
 	}
 	// check for error in writing to output file
 	//bad() function will check for badbit
 	if(output.bad()){
-		std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
+		if(printErrorsToStd)
+			std::cout << "Failed writing to output file" << std::strerror(errno) << std::endl;
 		return ERROR;
 	}
 	return SUCCESS;

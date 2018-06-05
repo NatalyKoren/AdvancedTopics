@@ -106,9 +106,9 @@ int TournamentManager::loadDynamicFilesForGames() {
 			algorithm = dlopen(fullPath.c_str(), RTLD_LAZY);
 			if (!algorithm) {
 				std::cout << "Cannot open library: " << dlerror() << std::endl;
-				return ERROR;
 			}
-            soFilesHandle.push_back(algorithm);
+            else
+                soFilesHandle.push_back(algorithm);
 		}
 	}
 	// close the library
