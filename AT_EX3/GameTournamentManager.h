@@ -50,6 +50,9 @@ public:
     static TournamentManager& getTournamentManager() {
         return theTournamentManager;
     }
+    // Block copy constructor and operator =
+    TournamentManager& operator=(const TournamentManager&) = delete;
+    TournamentManager(const TournamentManager&) = delete;
     /**
      * Register algorithm to tournament.
      * @param id - player id
