@@ -10,7 +10,6 @@ int main(int argc, char *argv[]){
     getcwd( buff, FILENAME_MAX );
 
     std::string pathToFiles(buff); // Current working directory
-    std::cout << "argc is " << argc << std::endl; //DEBUG
     // Parse command line arguments
     for(int i=1; i<argc; i++){
         // Threads
