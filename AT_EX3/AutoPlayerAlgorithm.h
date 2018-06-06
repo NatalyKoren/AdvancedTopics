@@ -15,7 +15,7 @@
 #include "AlgorithmRegistration.h"
 
 
-class RSPPlayer_222222223 : public PlayerAlgorithm {
+class RSPPlayer_308446624 : public PlayerAlgorithm {
 	int player;
 	GameBoard game;
 	int opponent;
@@ -33,13 +33,13 @@ class RSPPlayer_222222223 : public PlayerAlgorithm {
 
 public:
 	// --- Constructor ---
-	RSPPlayer_222222223(int playerNum);
-	RSPPlayer_222222223(): player(FIRST_PLAYER), opponent(game.getOpponent(FIRST_PLAYER)),
+    RSPPlayer_308446624(int playerNum);
+    RSPPlayer_308446624(): player(FIRST_PLAYER), opponent(game.getOpponent(FIRST_PLAYER)),
 			opponentPieceCount(0),pieceCount{R,P,S,B,J,F}
 			{init();}
 
 	//--- Destructor ---
-	~RSPPlayer_222222223() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}
+	~RSPPlayer_308446624() { if(autoFilePlayer.is_open()) autoFilePlayer.close();}
 	// --- Interface functions ---
 	virtual void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;
 	virtual void notifyOnInitialBoard(const Board& b, const std::vector<unique_ptr<FightInfo>>& fights) override;
@@ -92,6 +92,8 @@ public:
 	 * @param move - move to be updated on vector
 	 */
 	void updateMovingPiecesVector(const GameMove& move);
+
+    bool checkForValidPosition(const Point& pos) const;
 };
 
 

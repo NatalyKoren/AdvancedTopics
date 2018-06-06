@@ -1,5 +1,7 @@
 #include "GameBoard.h"
 
+bool logErrors = false;
+
 GameBoard::GameBoard(): firstPlayerBoard{}, secondPlayerBoard{}, firstPlayerPieces(),secondPlayerPieces(),
                         winner(NONE), reason (0){}
 
@@ -246,21 +248,26 @@ int GameBoard::testForJokerValidChange(const GameJokerChanged& jokerInfo) const{
     Position jokerPos(jokerInfo.getJokerChangePosition());
     // joker position is empty
     if(isEmpty(player, jokerPos)){
-        std::cout << "Joker position for Player: " << player << " is empty. Position ";
-        jokerPos.printPosition();
-        std::cout << std::endl;
+        if(logErrors){
+            std::cout << "Joker position for Player: " << player << " is empty. Position ";
+            jokerPos.printPosition();
+            std::cout << std::endl;
+        }
         return ILLEGAL_MOVE;
     }
     // joker position doesn't contain a joker piece
     if(!islower(getPieceAtPosition(player,jokerPos))){
-        std::cout << "Joker position for Player: " << player << " doesn't contain a joker's piece. Position ";
-        jokerPos.printPosition();
-        std::cout << std::endl;
+        if(logErrors){
+            std::cout << "Joker position for Player: " << player << " doesn't contain a joker's piece. Position ";
+            jokerPos.printPosition();
+            std::cout << std::endl;
+        }
         return ILLEGAL_MOVE;
     }
     // test if joker new char is a valid char: S,R,P,B
     if(!jokerInfo.isJokerValidChar()){
-        std::cout << "Joker new representation for player" << player << " is invalid." << std::endl;
+        if(logErrors)
+            std::cout << "Joker new representation for player" << player << " is invalid." << std::endl;
         return ILLEGAL_MOVE;
     }
     return VALID_MOVE;
@@ -312,8 +319,9 @@ int GameBoard::execMove(GameMove &move, GameFightInfo& fightInfo) {
 
     // check if move is a valid move
     // true because execMove is callled only from the game manager, thus we want to print reason to cout.
-    if(checkMove(move, true) != VALID_MOVE){
-        std::cout << "Bad move for player " << currentPlayer << std::endl;
+    if(checkMove(move, false) != VALID_MOVE){
+        if(logErrors)
+            std::cout << "Bad move for player " << currentPlayer << std::endl;
         winner = opponentPlayer;
         reason = BAD_MOVE;
         return ERROR;
@@ -327,7 +335,8 @@ int GameBoard::execJokerChange(GameJokerChanged& jokerInfo){
     int opponentPlayer = getOpponent(curPlayer);
     // Test if joker change is valid
     if(testForJokerValidChange(jokerInfo) == ILLEGAL_MOVE){
-        std::cout << "Bad joker change for player: " << curPlayer << ": illegal attempt to change Joker." << std::endl;
+        if(logErrors)
+            std::cout << "Bad joker change for player: " << curPlayer << ": illegal attempt to change Joker." << std::endl;
         winner = opponentPlayer;
         reason = BAD_MOVE;
         return ERROR;

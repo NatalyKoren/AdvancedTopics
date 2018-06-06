@@ -217,7 +217,8 @@ void GameManager::playGame(){
 			currentJokerChange.setNewJokerRep(jokerChange->getJokerNewRep());
 			//check if the joker change is illegal
 			if(game.execJokerChange(currentJokerChange) == ERROR) {
-				std::cout << "Illegal joker change for player " << currentPlayer << std::endl;
+                if(printErrorsToStd)
+                    std::cout << "Illegal joker change for player " << currentPlayer << std::endl;
 				game.setWinner(game.getOpponent(currentPlayer));
 				game.setReason(BAD_MOVE);
 				break;

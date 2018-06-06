@@ -41,8 +41,6 @@ int TournamentManager::runGameBetweenTwoPlayers(std::string firstPlayerID, std::
     winner = game.startAndRunGame();
     // --- LOCK ---
     std::lock_guard<std::mutex> guard(scoreMutex);
-    // TODO REMOVE THIS
-    std::cout << "run game between " << firstPlayerID << " and " << secondPlayerID << " " << updateSecondPlayer <<std::endl;
     if(winner == FIRST_PLAYER)
         idToScore[firstPlayerID]+= WINNING_POINTS;
     else if(winner == SECOND_PLAYER && updateSecondPlayer)
@@ -101,7 +99,6 @@ int TournamentManager::loadDynamicFilesForGames() {
 	struct dirent* ep;
 	while ((ep = readdir(directory))) {
 		if (verifyFileName(ep->d_name) == SUCCESS) {
-			std::cout << ep->d_name << std::endl;
 			std::string fullPath(folderPath + std::string("/") + std::string(ep->d_name));
 			algorithm = dlopen(fullPath.c_str(), RTLD_LAZY);
 			if (!algorithm) {
@@ -119,7 +116,6 @@ int TournamentManager::loadDynamicFilesForGames() {
 void TournamentManager::runGamesInsideThread(int seedNum){
     std::string firstPlayer;
     std::string  secondPlayer;
-    std::cout << "Thread number " << seedNum << " is running." << std::endl;
     // For random numbers
     std::default_random_engine generator(seedNum*10);
     std::uniform_int_distribution<int> distribution(0,idToGameCount.size());
@@ -159,7 +155,6 @@ void TournamentManager::runGamesInsideThread(int seedNum){
         // run game between players
         runGameBetweenTwoPlayers(firstPlayer,secondPlayer,true);
     }
-    std::cout << "Thread number " << seedNum << " Finished." << std::endl;
 }
 
 const std::string& TournamentManager::getPlayerId(int randNum){
@@ -186,8 +181,6 @@ int TournamentManager::runTournament(){
     // handle leftover algorithms
     if(idToGameCount.size() > 0){
         // assuming idToGameCount.size() == 1
-        if(idToGameCount.size() != 1)
-            std::cout << "idToGameCount size is: " << idToGameCount.size() << std::endl; // TODO: remove this
         leftPlayer = idToGameCount.begin()->first;
         mapIter = idToScore.begin();
         while(idToGameCount[leftPlayer] < GAMES_COUNT){
