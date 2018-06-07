@@ -1,36 +1,22 @@
 #include <iostream>
-#include <unistd.h>
-#include "GameManager.h"
-#include "GameTournamentManager.h"
+#include "GameBoard.h"
+
+
 
 int main(int argc, char *argv[]){
-    int numOfThreads = DEFAULT_THREADS_NUM;
-    // Getting current working directory as default path for .so files
-    char buff[FILENAME_MAX];
-    getcwd( buff, FILENAME_MAX );
+    GameBoard<12, 7, std::string, 4> myBoard;
+    std::string piece = "nataly";
+    std::string piece2 = "yotam";
+    std::string piece3 = "tomer";
+    myBoard.setPiece(5,5,piece,1);
+    myBoard.setPiece(6,6,piece2,2);
+    myBoard.setPiece(0,0,piece3,3);
 
-    std::string pathToFiles(buff); // Current working directory
-    // Parse command line arguments
-    for(int i=1; i<argc; i++){
-        // Threads
-        if((strcmp(argv[i],"-threads") == 0)){
-            if( i+1 < argc){
-                // try to get threads number
-                if(sscanf(argv[i+1], " %d ", &numOfThreads) != 1)
-                    numOfThreads = DEFAULT_THREADS_NUM;
-            }
-        }
-        // Path
-        if((strcmp(argv[i],"-path") == 0)){
-            if( i+1 < argc){
-                // try to get path
-                pathToFiles = argv[i+1];
-            }
-
-        }
+    for(auto pieceInfo : myBoard) {
+        std::cout << "row: " << std::get<0>(pieceInfo) << std::endl;
+        std::cout<< "col: " << std::get<1>(pieceInfo) << std::endl;
+        std::cout << "piece: " << std::get<2>(pieceInfo) << std::endl; // we assume here that GAME_PIECE implemented <<
+        std::cout << "player: " << std::get<3>(pieceInfo) << std::endl;
     }
-    TournamentManager::getTournamentManager().setThreadsNum(numOfThreads);
-    TournamentManager::getTournamentManager().setDirectoryPath(pathToFiles);
-    TournamentManager::getTournamentManager().startAll();
     return 0;
 }
