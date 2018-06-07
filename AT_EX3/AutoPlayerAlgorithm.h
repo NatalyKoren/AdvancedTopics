@@ -94,6 +94,10 @@ public:
 	void updateMovingPiecesVector(const GameMove& move);
 
     bool checkForValidPosition(const Point& pos) const;
+
+    void positionFlag(std::vector<unique_ptr<PiecePosition>>& vectorToFill, int board[N][M]);
+    void positionPieceOnBoard(std::vector<unique_ptr<PiecePosition>>& vectorToFill,int board[N][M], char piece, const Point& pos);
+    bool isMovingPiece(char piece)const;
 };
 
 
