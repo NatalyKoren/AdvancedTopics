@@ -28,9 +28,9 @@ void RSPPlayer_308446624::getInitialPositions(int playerNum, std::vector<unique_
     // Set the correct player
     player = playerNum;
     opponent = game.getOpponent(playerNum);
-    int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
+    int pos_taken[M][N] = {{0}}; // an array to mark squares that are occupied, 0 means empty
     int x, y;
-    char jokerRep = EMPTY_CHAR;
+    positionFlag(vectorToFill, pos_taken);
     char pieces[] = {ROCK, PAPER, SCISSORS, BOMB, JOKER, FLAG};
     for (int i = 0; i < NUM_OF_DIFF_PIECES; i++) {
         for (int j = 0; j < pieceCount[i]; j++) {
@@ -40,24 +40,9 @@ void RSPPlayer_308446624::getInitialPositions(int playerNum, std::vector<unique_
                 x = rand() % M;
                 y = rand() % N;
             }
-            if (pieces[i] == JOKER) {
-                jokerRep = BOMB;
-            }
-            pos_taken[x][y] = 1;
-            Position curPos(x, y);
-            // update piece on board
-            if(pieces[i] ==JOKER)
-                game.addPieceToGame(player, tolower(pieces[i]), curPos);
-            else
-                game.addPieceToGame(player, pieces[i], curPos);
-
-            curPos.setXposition(x+1);
-            curPos.setYposition(y+1);
-            InterfacePiecePosition curPiece(curPos, pieces[i], jokerRep);
-            vectorToFill.push_back(std::make_unique<InterfacePiecePosition>(curPiece));
-
+            positionPieceOnBoard(vectorToFill,pos_taken,pieces[i], Position(x,y));
             // updating the auto player's board
-            if(pieces[i] == PAPER || pieces[i] == ROCK || pieces[i] == SCISSORS)
+            if(isMovingPiece(pieces[i]))
                 playerMovingPositions.push_back(std::make_unique<Position>(x,y));
         }
     }
@@ -87,6 +72,7 @@ void RSPPlayer_308446624::notifyOnInitialBoard(const Board& b, const std::vector
             }
         }
     }
+
     // now check for fights...
     for(const unique_ptr<FightInfo>& fight: fights){
         notifyFightResult(*(fight));
@@ -348,4 +334,60 @@ bool RSPPlayer_308446624::checkForValidPosition(const Point& pos) const{
     if(y < 0 || y >= N)
         return false;
     return true;
+}
+
+bool RSPPlayer_308446624::isMovingPiece(char piece)const{
+    return (piece == PAPER)|| (piece == ROCK) || (piece == SCISSORS);
+}
+
+
+void RSPPlayer_308446624::positionFlag(std::vector<unique_ptr<PiecePosition>>& vectorToFill, int board[M][N]){
+    GameMove tempMove(player);
+    int bombIndex = 3;
+    int jokerIndex = 4;
+    int flagIndex = 5;
+    int flagX = rand() % M;
+    int flagY = rand() % N;
+    // add flag positioning
+    board[flagX][flagY] = 1;
+    Position curPos(flagX, flagY);
+    game.addPieceToGame(player, FLAG, curPos);
+    pieceCount[flagIndex]--;
+    tempMove.setSrcPosition(curPos);
+    curPos.setXposition(flagX+1);
+    curPos.setYposition(flagY+1);
+    InterfacePiecePosition curPiece(curPos, FLAG, EMPTY_CHAR);
+    vectorToFill.push_back(std::make_unique<InterfacePiecePosition>(curPiece));
+    // positioning bomb and joker
+    for(int direction = UP; direction <=RIGHT; direction++){
+        updateMoveWithDirection(tempMove,direction);
+        if(tempMove.positionBoundaryTest(tempMove.getTo()) == VALID_INDEX){
+            if(pieceCount[bombIndex] > 0){
+                positionPieceOnBoard(vectorToFill,board,BOMB,tempMove.getTo());
+                pieceCount[bombIndex]--;
+            }
+            else{
+                positionPieceOnBoard(vectorToFill,board,JOKER,tempMove.getTo());
+                pieceCount[jokerIndex]--;
+            }
+        }
+    }
+}
+
+void RSPPlayer_308446624::positionPieceOnBoard(std::vector<unique_ptr<PiecePosition>>& vectorToFill,int board[M][N], char piece, const Point& pos){
+    int x = pos.getX();
+    int y = pos.getY();
+    char jokerRep = BOMB;
+    board[x][y] = 1;
+    Position curPos(x, y);
+    // update piece on board
+    if(piece ==JOKER)
+        game.addPieceToGame(player, tolower(jokerRep), curPos);
+    else
+        game.addPieceToGame(player, piece, curPos);
+
+    curPos.setXposition(x+1);
+    curPos.setYposition(y+1);
+    InterfacePiecePosition curPiece(curPos, piece, jokerRep);
+    vectorToFill.push_back(std::make_unique<InterfacePiecePosition>(curPiece));
 }

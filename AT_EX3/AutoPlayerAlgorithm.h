@@ -93,11 +93,32 @@ public:
 	 */
 	void updateMovingPiecesVector(const GameMove& move);
 
+	/***
+	 * Check if pos is a valid position on board. Assuming pos is 0-based.
+	 * @param pos - position to check
+	 * @return true if pos is a valid position on board. False otherwise.
+	 */
     bool checkForValidPosition(const Point& pos) const;
-
-    void positionFlag(std::vector<unique_ptr<PiecePosition>>& vectorToFill, int board[N][M]);
-    void positionPieceOnBoard(std::vector<unique_ptr<PiecePosition>>& vectorToFill,int board[N][M], char piece, const Point& pos);
-    bool isMovingPiece(char piece)const;
+	/***
+	 * Position flag on board. It will try to position flag sorrounding by bombs.
+	 * @param vectorToFill - positioning vector to be updated
+	 * @param board - board positions indicator
+	 */
+    void positionFlag(std::vector<unique_ptr<PiecePosition>>& vectorToFill, int board[M][N]);
+	/***
+	 * Position piece on Board.
+	 * @param vectorToFill - positioning vector to be updated.
+	 * @param board - board indicator to be updated with position
+	 * @param piece - piece to be added
+	 * @param pos - piece position
+	 */
+    void positionPieceOnBoard(std::vector<unique_ptr<PiecePosition>>& vectorToFill,int board[M][N], char piece, const Point& pos);
+    /**
+     * Check if piece is a moving piece
+     * @param piece - piece to be checked
+     * @return true if piece is a moving piece and false otherwise
+     */
+	bool isMovingPiece(char piece)const;
 };
 
 

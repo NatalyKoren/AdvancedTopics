@@ -28,7 +28,7 @@ void RSPPlayer_308446624::getInitialPositions(int playerNum, std::vector<unique_
     // Set the correct player
     player = playerNum;
     opponent = game.getOpponent(playerNum);
-    int pos_taken[N][M] = {{0}}; // an array to mark squares that are occupied, 0 means empty
+    int pos_taken[M][N] = {{0}}; // an array to mark squares that are occupied, 0 means empty
     int x, y;
     positionFlag(vectorToFill, pos_taken);
     char pieces[] = {ROCK, PAPER, SCISSORS, BOMB, JOKER, FLAG};
@@ -341,13 +341,14 @@ bool RSPPlayer_308446624::isMovingPiece(char piece)const{
 }
 
 
-void RSPPlayer_308446624::positionFlag(std::vector<unique_ptr<PiecePosition>>& vectorToFill, int board[N][M]){
+void RSPPlayer_308446624::positionFlag(std::vector<unique_ptr<PiecePosition>>& vectorToFill, int board[M][N]){
     GameMove tempMove(player);
     int bombIndex = 3;
     int jokerIndex = 4;
     int flagIndex = 5;
     int flagX = rand() % M;
     int flagY = rand() % N;
+    // add flag positioning
     board[flagX][flagY] = 1;
     Position curPos(flagX, flagY);
     game.addPieceToGame(player, FLAG, curPos);
@@ -357,6 +358,7 @@ void RSPPlayer_308446624::positionFlag(std::vector<unique_ptr<PiecePosition>>& v
     curPos.setYposition(flagY+1);
     InterfacePiecePosition curPiece(curPos, FLAG, EMPTY_CHAR);
     vectorToFill.push_back(std::make_unique<InterfacePiecePosition>(curPiece));
+    // positioning bomb and joker
     for(int direction = UP; direction <=RIGHT; direction++){
         updateMoveWithDirection(tempMove,direction);
         if(tempMove.positionBoundaryTest(tempMove.getTo()) == VALID_INDEX){
@@ -369,11 +371,10 @@ void RSPPlayer_308446624::positionFlag(std::vector<unique_ptr<PiecePosition>>& v
                 pieceCount[jokerIndex]--;
             }
         }
-
     }
 }
 
-void RSPPlayer_308446624::positionPieceOnBoard(std::vector<unique_ptr<PiecePosition>>& vectorToFill,int board[N][M], char piece, const Point& pos){
+void RSPPlayer_308446624::positionPieceOnBoard(std::vector<unique_ptr<PiecePosition>>& vectorToFill,int board[M][N], char piece, const Point& pos){
     int x = pos.getX();
     int y = pos.getY();
     char jokerRep = BOMB;
@@ -381,7 +382,7 @@ void RSPPlayer_308446624::positionPieceOnBoard(std::vector<unique_ptr<PiecePosit
     Position curPos(x, y);
     // update piece on board
     if(piece ==JOKER)
-        game.addPieceToGame(player, tolower(piece), curPos);
+        game.addPieceToGame(player, tolower(jokerRep), curPos);
     else
         game.addPieceToGame(player, piece, curPos);
 

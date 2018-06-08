@@ -29,6 +29,10 @@ int main(int argc, char *argv[]){
 
         }
     }
+    if(numOfThreads <= 0){
+        std::cout << "Illegal number of threads: " << numOfThreads << std::endl;
+        return 0;
+    }
     TournamentManager::getTournamentManager().setThreadsNum(numOfThreads);
     TournamentManager::getTournamentManager().setDirectoryPath(pathToFiles);
     TournamentManager::getTournamentManager().startAll();
