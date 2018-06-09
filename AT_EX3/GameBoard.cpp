@@ -306,6 +306,10 @@ int GameBoard::printBoard(std::ofstream& output) const{
 
 int GameBoard::getPlayer(const Point& pos) const{
     const Position posToCheck(pos.getX()-1, pos.getY()-1);
+    GameMove move(FIRST_PLAYER); // just for boundary test
+    // if the position is out of bound  - do not check the board
+    if(move.positionBoundaryTest(posToCheck) ==INDEX_OUT_OF_BOUND)
+        return TIE;
     if(!isEmpty(FIRST_PLAYER,posToCheck))
         return FIRST_PLAYER;
     if(!isEmpty(SECOND_PLAYER,posToCheck))
