@@ -143,14 +143,15 @@ int GameManager::performAllFightAfterInitBoards(std::vector<unique_ptr<FightInfo
 		for(int j = 0; j < N; j++) {
 			pos.setXposition(i);
 			pos.setYposition(j);
-			if(!game.isEmpty(FIRST_PLAYER,pos))
-				game.checkAndRunFight(FIRST_PLAYER, pos,fightInfo);
-			// if there was a fight need to add this fight to fights
-			if(fightInfo.getIsFight()){
-                fightXPos = fightInfo.getPosition().getX()+1;
-                fightYPos = fightInfo.getPosition().getY()+1;
-                fights.push_back(std::make_unique<GameFightInfo>(Position(fightXPos,fightYPos), fightInfo.getPiece(FIRST_PLAYER),
-						fightInfo.getPiece(SECOND_PLAYER),fightInfo.getWinner()));
+			if(!game.isEmpty(FIRST_PLAYER,pos)){
+                game.checkAndRunFight(FIRST_PLAYER, pos,fightInfo);
+                // if there was a fight need to add this fight to fights
+                if(fightInfo.getIsFight()){
+                    fightXPos = fightInfo.getPosition().getX()+1;
+                    fightYPos = fightInfo.getPosition().getY()+1;
+                    fights.push_back(std::make_unique<GameFightInfo>(Position(fightXPos,fightYPos), fightInfo.getPiece(FIRST_PLAYER),
+                                                                     fightInfo.getPiece(SECOND_PLAYER),fightInfo.getWinner()));
+                }
             }
 		}
 	}
