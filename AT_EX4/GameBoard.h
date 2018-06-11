@@ -17,8 +17,13 @@ class GameBoard{
     PieceInfo<GAME_PIECE> m_mainBoard[ROWS][COLS];
 
 public:
-    PieceInfo<GAME_PIECE> getPiece(int row, int col);
-    PieceInfo<GAME_PIECE> setPiece(int row, int col, GAME_PIECE piece, int player);
+    PieceInfo<GAME_PIECE> getPiece(int row, int col) {return m_mainBoard[row][col];}
+    PieceInfo<GAME_PIECE> setPiece(int row, int col, GAME_PIECE piece, int player){
+        PieceInfo<GAME_PIECE> prevVal = std::move(m_mainBoard[row][col]);
+        m_mainBoard[row][col] = std::make_unique<const std::pair<int, GAME_PIECE>>(std::make_pair(player, piece));
+        return prevVal;
+    }
+
 
     class PredicateIterator{
         const GameBoard* m_board;
@@ -30,7 +35,6 @@ public:
                 : m_board(board), m_predicate(predicate), m_rows(rows), m_cols(cols) {}
 
         const std::tuple<int, int, GAME_PIECE, int> operator*(){
-//            PieceInfo<GAME_PIECE>& piece = m_board->m_mainBoard[m_rows][m_cols];
             int player = m_board->m_mainBoard[m_rows][m_cols]->first;
             GAME_PIECE pie = m_board->m_mainBoard[m_rows][m_cols]->second;
             return std::make_tuple(m_rows,m_cols,pie,player);
@@ -55,30 +59,51 @@ public:
             return *this;
         }
 
+        bool isPredicate(int row, int col) const{return m_predicate(m_board->m_mainBoard[row][col]);}
+
     };
 
-    PredicateIterator begin()const;
-    PredicateIterator end()const;
+    PredicateIterator begin()const{
+        PredicateIterator itr(this, [](const PieceInfo<GAME_PIECE>& piece){ return (piece!= nullptr); }, 0, 0);
+        if(!itr.isPredicate(0,0))
+            ++itr;
+        return itr;
+    }
+    PredicateIterator end()const{
+        return PredicateIterator(this, [](const PieceInfo<GAME_PIECE>& piece){ return false; }, ROWS, COLS);
+    }
+
+    class PlayerPieces{
+        const GameBoard* m_board;
+        int m_playerNum;
+    public:
+        PlayerPieces(const GameBoard* board, int playerNum): m_board(board), m_playerNum(playerNum) {}
+        PredicateIterator begin()const {
+            int plyNum = m_playerNum;
+            PredicateIterator itr(this->m_board,
+                                  [plyNum](const PieceInfo<GAME_PIECE>& piece){ return (piece!= nullptr) && (piece->first == plyNum); },
+                                  0, 0);
+            if(!itr.isPredicate(0,0))
+                ++itr;
+            return itr;
+        }
+        PredicateIterator end()const {
+            return PredicateIterator(this->m_board,
+                                     [](const PieceInfo<GAME_PIECE>& piece){ return false; },
+                                     ROWS, COLS);
+        }
+
+    };
+
+    PlayerPieces allPiecesOfPlayer(int playerNum){
+        return PlayerPieces(this, playerNum);
+    }
+
+
 
 
 };
 
-template<int ROWS, int COLS, typename GAME_PIECE, int PLAYERS>
-typename GameBoard<ROWS, COLS, GAME_PIECE, PLAYERS>::PredicateIterator GameBoard<ROWS, COLS, GAME_PIECE, PLAYERS>::begin() const {
-    return GameBoard::PredicateIterator(this, [](const PieceInfo<GAME_PIECE>& piece){ return (piece!= nullptr); }, 0, 0);
-}
-
-template<int ROWS, int COLS, typename GAME_PIECE, int PLAYERS>
-typename GameBoard<ROWS, COLS, GAME_PIECE, PLAYERS>::PredicateIterator GameBoard<ROWS, COLS, GAME_PIECE, PLAYERS>::end() const {
-    return GameBoard::PredicateIterator(this, [](const PieceInfo<GAME_PIECE>& piece){ return false; }, ROWS, COLS);
-}
-
-template<int ROWS, int COLS, typename GAME_PIECE, int PLAYERS>
-PieceInfo<GAME_PIECE>
-GameBoard<ROWS, COLS, GAME_PIECE, PLAYERS>::setPiece(int row, int col, GAME_PIECE piece, int player) {
-    m_mainBoard[row][col] = std::make_unique<const std::pair<int, GAME_PIECE>>(std::make_pair(player, piece));
-    return std::make_unique<const std::pair<int, GAME_PIECE>>(std::make_pair(player, piece));
-}
 
 
 #endif //AT_EX4_GAMEBOARD_H
