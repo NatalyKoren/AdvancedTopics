@@ -5,9 +5,9 @@
 #ifndef AT_EX4_GAMEBOARD_H
 #define AT_EX4_GAMEBOARD_H
 
-#include <memory>
-#include <functional>
-#include <tuple>
+
+
+#include "ex4_header.h"
 
 template<typename GAME_PIECE>
 using PieceInfo = std::unique_ptr<const std::pair<int, GAME_PIECE>>;
@@ -32,7 +32,7 @@ public:
         std::function<bool(const PieceInfo<GAME_PIECE>&)> m_predicate;
     public:
         PredicateIterator(const GameBoard* board, std::function<bool(const PieceInfo<GAME_PIECE>&)> predicate, int rows, int cols)
-                : m_board(board), m_predicate(predicate), m_rows(rows), m_cols(cols) {}
+                : m_board(board), m_rows(rows), m_cols(cols), m_predicate(predicate) {}
 
         const std::tuple<int, int, GAME_PIECE, int> operator*(){
             int player = m_board->m_mainBoard[m_rows][m_cols]->first;
@@ -70,7 +70,7 @@ public:
         return itr;
     }
     PredicateIterator end()const{
-        return PredicateIterator(this, [](const PieceInfo<GAME_PIECE>& piece){ return false; }, ROWS, COLS);
+        return PredicateIterator(this, [](const PieceInfo<GAME_PIECE>& /*piece*/){ return false; }, ROWS, COLS);
     }
 
     class PlayerPieces{
@@ -89,7 +89,7 @@ public:
         }
         PredicateIterator end()const {
             return PredicateIterator(this->m_board,
-                                     [](const PieceInfo<GAME_PIECE>& piece){ return false; },
+                                     [](const PieceInfo<GAME_PIECE>& /*piece*/){ return false; },
                                      ROWS, COLS);
         }
 
@@ -116,7 +116,7 @@ public:
         }
         PredicateIterator end()const {
             return PredicateIterator(this->m_board,
-                                     [](const PieceInfo<GAME_PIECE>& piece){ return false; },
+                                     [](const PieceInfo<GAME_PIECE>& /*piece*/){ return false; },
                                      ROWS, COLS);
         }
 
@@ -147,7 +147,7 @@ public:
         }
         PredicateIterator end()const {
             return PredicateIterator(this->m_board,
-                                     [](const PieceInfo<GAME_PIECE>& piece){ return false; },
+                                     [](const PieceInfo<GAME_PIECE>& /*piece*/){ return false; },
                                      ROWS, COLS);
         }
     };
