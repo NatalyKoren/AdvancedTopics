@@ -99,6 +99,62 @@ public:
         return PlayerPieces(this, playerNum);
     }
 
+    class GamePieces{
+        const GameBoard* m_board;
+        const GAME_PIECE *m_piece;
+    public:
+        GamePieces(const GameBoard* board, const GAME_PIECE& piece):m_board(board), m_piece(&piece) {}
+        PredicateIterator begin()const {
+            const GAME_PIECE *pieceToCheck = m_piece;
+            PredicateIterator itr(this->m_board,
+                                  [pieceToCheck](const PieceInfo<GAME_PIECE>& piece){
+                                      return (piece!= nullptr) && (piece->second == *pieceToCheck); },
+                                  0, 0);
+            if(!itr.isPredicate(0,0))
+                ++itr;
+            return itr;
+        }
+        PredicateIterator end()const {
+            return PredicateIterator(this->m_board,
+                                     [](const PieceInfo<GAME_PIECE>& piece){ return false; },
+                                     ROWS, COLS);
+        }
+
+    };
+    GamePieces allOccureneceOfPiece(GAME_PIECE& piece){
+        return GamePieces(this, piece);
+    }
+
+
+    class GamePiecesForPlayer{
+        const GameBoard* m_board;
+        const GAME_PIECE *m_piece;
+        int m_playerNum;
+    public:
+        GamePiecesForPlayer(const GameBoard* board, const GAME_PIECE& piece, int playerNum):
+                m_board(board), m_piece(&piece), m_playerNum(playerNum) {}
+
+        PredicateIterator begin()const {
+            const GAME_PIECE *pieceToCheck = m_piece;
+            int plyNum = m_playerNum;
+            PredicateIterator itr(this->m_board,
+                                  [pieceToCheck, plyNum](const PieceInfo<GAME_PIECE>& piece){
+                                      return (piece!= nullptr) && (piece->second == *pieceToCheck) && (piece->first == plyNum); },
+                                  0, 0);
+            if(!itr.isPredicate(0,0))
+                ++itr;
+            return itr;
+        }
+        PredicateIterator end()const {
+            return PredicateIterator(this->m_board,
+                                     [](const PieceInfo<GAME_PIECE>& piece){ return false; },
+                                     ROWS, COLS);
+        }
+    };
+
+    GamePiecesForPlayer allOccureneceOfPieceForPlayer(GAME_PIECE& piece, int playerNum){
+        return GamePiecesForPlayer(this, piece, playerNum);
+    }
 
 
 

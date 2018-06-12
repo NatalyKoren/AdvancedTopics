@@ -28,6 +28,25 @@ int main(int argc, char *argv[]){
         std::cout << "player: " << std::get<3>(pieceInfo) << std::endl;
     }
 
+    std::cout << "~ ~ myBoard.allOccureneceOfPiece~ ~"  << std::endl;
+
+    for(auto pieceInfo : myBoard.allOccureneceOfPiece(piece)) {
+        std::cout << "row: " << std::get<0>(pieceInfo) << std::endl;
+        std::cout<< "col: " << std::get<1>(pieceInfo) << std::endl;
+        std::cout << "piece: " << std::get<2>(pieceInfo) << std::endl; // we assume here that GAME_PIECE implemented <<
+        std::cout << "player: " << std::get<3>(pieceInfo) << std::endl;
+    }
+
+    std::cout << "~ ~ myBoard.allOccureneceOfPieceForPlayer~ ~"  << std::endl;
+
+    for(auto pieceInfo : myBoard.allOccureneceOfPieceForPlayer(piece2, 2)) {
+        std::cout << "row: " << std::get<0>(pieceInfo) << std::endl;
+        std::cout<< "col: " << std::get<1>(pieceInfo) << std::endl;
+        std::cout << "piece: " << std::get<2>(pieceInfo) << std::endl; // we assume here that GAME_PIECE implemented <<
+        std::cout << "player: " << std::get<3>(pieceInfo) << std::endl;
+    }
+
+
 
     return 0;
 }
