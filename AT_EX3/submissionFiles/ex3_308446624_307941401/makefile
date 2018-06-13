@@ -17,7 +17,7 @@ $(SO_NAME).so: $(SO_OBJS)
 	$(COMP) $(SO_OBJS) -shared -g -o $@
 #a rule for building a simple c++ source file
 #use g++ -MM main.cpp to see dependencies
-main.o: main.cpp
+main.o: main.cpp GameManager.cpp GameManager.h GameTournamentManager.cpp GameTournamentManager.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -ldl
 GameBoard.o: GameBoard.cpp GameBoard.h GameMove.h GameMove.cpp GameFightInfo.h Position.h PlayerPieces.cpp PlayerPieces.h Definitions.h Board.h
 	$(COMP) $(CPP_COMP_FLAG) -fPIC -c $*.cpp
